@@ -3,5 +3,5 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
-  <Project Path="summerGame2026.vcxproj" />
+  <Project Path="summerGame2026.vcxproj" Id="e10b2e4a-8f7f-46dc-b018-6bbd1ecf45dc" />
 </Solution>
