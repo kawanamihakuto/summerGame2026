@@ -20,8 +20,6 @@ void SceneMain::Init()
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
-
-
 }
 
 void SceneMain::Update()
@@ -32,8 +30,8 @@ void SceneMain::Update()
 void SceneMain::Draw()
 {
 	DrawGrid();
-	DrawString(0, 0, "SceneMain", GetColor(255, 255, 255));
-	DrawFormatString(0, 16, GetColor(255, 255, 255), "FRAME:%d", m_frameCount);
+	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
+	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
 }
 
 void SceneMain::DrawGrid()
