@@ -1,7 +1,6 @@
 #pragma once
 
 //プリコンパイル済みヘッダ
-
 #include"DxLib.h"
 #include<vector>
 #include<array>

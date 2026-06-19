@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"Core/Precompiled.h"
 #include"Math/Vector2.h"
 /// <summary>
