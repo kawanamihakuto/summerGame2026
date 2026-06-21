@@ -1,6 +1,6 @@
 ﻿#pragma once
-#include"Core/Precompiled.h"
-#include"Math/Vector2.h"
+#include"Engine/Core/Precompiled.h"
+#include"Engine/Math/Vector2.h"
 /// <summary>
 /// 周辺機器種別
 /// </summary>

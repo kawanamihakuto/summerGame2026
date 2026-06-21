@@ -137,21 +137,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="InputManager.cpp" />
-    <ClCompile Include="Source\Core\Application.cpp" />
-    <ClCompile Include="Source\Core\main.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Source\Engine\Core\InputManager.cpp" />
+    <ClCompile Include="Source\Engine\Math\Matrix4x4.cpp" />
+    <ClCompile Include="Source\Engine\Core\Application.cpp" />
+    <ClCompile Include="Source\Engine\Core\main.cpp" />
     <ClCompile Include="SceneMain.cpp" />
-    <ClCompile Include="Source\Math\Vector2.cpp" />
-    <ClCompile Include="Source\Math\Vector3.cpp" />
+    <ClCompile Include="Source\Engine\Math\Vector2.cpp" />
+    <ClCompile Include="Source\Engine\Math\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InputManager.h" />
-    <ClInclude Include="Source\Core\Precompiled.h" />
-    <ClInclude Include="Source\Core\Config.h" />
-    <ClInclude Include="Source\Core\Application.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Source\Engine\Core\InputManager.h" />
+    <ClInclude Include="Source\Engine\Math\Matrix4x4.h" />
+    <ClInclude Include="Source\Engine\Core\Precompiled.h" />
+    <ClInclude Include="Source\Engine\Core\Config.h" />
+    <ClInclude Include="Source\Engine\Core\Application.h" />
     <ClInclude Include="SceneMain.h" />
-    <ClInclude Include="Source\Math\Vector2.h" />
-    <ClInclude Include="Source\Math\Vector3.h" />
+    <ClInclude Include="Source\Engine\Math\Vector2.h" />
+    <ClInclude Include="Source\Engine\Math\Vector3.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
