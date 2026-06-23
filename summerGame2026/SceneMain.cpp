@@ -1,6 +1,7 @@
 #include "SceneMain.h"
 #include"Engine/Core/Precompiled.h"
-
+#include"Engine/Core/GameObjectManager.h"
+#include"Player.h"
 SceneMain::SceneMain():
 m_frameCount(0)
 {
@@ -20,15 +21,23 @@ void SceneMain::Init()
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
+
+	m_gameObjects = std::make_shared<GameObjectManager>();
+
+	m_gameObjects->Add(std::make_unique<Player>());
+
+	m_gameObjects->Init();
 }
 
 void SceneMain::Update()
 {
 	m_frameCount++;
+	m_gameObjects->Update();
 }
 
 void SceneMain::Draw()
 {
+	m_gameObjects->Draw();
 	DrawGrid();
 	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
@@ -53,3 +62,10 @@ void SceneMain::DrawGrid()
 		DrawLine3D(startPos, endPos, 0x0000ff);
 	}
 }
+
+void SceneMain::End()
+{
+	m_gameObjects->Clear();
+}
+
+

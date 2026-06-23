@@ -41,6 +41,11 @@ Matrix4x4 Matrix4x4::Translate(float x, float y, float z)
         0, 0, 0, 1);
 }
 
+Matrix4x4 Matrix4x4::Translate(const Vector3& pos)
+{
+    return Translate(pos.x,pos.y,pos.z);
+}
+
 Matrix4x4 Matrix4x4::Scale(float x, float y, float z)
 {
     return Matrix4x4(
@@ -48,6 +53,11 @@ Matrix4x4 Matrix4x4::Scale(float x, float y, float z)
         0, y, 0, 0,
         0, 0, z, 0,
         0, 0, 0, 1);
+}
+
+Matrix4x4 Matrix4x4::Scale(const Vector3& scale)
+{ 
+    return Scale(scale.x, scale.y, scale.z);
 }
 
 Matrix4x4 Matrix4x4::RotationX(float angle)

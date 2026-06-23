@@ -44,6 +44,12 @@ public:
     /// <param name="z">z成分</param>
     /// <returns>平行移動行列</returns>
     static Matrix4x4 Translate(float x, float y, float z);
+    /// <summary>
+    /// 平行移動行列を生成する
+    /// </summary>
+    /// <param name="trans">移動値</param>
+    /// <returns>平行移動行列</returns>
+    static Matrix4x4 Translate(const Vector3& pos);
 
     /// <summary>
     /// 拡大縮小行列を生成する
@@ -53,6 +59,13 @@ public:
     /// <param name="z">z成分</param>
     /// <returns>拡大縮小行列</returns>
     static Matrix4x4 Scale(float x, float y, float z);
+
+    /// <summary>
+    /// 拡大縮小行列を生成する
+    /// </summary>
+    /// <param name="scale">scale</param>
+    /// <returns>拡大縮小行列</returns>
+    static Matrix4x4 Scale(const Vector3& scale);
 
     /// <summary>
     /// x軸の回転行列を生成する

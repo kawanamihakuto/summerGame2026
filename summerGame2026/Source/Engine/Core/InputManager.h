@@ -27,14 +27,16 @@ struct  InputState
 class InputManager
 {
 private:
-	//イベント名と実際の入力の対応表
-	std::map<std::string, std::vector<InputState>>m_inputTable;
-	//実際に入力されたかどうかのデータ
-	std::map<std::string, bool>m_inputData;
-	//前のフレームに押されたかどうか
-	std::map<std::string, bool>m_lastInputData;
-public:
 	InputManager();
+	// コピー禁止
+	InputManager(const InputManager&) = delete;
+	InputManager& operator=(const InputManager&) = delete;
+public:
+	/// <summary>
+	/// インスタンスを取得する関数
+	/// </summary>
+	/// <returns></returns>
+	static InputManager& GetInstance();
 	/// <summary>
 	/// 入力情報の更新
 	/// </summary>
@@ -51,7 +53,6 @@ public:
 	/// <param name="name">イベント名</param>
 	/// <returns>今押された:true / 押されていないor押しっぱなし:false</returns>
 	bool IsTriggered(const char* name)const;
-
 	/// <summary>
 	/// 左スティックの入力を取得する関数
 	/// </summary>
@@ -62,7 +63,6 @@ public:
 	/// </summary>
 	/// <returns>入力の方向ベクトル</returns>
 	Vector2 GetRightStick()const;
-
 	/// <summary>
 	/// InputManagerが管理しているすべての入力イベントのうち、どれか一つでも入力されているか
 	/// </summary>
@@ -70,6 +70,13 @@ public:
 	bool AnyPressButtonInput()const;
 
 private:
+	//イベント名と実際の入力の対応表
+	std::map<std::string, std::vector<InputState>>m_inputTable;
+	//実際に入力されたかどうかのデータ
+	std::map<std::string, bool>m_inputData;
+	//前のフレームに押されたかどうか
+	std::map<std::string, bool>m_lastInputData;
+
 	//GetJoypadXInputStateで取得した入力を保存する変数
 	XINPUT_STATE m_stick;
 };

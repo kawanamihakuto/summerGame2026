@@ -86,6 +86,7 @@ void Application::Run()
 		//escキーを押したらゲームを強制終了	
 		if (CheckHitKey(KEY_INPUT_ESCAPE))
 		{
+			pScene->End();
 			break;
 		}
 

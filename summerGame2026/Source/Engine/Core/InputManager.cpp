@@ -49,6 +49,11 @@ InputManager::InputManager() :
 	}
 }
 
+InputManager& InputManager::GetInstance()
+{
+	static InputManager instance;
+	return instance;
+}
 
 void InputManager::Update()
 {
