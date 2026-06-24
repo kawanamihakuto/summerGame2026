@@ -111,10 +111,10 @@ MATRIX Matrix4x4::ChangeDxMat() const
 {
     MATRIX mat;
 
-    mat.m[0][0] = m00; mat.m[0][1] = m01; mat.m[0][2] = m02; mat.m[0][3] = m03;
-    mat.m[1][0] = m10; mat.m[1][1] = m11; mat.m[1][2] = m12; mat.m[1][3] = m13;
-    mat.m[2][0] = m20; mat.m[2][1] = m21; mat.m[2][2] = m22; mat.m[2][3] = m23;
-    mat.m[3][0] = m30; mat.m[3][1] = m31; mat.m[3][2] = m32; mat.m[3][3] = m33;
+    mat.m[0][0] = m00; mat.m[0][1] = m10; mat.m[0][2] = m20; mat.m[0][3] = m30;
+    mat.m[1][0] = m01; mat.m[1][1] = m11; mat.m[1][2] = m21; mat.m[1][3] = m31;
+    mat.m[2][0] = m02; mat.m[2][1] = m12; mat.m[2][2] = m22; mat.m[2][3] = m32;
+    mat.m[3][0] = m03; mat.m[3][1] = m13; mat.m[3][2] = m23; mat.m[3][3] = m33;
 
     return mat;
 }

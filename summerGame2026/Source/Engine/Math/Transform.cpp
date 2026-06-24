@@ -13,12 +13,29 @@ Matrix4x4 TransForm::GetWorldMatrix() const
     return transMat * rotateZMat * rotateXMat * rotateYMat  * scaleMat;
 }
 
+Matrix4x4 TransForm::GetRotationMatrix() const
+{
+    return Matrix4x4::RotationX(rotation.x) *
+           Matrix4x4::RotationX(rotation.y) *
+           Matrix4x4::RotationX(rotation.z);
+}
+
 Vector3 TransForm::Forward() const
 {
-    Matrix4x4 rot = Matrix4x4::RotationX(rotation.x) *
-                    Matrix4x4::RotationY(rotation.y);
+    Matrix4x4 rot = GetRotationMatrix();
+    return rot.TransformVector({0.0f,0.0f,1.0f}).Normalized();
+}
 
-    return rot.TransformVector({ 0.0f,0.0f,1.0f });
+Vector3 TransForm::Right() const
+{
+    Matrix4x4 rot = GetRotationMatrix();
+    return rot.TransformVector({ 1.0f,0.0f,0.0f }).Normalized();
+}
+
+Vector3 TransForm::Up() const
+{
+    Matrix4x4 rot = GetRotationMatrix();
+    return rot.TransformVector({ 0.0f,1.0f,0.0f }).Normalized();
 }
 
 void TransForm::Translate(const Vector3& move)

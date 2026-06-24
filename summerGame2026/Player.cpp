@@ -1,8 +1,11 @@
 #include "Player.h"
+#include"Engine/Core/PreCompiled.h"
+#include"Engine/Core/InputManager.h"
 
 namespace
 {
-	const wchar_t* modelPath = L"data/model/Player.mv1";
+	const wchar_t* kModelPath = L"data/model/Player.mv1";
+	constexpr float kSpeed = 5.0f;
 }
 
 Player::Player() :
@@ -16,7 +19,7 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_modelHandle = MV1LoadModel(modelPath);
+	m_modelHandle = MV1LoadModel(kModelPath);
 }
 
 void Player::End()
@@ -25,6 +28,17 @@ void Player::End()
 
 void Player::Update()
 {
+	auto& input = InputManager::GetInstance();
+	input.Update();
+
+	Vector2 leftStick = input.GetLeftStick();
+	Vector3 move = { leftStick.x * kSpeed,0.0f,leftStick.y * kSpeed};
+
+	m_transform.Translate(move);
+
+	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
+
+	MV1SetMatrix(m_modelHandle, worldMat.ChangeDxMat());
 }
 
 void Player::Draw()

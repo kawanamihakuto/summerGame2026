@@ -17,10 +17,25 @@ struct TransForm
 	/// <returns>ワールド行列</returns>
 	Matrix4x4 GetWorldMatrix()const;
 	/// <summary>
+	/// 回転行列を取得する
+	/// </summary>
+	/// <returns>回転行列</returns>
+	Matrix4x4 GetRotationMatrix()const;
+	/// <summary>
 	/// オブジェクトの前方向ベクトルを返す
 	/// </summary>
 	/// <returns>前方向ベクトル</returns>
 	Vector3 Forward()const;
+	/// <summary>
+	/// オブジェクトの右方向ベクトルを返す
+	/// </summary>
+	/// <returns>右方向ベクトル</returns>
+	Vector3 Right()const;
+	/// <summary>
+	/// オブジェクトの上方向ベクトルを返す
+	/// </summary>
+	/// <returns>上方向ベクトル</returns>
+	Vector3 Up()const;
 	/// <summary>
 	/// 移動
 	/// </summary>
