@@ -22,6 +22,6 @@ public:
 	virtual void Draw()abstract;
 
 protected:
-	TransForm m_transform;
+	Transform m_transform;
 };
 

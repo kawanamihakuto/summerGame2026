@@ -2,7 +2,7 @@
 #include"Vector3.h"
 #include"Matrix4x4.h"
 
-struct TransForm
+struct Transform
 {
 	//ポジション
 	Vector3 position{ 0.0f,0.0f,0.0f };

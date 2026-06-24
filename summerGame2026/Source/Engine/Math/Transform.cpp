@@ -1,6 +1,6 @@
 #include "Transform.h"
 
-Matrix4x4 TransForm::GetWorldMatrix() const
+Matrix4x4 Transform::GetWorldMatrix() const
 {
     Matrix4x4 scaleMat = Matrix4x4::Scale(scale);
 
@@ -13,37 +13,37 @@ Matrix4x4 TransForm::GetWorldMatrix() const
     return transMat * rotateZMat * rotateXMat * rotateYMat  * scaleMat;
 }
 
-Matrix4x4 TransForm::GetRotationMatrix() const
+Matrix4x4 Transform::GetRotationMatrix() const
 {
     return Matrix4x4::RotationX(rotation.x) *
            Matrix4x4::RotationX(rotation.y) *
            Matrix4x4::RotationX(rotation.z);
 }
 
-Vector3 TransForm::Forward() const
+Vector3 Transform::Forward() const
 {
     Matrix4x4 rot = GetRotationMatrix();
     return rot.TransformVector({0.0f,0.0f,1.0f}).Normalized();
 }
 
-Vector3 TransForm::Right() const
+Vector3 Transform::Right() const
 {
     Matrix4x4 rot = GetRotationMatrix();
     return rot.TransformVector({ 1.0f,0.0f,0.0f }).Normalized();
 }
 
-Vector3 TransForm::Up() const
+Vector3 Transform::Up() const
 {
     Matrix4x4 rot = GetRotationMatrix();
     return rot.TransformVector({ 0.0f,1.0f,0.0f }).Normalized();
 }
 
-void TransForm::Translate(const Vector3& move)
+void Transform::Translate(const Vector3& move)
 {
     position += move;
 }
 
-void TransForm::SetScale(const Vector3& s)
+void Transform::SetScale(const Vector3& s)
 {
     scale = s;
 }

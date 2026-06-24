@@ -1,6 +1,7 @@
 #include "SceneMain.h"
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
+#include"Engine/Core/InputManager.h"
 #include"Player.h"
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -32,6 +33,8 @@ void SceneMain::Init()
 void SceneMain::Update()
 {
 	m_frameCount++;
+	InputManager::GetInstance().Update();
+
 	m_gameObjects->Update();
 }
 

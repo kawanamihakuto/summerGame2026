@@ -29,7 +29,6 @@ void Player::End()
 void Player::Update()
 {
 	auto& input = InputManager::GetInstance();
-	input.Update();
 
 	Vector2 leftStick = input.GetLeftStick();
 	Vector3 move = { leftStick.x * kSpeed,0.0f,leftStick.y * kSpeed};

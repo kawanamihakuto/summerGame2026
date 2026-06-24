@@ -139,6 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CameraBase.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="FollowCamera.cpp" />
     <ClCompile Include="Source\Engine\Core\GameObjectManager.cpp" />
     <ClCompile Include="Source\Engine\Core\GameObject.cpp" />
     <ClCompile Include="Player.cpp" />
@@ -152,6 +155,9 @@
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CameraBase.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="FollowCamera.h" />
     <ClInclude Include="Source\Engine\Core\GameObjectManager.h" />
     <ClInclude Include="Source\Engine\Core\GameObject.h" />
     <ClInclude Include="Player.h" />
