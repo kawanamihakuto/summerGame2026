@@ -1,6 +1,4 @@
 #pragma once
-#include"Engine/Core/PreCompiled.h"
-class GameObjectManager;
 class SceneMain
 {
 public:
@@ -16,7 +14,5 @@ private:
 
 private:
 	int m_frameCount;
-
-	std::shared_ptr<GameObjectManager>m_gameObjects;
 };
 

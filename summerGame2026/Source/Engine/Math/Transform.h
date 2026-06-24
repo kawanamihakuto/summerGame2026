@@ -42,6 +42,24 @@ struct Transform
 	/// <param name="move">移動ベクトル</param>
 	void Translate(const Vector3& move);
 	/// <summary>
+	/// ポジションをセットする
+	/// </summary>
+	/// <param name="pos">ポジション</param>
+	void SetPosition(const Vector3& pos);
+
+	/// <summary>
+	/// 回転
+	/// </summary>
+	/// <param name="r">回転</param>
+	void AddRotate(const Vector3& r);
+
+	/// <summary>
+	/// 回転をセットする
+	/// </summary>
+	/// <param name="r">回転</param>
+	void SetRotate(const Vector3& r);
+
+	/// <summary>
 	/// 拡大縮小をセット
 	/// </summary>
 	/// <param name="scale">拡大縮小倍率</param>

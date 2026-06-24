@@ -3,6 +3,8 @@
 #include"Engine/Core/GameObjectManager.h"
 #include"Engine/Core/InputManager.h"
 #include"Player.h"
+#include"CameraManager.h"
+#include"FollowCamera.h"
 SceneMain::SceneMain():
 m_frameCount(0)
 {
@@ -23,24 +25,29 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
-	m_gameObjects = std::make_shared<GameObjectManager>();
+	auto& gameObjectManager = GameObjectManager::GetInstance();
+	gameObjectManager.Add(std::make_unique<Player>());
+	gameObjectManager.Init();
 
-	m_gameObjects->Add(std::make_unique<Player>());
-
-	m_gameObjects->Init();
+	auto& cameraManager = CameraManager::GetInstance();
+	cameraManager.Init(std::make_unique<FollowCamera>());
 }
 
 void SceneMain::Update()
 {
 	m_frameCount++;
 	InputManager::GetInstance().Update();
-
-	m_gameObjects->Update();
+	auto& gameObjectManager = GameObjectManager::GetInstance();
+	gameObjectManager.Update();
+	auto& cameraManager = CameraManager::GetInstance();
+	cameraManager.Update();
+	cameraManager.Apply();
 }
 
 void SceneMain::Draw()
 {
-	m_gameObjects->Draw();
+	auto& gameObjectManager = GameObjectManager::GetInstance();
+	gameObjectManager.Draw();
 	DrawGrid();
 	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
@@ -68,7 +75,8 @@ void SceneMain::DrawGrid()
 
 void SceneMain::End()
 {
-	m_gameObjects->Clear();
+	auto& gameObjectManager = GameObjectManager::GetInstance();
+	gameObjectManager.Clear();
 }
 
 

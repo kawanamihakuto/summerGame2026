@@ -1,4 +1,5 @@
 #pragma once
+#include"Engine/Core/Precompiled.h"
 /// <summary>
 /// Vector3構造体
 /// </summary>
@@ -32,6 +33,13 @@ struct Vector3
 	/// <param name="other">ベクトル</param>
 	/// <returns>外積の結果</returns>
 	Vector3 Cross(const Vector3& other)const;
+	/// <summary>
+	/// DxLibのVECTORに変換する
+	/// </summary>
+	/// <param name="other">Vector3</param>
+	/// <returns>DxLib::VECTOR</returns>
+	VECTOR ChangeDxVector();
+
 	//ベクトルを反転する
 	Vector3 operator-()const;
 	//加算

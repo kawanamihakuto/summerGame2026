@@ -1,6 +1,4 @@
 #include "Vector3.h"
-#include<DxLib.h>
-#include<cmath>
 float Vector3::Length() const
 {
 	return std::hypot(x, y, z);
@@ -41,6 +39,11 @@ Vector3 Vector3::Cross(const Vector3& other) const
 	return { y * other.z - z * other.y,
 			 z * other.x - x * other.z,
 			 x * other.y - y * other.x };
+}
+
+VECTOR Vector3::ChangeDxVector()
+{
+	return VECTOR(x,y,z);
 }
 
 Vector3 Vector3::operator-() const

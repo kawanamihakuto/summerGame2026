@@ -21,5 +21,7 @@ public:
 
 private:
 	Transform* m_target = nullptr;
+
+	float m_distance;
 };
 

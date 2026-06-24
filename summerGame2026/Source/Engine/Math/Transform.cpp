@@ -16,8 +16,8 @@ Matrix4x4 Transform::GetWorldMatrix() const
 Matrix4x4 Transform::GetRotationMatrix() const
 {
     return Matrix4x4::RotationX(rotation.x) *
-           Matrix4x4::RotationX(rotation.y) *
-           Matrix4x4::RotationX(rotation.z);
+           Matrix4x4::RotationY(rotation.y) *
+           Matrix4x4::RotationZ(rotation.z);
 }
 
 Vector3 Transform::Forward() const
@@ -41,6 +41,21 @@ Vector3 Transform::Up() const
 void Transform::Translate(const Vector3& move)
 {
     position += move;
+}
+
+void Transform::SetPosition(const Vector3& pos)
+{
+    position = pos;
+}
+
+void Transform::AddRotate(const Vector3& r)
+{
+    rotation += r;
+}
+
+void Transform::SetRotate(const Vector3& r)
+{
+    rotation = r;
 }
 
 void Transform::SetScale(const Vector3& s)

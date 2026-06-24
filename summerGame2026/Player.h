@@ -12,6 +12,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	Transform* GetTransform();
 private:
 	int m_modelHandle;
 };

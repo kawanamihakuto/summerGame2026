@@ -1,5 +1,10 @@
 #include"GameObjectManager.h"
 #include"GameObject.h"
+GameObjectManager& GameObjectManager::GetInstance()
+{
+	static GameObjectManager instance;
+	return instance;
+}
 void GameObjectManager::Add(std::unique_ptr<GameObject> object)
 {
 	//追加
