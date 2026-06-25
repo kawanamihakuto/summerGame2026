@@ -1,6 +1,7 @@
 #pragma once
 #include"Engine/Core/GameObject.h"
 
+class AnimationController;
 class Player : public GameObject
 {
 public:
@@ -15,5 +16,7 @@ public:
 	Transform* GetTransform();
 private:
 	int m_modelHandle;
+
+	std::shared_ptr<AnimationController>m_animationController;
 };
 

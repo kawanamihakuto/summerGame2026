@@ -2,9 +2,9 @@
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
 #include"Engine/Core/InputManager.h"
-#include"Player.h"
-#include"CameraManager.h"
-#include"FollowCamera.h"
+#include"Game/Player/Player.h"
+#include"Engine/Camera/CameraManager.h"
+#include"Engine/Camera/FollowCamera.h"
 SceneMain::SceneMain():
 m_frameCount(0)
 {

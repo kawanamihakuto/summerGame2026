@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"CameraBase.h"
 #include"Engine/Core/Precompiled.h"
 class CameraManager

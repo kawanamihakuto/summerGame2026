@@ -1,7 +1,7 @@
 #include "Player.h"
 #include"Engine/Core/PreCompiled.h"
 #include"Engine/Core/InputManager.h"
-#include"CameraManager.h"
+#include"Engine/Camera/CameraManager.h"
 namespace
 {
 	const wchar_t* kModelPath = L"data/model/Player.mv1";
@@ -20,6 +20,8 @@ Player::~Player()
 void Player::Init()
 {
 	m_modelHandle = MV1LoadModel(kModelPath);
+
+	m_animationController = std::make_shared<>
 }
 
 void Player::End()

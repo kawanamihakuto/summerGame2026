@@ -139,12 +139,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CameraBase.cpp" />
-    <ClCompile Include="CameraManager.cpp" />
-    <ClCompile Include="FollowCamera.cpp" />
+    <ClCompile Include="Source\Engine\Animation\AnimationController.cpp" />
+    <ClCompile Include="Source\Engine\Camera\CameraBase.cpp" />
+    <ClCompile Include="Source\Engine\Camera\CameraManager.cpp" />
+    <ClCompile Include="Source\Engine\Camera\FollowCamera.cpp" />
     <ClCompile Include="Source\Engine\Core\GameObjectManager.cpp" />
     <ClCompile Include="Source\Engine\Core\GameObject.cpp" />
-    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Source\Game\Player\Player.cpp" />
     <ClCompile Include="Source\Engine\Core\InputManager.cpp" />
     <ClCompile Include="Source\Engine\Math\Matrix4x4.cpp" />
     <ClCompile Include="Source\Engine\Core\Application.cpp" />
@@ -155,12 +156,13 @@
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CameraBase.h" />
-    <ClInclude Include="CameraManager.h" />
-    <ClInclude Include="FollowCamera.h" />
+    <ClInclude Include="Source\Engine\Animation\AnimationController.h" />
+    <ClInclude Include="Source\Engine\Camera\CameraBase.h" />
+    <ClInclude Include="Source\Engine\Camera\CameraManager.h" />
+    <ClInclude Include="Source\Engine\Camera\FollowCamera.h" />
     <ClInclude Include="Source\Engine\Core\GameObjectManager.h" />
     <ClInclude Include="Source\Engine\Core\GameObject.h" />
-    <ClInclude Include="Player.h" />
+    <ClInclude Include="Source\Game\Player\Player.h" />
     <ClInclude Include="Source\Engine\Core\InputManager.h" />
     <ClInclude Include="Source\Engine\Math\Matrix4x4.h" />
     <ClInclude Include="Source\Engine\Core\Precompiled.h" />

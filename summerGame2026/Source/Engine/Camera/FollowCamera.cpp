@@ -1,8 +1,8 @@
-#include "FollowCamera.h"
+﻿#include "FollowCamera.h"
 #include"Engine/Core/InputManager.h"
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
-#include"Player.h"
+#include"Game/Player/Player.h"
 namespace
 {
 	//カメラの後方オフセット

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "ENgine/Core/GameObject.h"
 class CameraBase : public GameObject
 {

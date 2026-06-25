@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "CameraBase.h"
 #include"Engine/Math/Transform.h"
 class FollowCamera : public CameraBase
@@ -21,7 +21,5 @@ public:
 
 private:
 	Transform* m_target = nullptr;
-
-	float m_distance;
 };
 
