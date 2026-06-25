@@ -1,6 +1,12 @@
 #pragma once
 #include"Engine/Core/GameObject.h"
 
+struct PlayerAnim
+{
+	std::wstring idle = L"Armature|Idle";
+	std::wstring run = L"Armature|Run";
+};
+
 class AnimationController;
 class Player : public GameObject
 {
@@ -18,5 +24,7 @@ private:
 	int m_modelHandle;
 
 	std::shared_ptr<AnimationController>m_animationController;
+
+	PlayerAnim m_anim;
 };
 

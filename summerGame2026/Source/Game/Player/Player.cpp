@@ -2,6 +2,7 @@
 #include"Engine/Core/PreCompiled.h"
 #include"Engine/Core/InputManager.h"
 #include"Engine/Camera/CameraManager.h"
+#include"Engine/Animation/AnimationController.h"
 namespace
 {
 	const wchar_t* kModelPath = L"data/model/Player.mv1";
@@ -21,7 +22,11 @@ void Player::Init()
 {
 	m_modelHandle = MV1LoadModel(kModelPath);
 
-	m_animationController = std::make_shared<>
+	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
+
+	m_animationController->AddAnimation(m_anim.idle);
+
+	m_animationController->Play(m_anim.idle);
 }
 
 void Player::End()
@@ -44,6 +49,8 @@ void Player::Update()
 	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
 
 	MV1SetMatrix(m_modelHandle, worldMat.ChangeDxMat());
+
+	m_animationController->Update();
 }
 
 void Player::Draw()
