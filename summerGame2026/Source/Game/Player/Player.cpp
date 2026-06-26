@@ -46,6 +46,8 @@ void Player::Update()
 
 	m_transform.Translate(move);
 
+	
+
 	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
 
 	MV1SetMatrix(m_modelHandle, worldMat.ChangeDxMat());
