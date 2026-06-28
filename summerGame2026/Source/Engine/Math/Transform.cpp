@@ -4,38 +4,31 @@ Matrix4x4 Transform::GetWorldMatrix() const
 {
     Matrix4x4 scaleMat = Matrix4x4::Scale(scale);
 
-    Matrix4x4 rotateXMat = Matrix4x4::RotationX(rotation.x);
-    Matrix4x4 rotateYMat = Matrix4x4::RotationY(rotation.y);
-    Matrix4x4 rotateZMat = Matrix4x4::RotationZ(rotation.z);
+    Matrix4x4 rotateMat = rotation.ToMatrix();
 
     Matrix4x4 transMat = Matrix4x4::Translate(position);
 
-    return transMat * rotateZMat * rotateXMat * rotateYMat  * scaleMat;
+    return transMat * rotateMat  * scaleMat;
 }
 
 Matrix4x4 Transform::GetRotationMatrix() const
 {
-    return Matrix4x4::RotationX(rotation.x) *
-           Matrix4x4::RotationY(rotation.y) *
-           Matrix4x4::RotationZ(rotation.z);
+    return rotation.ToMatrix();
 }
 
 Vector3 Transform::Forward() const
 {
-    Matrix4x4 rot = GetRotationMatrix();
-    return rot.TransformVector({0.0f,0.0f,1.0f}).Normalized();
+    return rotation.Rotate(Vector3::Forward());
 }
 
 Vector3 Transform::Right() const
 {
-    Matrix4x4 rot = GetRotationMatrix();
-    return rot.TransformVector({ 1.0f,0.0f,0.0f }).Normalized();
+    return rotation.Rotate(Vector3::Right());
 }
 
 Vector3 Transform::Up() const
 {
-    Matrix4x4 rot = GetRotationMatrix();
-    return rot.TransformVector({ 0.0f,1.0f,0.0f }).Normalized();
+    return rotation.Rotate(Vector3::Up());
 }
 
 void Transform::Translate(const Vector3& move)
@@ -48,14 +41,14 @@ void Transform::SetPosition(const Vector3& pos)
     position = pos;
 }
 
-void Transform::AddRotate(const Vector3& r)
+void Transform::SetRotate(const Quaternion& q)
 {
-    rotation += r;
+    rotation = q.Normalize();
 }
 
-void Transform::SetRotate(const Vector3& r)
+Quaternion Transform::GetRotation() const
 {
-    rotation = r;
+    return rotation;
 }
 
 void Transform::SetScale(const Vector3& s)

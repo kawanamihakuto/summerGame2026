@@ -21,5 +21,8 @@ public:
 
 private:
 	Transform* m_target = nullptr;
+
+	float m_yaw;
+	float m_pitch;
 };
 

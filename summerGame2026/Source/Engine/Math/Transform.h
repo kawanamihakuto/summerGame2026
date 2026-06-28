@@ -1,13 +1,13 @@
 ﻿#pragma once
 #include"Vector3.h"
 #include"Matrix4x4.h"
-
+#include"Quaternion.h"
 struct Transform
 {
 	//ポジション
 	Vector3 position{ 0.0f,0.0f,0.0f };
 	//回転
-	Vector3 rotation{ 0.0f,0.0f,0.0f };
+	Quaternion rotation = Quaternion::Identity();
 	//拡大縮小
 	Vector3 scale{ 1.0f,1.0f,1.0f };
 
@@ -48,16 +48,16 @@ struct Transform
 	void SetPosition(const Vector3& pos);
 
 	/// <summary>
-	/// 回転
-	/// </summary>
-	/// <param name="r">回転</param>
-	void AddRotate(const Vector3& r);
-
-	/// <summary>
 	/// 回転をセットする
 	/// </summary>
 	/// <param name="r">回転</param>
-	void SetRotate(const Vector3& r);
+	void SetRotate(const Quaternion& q);
+
+	/// <summary>
+	/// クォータニオンを取得
+	/// </summary>
+	/// <returns></returns>
+	Quaternion GetRotation()const;
 
 	/// <summary>
 	/// 拡大縮小をセット

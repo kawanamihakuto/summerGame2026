@@ -23,30 +23,25 @@ void FollowCamera::End()
 
 void FollowCamera::Update()
 {
+	//入力を取得
 	auto& input = InputManager::GetInstance();
-
 	Vector2 stick = input.GetRightStick();
+	//yawとpitch
+	m_yaw += stick.x * kRotateSpeed;
+	m_pitch -= stick.y * kRotateSpeed;
 
-	Vector3 rot = { m_transform.rotation + Vector3(-stick.y * kRotateSpeed,stick.x * kRotateSpeed,0.0f) }; 
+	//picthを下限と上限で補正
+	m_pitch = std::clamp(m_pitch, -DX_PI_F / 3.0f, DX_PI_F / 3.0f);
+	//クォータニオン作成
+	Quaternion yawRot = Quaternion::AngleAxis(m_yaw, Vector3::Up());
+	Quaternion pitchRot = Quaternion::AngleAxis(m_pitch, Vector3::Right());
+	Quaternion rot = yawRot * pitchRot;
 
-	if (rot.x >= DX_PI_F / 3.0f)
-	{
-		rot.x = DX_PI_F / 3.0f;
-	}
-	if (rot.x <= -DX_PI_F / 3.0f)
-	{
-		rot.x = -DX_PI_F / 3.0f;
-	}
-
+	//回転を適用
 	m_transform.SetRotate(rot);
-
-	Matrix4x4 yawMat = Matrix4x4::RotationY(m_transform.rotation.y);
-	Matrix4x4 pitchMat = Matrix4x4::RotationX(m_transform.rotation.x);
-
-	Matrix4x4 rotMat = yawMat * pitchMat;
-
-	Vector3 offset = rotMat.TransformVector(kOffset);
-
+	//オフセットを回転
+	Vector3 offset = rot.Rotate(kOffset);
+	//ポジションを適用
 	m_transform.SetPosition(m_target->position + offset);
 }
 
