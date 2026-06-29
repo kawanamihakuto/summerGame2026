@@ -46,7 +46,11 @@ struct Transform
 	/// </summary>
 	/// <param name="pos">ポジション</param>
 	void SetPosition(const Vector3& pos);
-
+	/// <summary>
+	/// ポジションを取得
+	/// </summary>
+	/// <returns></returns>
+	Vector3 GetPosition()const;
 	/// <summary>
 	/// 回転をセットする
 	/// </summary>

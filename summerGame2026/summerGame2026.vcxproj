@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Collision\CapsuleCollider.cpp" />
+    <ClCompile Include="Source\Engine\Collision\Collider.cpp" />
     <ClCompile Include="Source\Engine\Math\Quaternion.cpp" />
     <ClCompile Include="Source\Engine\Animation\AnimationController.cpp" />
     <ClCompile Include="Source\Engine\Camera\CameraBase.cpp" />
@@ -157,6 +159,8 @@
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Collision\CapsuleCollider.h" />
+    <ClInclude Include="Source\Engine\Collision\Collider.h" />
     <ClInclude Include="Source\Engine\Math\Quaternion.h" />
     <ClInclude Include="Source\Engine\Animation\AnimationController.h" />
     <ClInclude Include="Source\Engine\Camera\CameraBase.h" />

@@ -41,6 +41,11 @@ void Transform::SetPosition(const Vector3& pos)
     position = pos;
 }
 
+Vector3 Transform::GetPosition() const
+{
+    return position;
+}
+
 void Transform::SetRotate(const Quaternion& q)
 {
     rotation = q.Normalize();
