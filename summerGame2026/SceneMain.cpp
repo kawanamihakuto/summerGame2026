@@ -5,6 +5,9 @@
 #include"Game/Player/Player.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
+#include"Stage.h"
+#include"ResourceManager.h"
+
 SceneMain::SceneMain():
 m_frameCount(0)
 {
@@ -25,12 +28,17 @@ void SceneMain::Init()
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
 	SetCameraNearFar(200.0f, 1500.0f);
 
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.LoadResources();
+
 	auto& gameObjectManager = GameObjectManager::GetInstance();
-	gameObjectManager.Add(std::make_unique<Player>());
+	gameObjectManager.Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage)));
 	gameObjectManager.Init();
 
 	auto& cameraManager = CameraManager::GetInstance();
 	cameraManager.Init(std::make_unique<FollowCamera>());
+
+	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
 }
 
 void SceneMain::Update()
@@ -42,12 +50,16 @@ void SceneMain::Update()
 	auto& cameraManager = CameraManager::GetInstance();
 	cameraManager.Update();
 	cameraManager.Apply();
+	SetLightDirection(cameraManager.GetTransfrom().Forward().ChangeDxVector());
 }
 
 void SceneMain::Draw()
 {
 	auto& gameObjectManager = GameObjectManager::GetInstance();
 	gameObjectManager.Draw();
+
+	m_stage->Draw();
+
 	DrawGrid();
 	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
@@ -77,6 +89,8 @@ void SceneMain::End()
 {
 	auto& gameObjectManager = GameObjectManager::GetInstance();
 	gameObjectManager.Clear();
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.ReleaseResources();
 }
 
 

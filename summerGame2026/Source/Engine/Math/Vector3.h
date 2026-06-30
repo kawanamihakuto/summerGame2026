@@ -60,7 +60,7 @@ struct Vector3
 	/// </summary>
 	/// <param name="other">Vector3</param>
 	/// <returns>DxLib::VECTOR</returns>
-	VECTOR ChangeDxVector();
+	VECTOR ChangeDxVector()const;
 
 	//ベクトルを反転する
 	Vector3 operator-()const;

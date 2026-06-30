@@ -3,6 +3,14 @@
 #include"Engine/Math/Vector3.h"
 #include"Engine/Math/Transform.h"
 
+struct CapsuleInfo
+{
+	Vector3 start;
+	Vector3 end;
+	float radius;
+	float height;
+};
+
 class CapsuleCollider : public Collider
 {
 public:
@@ -13,16 +21,28 @@ public:
 	/// <param name="transform">トランスフォーム</param>
 	/// <param name="radius">半径</param>
 	/// <param name="height">高さ</param>
-	void Init(const Transform& transform,float radius,float height);
+	void Init(const Vector3& pos,float radius,float height);
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="transform">トランスフォーム</param>
-	void Update(const Transform& transform);
+	void Update(const Vector3& pos);
 	/// <summary>
 	/// デバッグ表示
 	/// </summary>
 	void Draw();
+
+	/// <summary>
+	/// 当たり判定デバッグ用
+	/// </summary>
+	void Hit();
+
+	/// <summary>
+	/// カプセルの情報を取得する
+	/// </summary>
+	/// <returns></returns>
+	CapsuleInfo GetCapsuleInfo()const;
+
 	/// <summary>
 	/// コライダーの種類を返す
 	/// </summary>
@@ -30,10 +50,8 @@ public:
 	ColliderType GetType()const override;
 
 private:
-	float m_radius;
-	float m_height;
+	CapsuleInfo m_info;
 
-	Vector3 m_start;
-	Vector3 m_end;
+	int m_col;
 };
 

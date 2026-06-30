@@ -3,27 +3,33 @@
 #include"Engine/Core/InputManager.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Animation/AnimationController.h"
-
+#include"Engine/Collision/CollisionManager.h"
 namespace
 {
-	const wchar_t* kModelPath = L"data/model/Player.mv1";
 	constexpr float kSpeed = 5.0f;
 	
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
+
+	constexpr float kCapsuleRadius = 30.0f;
+	constexpr float kCapsuleHeight = 130.0f;
 }
 
-Player::Player() :
-	m_modelHandle(-1)
+Player::Player(int playerModel, int stageModel) :
+	m_modelHandle(-1),
+	m_stageModelHandle(-1)
 {
+	m_modelHandle = MV1DuplicateModel(playerModel);
+	m_stageModelHandle = stageModel;
 }
 
 Player::~Player()
 {
+	MV1DeleteModel(m_modelHandle);
 }
 
 void Player::Init()
 {
-	m_modelHandle = MV1LoadModel(kModelPath);
+	m_capsuleCol.Init(m_transform.GetPosition(), kCapsuleRadius, kCapsuleHeight);
 
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 
@@ -65,6 +71,32 @@ void Player::Update()
 		m_transform.SetRotate(rot);
 	}
 
+	m_capsuleCol.Update(m_transform.GetPosition() + move);
+
+	int test = MV1SetupCollInfo(m_stageModelHandle, -1, 8, 8, 8);
+	auto capsuleInfo = m_capsuleCol.GetCapsuleInfo();
+	auto colInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
+
+	if (colInfo.HitNum > 0)
+	{
+		m_capsuleCol.Hit();
+		
+		for (int i = 0; i < colInfo.HitNum; i++)
+		{
+			auto& poly = colInfo.Dim[i];
+
+			Vector3 normal = { poly.Normal.x,poly.Normal.y,poly.Normal.z };
+			normal.Normalize();
+
+			float dot = move.Dot(normal);
+			
+			if (dot < 0.0f)
+			{
+				move -= normal * dot;
+			}
+		}
+	}
+
 	m_transform.Translate(move);
 
 	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
@@ -77,17 +109,21 @@ void Player::Update()
 void Player::Draw()
 {
 	MV1DrawModel(m_modelHandle);
-	DrawFormatString(16,32,0xffffff,L"pos : %f,%f,%f", m_transform.position.x, m_transform.position.y, m_transform.position.z);
-	DrawFormatString(16,48,0xffffff,L"scale : %f,%f,%f", m_transform.scale.x, m_transform.scale.y, m_transform.scale.z);
+
+#ifdef _DEBUG
+	m_capsuleCol.Draw();
+
+	DrawFormatString(16, 32, 0xffffff, L"pos : %f,%f,%f", m_transform.position.x, m_transform.position.y, m_transform.position.z);
+	DrawFormatString(16, 48, 0xffffff, L"scale : %f,%f,%f", m_transform.scale.x, m_transform.scale.y, m_transform.scale.z);
 
 	Matrix4x4 mat = Matrix4x4::RotationY(DX_PI_F / 2);
 	Vector3 v1 = mat.TransformVector({ 0,0,1 });
-	DrawFormatString(16, 184, 0xffffff, L"v : %f,%f,%f",v1.x, v1.y, v1.z);
+	DrawFormatString(16, 184, 0xffffff, L"v : %f,%f,%f", v1.x, v1.y, v1.z);
 
 	Quaternion q = Quaternion::AngleAxis(DX_PI_F / 2, Vector3::Up());
 	Vector3 v2 = q.ToMatrix().TransformVector({ 0,0,1 });
 	DrawFormatString(16, 200, 0xffffff, L"v : %f,%f,%f", v2.x, v2.y, v2.z);
-	
+
 	Quaternion a =
 		Quaternion::LookRotation(
 			Vector3::Forward(),
@@ -104,6 +140,7 @@ void Player::Draw()
 		m.m00, m.m01, m.m02,
 		m.m10, m.m11, m.m12,
 		m.m20, m.m21, m.m22);
+#endif // _DEBUG
 }
 
 Transform* Player::GetTransform()

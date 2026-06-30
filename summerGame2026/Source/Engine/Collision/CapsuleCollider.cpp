@@ -1,36 +1,46 @@
 #include "CapsuleCollider.h"
 
 CapsuleCollider::CapsuleCollider():
-	m_start({0.0f,0.0f,0.0f}),
-	m_end({0.0f,0.0f,0.0f,}),
-	m_radius(0.0f),
-	m_height(0.0f)
+	m_info({}, {},0.0f,0.0f),
+	m_col(0xffffff)
 {
 }
 
-void CapsuleCollider::Init(const Transform& transform, float radius, float height)
+void CapsuleCollider::Init(const Vector3& pos, float radius, float height)
 {
-	Vector3 pos = transform.GetPosition();
+	Vector3 position = pos;
 
-	m_radius = radius;
+	m_info.radius = radius;
 
-	m_height = height;
+	m_info.height = height;
 
-	m_start = pos + Vector3(0.0f, m_radius, 0.0f);
-	m_end = pos + Vector3(0.0f, m_height - m_radius, 0.0f);
+	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
+	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
 }
 
-void CapsuleCollider::Update(const Transform& transform)
+void CapsuleCollider::Update(const Vector3& pos)
 {
-	Vector3 pos = transform.GetPosition();
-	m_start = pos + Vector3(0.0f, m_radius, 0.0f);
-	m_end = pos + Vector3(0.0f, m_height - m_radius, 0.0f);
+	Vector3 position = pos;
+	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
+	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
+
+	m_col = 0xffffff;
 }
 
 void CapsuleCollider::Draw()
 {
-	DrawCapsule3D(m_start.ChangeDxVector(), m_end.ChangeDxVector(),
-		m_radius,8,0xffffff,0xffffff,false );
+	DrawCapsule3D(m_info.start.ChangeDxVector(), m_info.end.ChangeDxVector(),
+		m_info.radius,8,m_col,m_col,false );
+}
+
+void CapsuleCollider::Hit()
+{
+	m_col = 0xff0000;
+}
+
+CapsuleInfo CapsuleCollider::GetCapsuleInfo() const
+{
+	return m_info;
 }
 
 ColliderType CapsuleCollider::GetType() const

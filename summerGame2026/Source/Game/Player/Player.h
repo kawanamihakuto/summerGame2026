@@ -1,5 +1,6 @@
 #pragma once
 #include"Engine/Core/GameObject.h"
+#include"Engine/Collision/CapsuleCollider.h"
 
 struct PlayerAnim
 {
@@ -11,7 +12,7 @@ class AnimationController;
 class Player : public GameObject
 {
 public:
-	Player();
+	Player(int playerModel,int stageModel);
 	~Player();
 
 	void Init()override;
@@ -23,8 +24,12 @@ public:
 private:
 	int m_modelHandle;
 
+	int m_stageModelHandle;
+
 	std::shared_ptr<AnimationController>m_animationController;
 
 	PlayerAnim m_anim;
+
+	CapsuleCollider m_capsuleCol;
 };
 

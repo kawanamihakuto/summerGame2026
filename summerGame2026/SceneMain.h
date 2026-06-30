@@ -1,4 +1,6 @@
 #pragma once
+#include"Engine/Core/Precompiled.h"
+class Stage;
 class SceneMain
 {
 public:
@@ -14,5 +16,7 @@ private:
 
 private:
 	int m_frameCount;
+
+	std::shared_ptr<Stage>m_stage;
 };
 
