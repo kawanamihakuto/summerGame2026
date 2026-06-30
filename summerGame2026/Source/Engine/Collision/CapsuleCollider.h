@@ -18,15 +18,22 @@ public:
 	/// <summary>
 	/// 初期化
 	/// </summary>
-	/// <param name="transform">トランスフォーム</param>
+	/// <param name="pos">ポジション</param>
 	/// <param name="radius">半径</param>
 	/// <param name="height">高さ</param>
 	void Init(const Vector3& pos,float radius,float height);
 	/// <summary>
 	/// 更新
 	/// </summary>
-	/// <param name="transform">トランスフォーム</param>
+	/// <param name="pos">ポジション</param>
 	void Update(const Vector3& pos);
+
+	/// <summary>
+	/// デバッグ表示用更新
+	/// </summary>
+	/// <param name="pos"></param>
+	void ReUpdate(const Vector3& pos);
+
 	/// <summary>
 	/// デバッグ表示
 	/// </summary>

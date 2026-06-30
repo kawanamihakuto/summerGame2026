@@ -7,16 +7,35 @@
 namespace
 {
 	constexpr float kSpeed = 5.0f;
-	
+
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
 	constexpr float kCapsuleRadius = 30.0f;
 	constexpr float kCapsuleHeight = 130.0f;
+
+	constexpr int kGroundRayNum = 4;
+
+	constexpr Vector3 kGroundRayOffsets[4] =
+	{
+		{0.0f,0.0f,10.0f},
+		{0.0f,0.0f,-10.0f},
+		{10.0f,0.0f,0.0f},
+		{-10.0f,0.0f,0.0f},
+	};
+
+	constexpr float kGroundRayHeightOffset = 100.0f;
+	constexpr float kGroundRayLength = 105.0f;
+
+	constexpr float kGravity = 1.0f;
+
+	constexpr float kJumpPowor = 20.0f;
 }
 
 Player::Player(int playerModel, int stageModel) :
 	m_modelHandle(-1),
-	m_stageModelHandle(-1)
+	m_stageModelHandle(-1),
+	m_velocity({}),
+	m_isGround(false)
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
@@ -31,11 +50,22 @@ void Player::Init()
 {
 	m_capsuleCol.Init(m_transform.GetPosition(), kCapsuleRadius, kCapsuleHeight);
 
+	m_ray.resize(kGroundRayNum);
+
+	for (int i = 0; i < 4; i++)
+	{
+		m_ray[i].Init(m_transform.GetPosition() + Vector3{ 0.0f,kGroundRayHeightOffset,0.0f } + kGroundRayOffsets[i], { 0.0f,-1.0f,0.0f }, kGroundRayLength);
+	}
+
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 
 	m_animationController->AddAnimation(m_anim.idle);
 
 	m_animationController->Play(m_anim.idle);
+
+	int test = MV1SetupCollInfo(m_stageModelHandle, -1, 8, 8, 8);
+
+	m_velocity = { 0.0f,0.0f,0.0f };
 }
 
 void Player::End()
@@ -53,7 +83,8 @@ void Player::Update()
 	move += cameraTransform.Right() * leftStick.x * kSpeed;
 	move += cameraTransform.Forward() * leftStick.y * kSpeed;
 	move.y = 0.0f;
-
+	m_velocity.x = move.x;
+	m_velocity.z = move.z;
 	//スティックが倒されてる時だけ回転
 	if (move.Length() > 0.0f)
 	{
@@ -71,25 +102,35 @@ void Player::Update()
 		m_transform.SetRotate(rot);
 	}
 
+	if (input.IsTriggered("A"))
+	{
+		if (m_isGround)
+		{
+			m_velocity.y = kJumpPowor;
+			m_isGround = false;
+		}
+	}
+
+	m_velocity.y -= kGravity;
+
 	m_capsuleCol.Update(m_transform.GetPosition() + move);
 
-	int test = MV1SetupCollInfo(m_stageModelHandle, -1, 8, 8, 8);
 	auto capsuleInfo = m_capsuleCol.GetCapsuleInfo();
-	auto colInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
+	auto capColInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
 
-	if (colInfo.HitNum > 0)
+	if (capColInfo.HitNum > 0)
 	{
 		m_capsuleCol.Hit();
-		
-		for (int i = 0; i < colInfo.HitNum; i++)
+
+		for (int i = 0; i < capColInfo.HitNum; i++)
 		{
-			auto& poly = colInfo.Dim[i];
+			auto& poly = capColInfo.Dim[i];
 
 			Vector3 normal = { poly.Normal.x,poly.Normal.y,poly.Normal.z };
 			normal.Normalize();
 
 			float dot = move.Dot(normal);
-			
+
 			if (dot < 0.0f)
 			{
 				move -= normal * dot;
@@ -97,13 +138,46 @@ void Player::Update()
 		}
 	}
 
-	m_transform.Translate(move);
+	//解放
+	MV1CollResultPolyDimTerminate(capColInfo);
+
+	m_velocity = { move.x,m_velocity.y,move.z };
+
+	int hitCount = 0;
+	m_isGround = false;
+
+	for (int i = 0; i < kGroundRayNum; i++)
+	{
+		m_ray[i].Update(m_transform.GetPosition() + m_velocity + Vector3{ 0.0f,kGroundRayHeightOffset,0.0f } + kGroundRayOffsets[i]);
+		auto rayInfo = m_ray[i].GetRayInfo();
+		auto rayColInfo = CollisionManager::CheckCollRayAndPolygon(m_stageModelHandle, -1, rayInfo.start, rayInfo.end);
+
+		if (rayColInfo.HitFlag)
+		{
+			hitCount++;
+
+			if (hitCount >= 2)
+			{
+				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,rayColInfo.HitPosition.y,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
+				m_isGround = true;
+				m_velocity = { 0.0f,0.0f,0.0f };
+				break;
+			}
+		}
+	}
+
+	if (!m_isGround)
+	{
+		m_transform.Translate(m_velocity);
+	}
 
 	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
 
 	MV1SetMatrix(m_modelHandle, worldMat.ChangeDxMat());
 
 	m_animationController->Update();
+
+	m_capsuleCol.ReUpdate(m_transform.GetPosition());
 }
 
 void Player::Draw()
@@ -112,7 +186,10 @@ void Player::Draw()
 
 #ifdef _DEBUG
 	m_capsuleCol.Draw();
-
+	for (int i = 0; i < kGroundRayNum; i++)
+	{
+		m_ray[i].Draw();
+	}
 	DrawFormatString(16, 32, 0xffffff, L"pos : %f,%f,%f", m_transform.position.x, m_transform.position.y, m_transform.position.z);
 	DrawFormatString(16, 48, 0xffffff, L"scale : %f,%f,%f", m_transform.scale.x, m_transform.scale.y, m_transform.scale.z);
 

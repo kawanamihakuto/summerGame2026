@@ -5,5 +5,7 @@ class CollisionManager
 {
 public:
 	static MV1_COLL_RESULT_POLY_DIM CheckCollCapsuleAndPolygon(int handle,int frameIndex,const Vector3& start,const Vector3& end,float radius);
+
+	static MV1_COLL_RESULT_POLY CheckCollRayAndPolygon(int handle, int frameIndex, const Vector3& start, const Vector3& end);
 };
 

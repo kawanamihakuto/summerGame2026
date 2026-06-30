@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CapsuleCollider.cpp" />
@@ -162,6 +163,7 @@
     <ClCompile Include="Stage.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Collision\Ray.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Source\Engine\Collision\CapsuleCollider.h" />

@@ -1,6 +1,7 @@
 #pragma once
 #include"Engine/Core/GameObject.h"
 #include"Engine/Collision/CapsuleCollider.h"
+#include"Engine/Collision/Ray.h"
 
 struct PlayerAnim
 {
@@ -31,5 +32,10 @@ private:
 	PlayerAnim m_anim;
 
 	CapsuleCollider m_capsuleCol;
+	std::vector<Ray> m_ray;
+
+	Vector3 m_velocity;
+
+	bool m_isGround;
 };
 

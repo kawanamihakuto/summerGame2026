@@ -2,7 +2,7 @@
 
 CapsuleCollider::CapsuleCollider():
 	m_info({}, {},0.0f,0.0f),
-	m_col(0xffffff)
+	m_col(0x00ff00)
 {
 }
 
@@ -24,7 +24,14 @@ void CapsuleCollider::Update(const Vector3& pos)
 	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
 	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
 
-	m_col = 0xffffff;
+	m_col = 0x00ff00;
+}
+
+void CapsuleCollider::ReUpdate(const Vector3& pos)
+{
+	Vector3 position = pos;
+	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
+	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
 }
 
 void CapsuleCollider::Draw()
