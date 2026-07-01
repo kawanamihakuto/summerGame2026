@@ -161,7 +161,7 @@ void Player::Update()
 
 	m_velocity = { move.x,m_velocity.y,move.z };
 
-	int hitCount = 0;
+	float groundHeight = -10000.0f;
 	m_isGround = false;
 
 	for (int i = 0; i < kGroundRayNum; i++)
@@ -172,14 +172,16 @@ void Player::Update()
 
 		if (rayColInfo.HitFlag)
 		{
-			hitCount++;
-
-			if (hitCount >= 1)
+			if(groundHeight < rayColInfo.HitPosition.y)
 			{
-				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,rayColInfo.HitPosition.y,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
+				groundHeight = rayColInfo.HitPosition.y;
+			}
+
+			if (groundHeight >= -10000.0f)
+			{
+				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,groundHeight,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
 				m_isGround = true;
 				m_velocity = { 0.0f,0.0f,0.0f };
-				break;
 			}
 		}
 	}
