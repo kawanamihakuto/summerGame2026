@@ -162,6 +162,7 @@
     <ClCompile Include="Source\Engine\Math\Vector2.cpp" />
     <ClCompile Include="Source\Engine\Math\Vector3.cpp" />
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
+    <ClCompile Include="Source\Engine\Collision\SphereCollider.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="StateBase.cpp" />
   </ItemGroup>
@@ -190,6 +191,7 @@
     <ClInclude Include="Source\Engine\Math\Vector2.h" />
     <ClInclude Include="Source\Engine\Math\Vector3.h" />
     <ClInclude Include="Source\Engine\Math\Transform.h" />
+    <ClInclude Include="Source\Engine\Collision\SphereCollider.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="StateBase.h" />
   </ItemGroup>

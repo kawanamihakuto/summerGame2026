@@ -6,6 +6,7 @@
 enum ColliderType
 {
 	capsule,
+	sphere,
 };
 
 class Collider
