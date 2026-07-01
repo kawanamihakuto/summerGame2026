@@ -26,7 +26,7 @@ void SceneMain::Init()
 	// ƒJƒƒ‰‚ÌÝ’è
 	SetCameraPositionAndTarget_UpVecY(VGet(0.0f, 300.0f, -700.0f), VGet(0.0f, 0.0f, 0.0f));
 	SetupCamera_Perspective(DX_PI_F / 3.0f);
-	SetCameraNearFar(200.0f, 1500.0f);
+	SetCameraNearFar(50.0f, 3000.0f);
 
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.LoadResources();
@@ -60,7 +60,7 @@ void SceneMain::Draw()
 
 	m_stage->Draw();
 
-	DrawGrid();
+//	DrawGrid();
 	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
 }

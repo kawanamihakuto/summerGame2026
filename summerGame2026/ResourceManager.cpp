@@ -1,9 +1,9 @@
-#include "ResourceManager.h"
+﻿#include "ResourceManager.h"
 
 namespace
 {
     const wchar_t* kPlayerModelPath = L"data/model/Player.mv1";
-    const wchar_t* kStageModelPath = L"data/Untitled.mv1";
+    const wchar_t* kStageModelPath = L"data/test2.mv1";
 }
 
 

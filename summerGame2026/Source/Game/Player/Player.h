@@ -3,10 +3,11 @@
 #include"Engine/Collision/CapsuleCollider.h"
 #include"Engine/Collision/Ray.h"
 
-struct PlayerAnim
+namespace PlayerAnim
 {
-	std::wstring idle = L"Armature|Idle";
-	std::wstring run = L"Armature|Run";
+	const std::wstring idle = L"Armature|Idle";
+	const std::wstring run = L"Armature|Run";
+	const std::wstring jump = L"Armature|Jump";
 };
 
 class AnimationController;
@@ -28,8 +29,6 @@ private:
 	int m_stageModelHandle;
 
 	std::shared_ptr<AnimationController>m_animationController;
-
-	PlayerAnim m_anim;
 
 	CapsuleCollider m_capsuleCol;
 	std::vector<Ray> m_ray;

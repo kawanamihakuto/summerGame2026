@@ -1,4 +1,4 @@
-#include "Quaternion.h"
+﻿#include "Quaternion.h"
 #include"Engine/Core/Precompiled.h"
 Quaternion::Quaternion() :
 	x(0.0f),

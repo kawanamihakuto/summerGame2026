@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"Engine/Core/Precompiled.h"
 
 enum class ModelType

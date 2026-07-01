@@ -1,4 +1,4 @@
-#include "AnimationController.h"
+﻿#include "AnimationController.h"
 
 AnimationController::AnimationController(int modelHandle):
 	m_modelHandle(modelHandle),

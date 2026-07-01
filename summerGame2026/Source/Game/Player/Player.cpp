@@ -1,4 +1,4 @@
-#include "Player.h"
+﻿#include "Player.h"
 #include"Engine/Core/PreCompiled.h"
 #include"Engine/Core/InputManager.h"
 #include"Engine/Camera/CameraManager.h"
@@ -10,17 +10,18 @@ namespace
 
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
+	constexpr float kCapsuleHeightOffset = 5.0f;
 	constexpr float kCapsuleRadius = 30.0f;
 	constexpr float kCapsuleHeight = 130.0f;
 
 	constexpr int kGroundRayNum = 4;
 
-	constexpr Vector3 kGroundRayOffsets[4] =
+	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
 	{
-		{0.0f,0.0f,10.0f},
-		{0.0f,0.0f,-10.0f},
-		{10.0f,0.0f,0.0f},
-		{-10.0f,0.0f,0.0f},
+		{0.0f,0.0f,15.0f},
+		{0.0f,0.0f,-15.0f},
+		{15.0f,0.0f,0.0f},
+		{-15.0f,0.0f,0.0f},
 	};
 
 	constexpr float kGroundRayHeightOffset = 100.0f;
@@ -48,7 +49,7 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_capsuleCol.Init(m_transform.GetPosition(), kCapsuleRadius, kCapsuleHeight);
+	m_capsuleCol.Init(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
 
 	m_ray.resize(kGroundRayNum);
 
@@ -59,9 +60,11 @@ void Player::Init()
 
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 
-	m_animationController->AddAnimation(m_anim.idle);
+	m_animationController->AddAnimation(PlayerAnim::idle);
+	m_animationController->AddAnimation(PlayerAnim::run);
+	m_animationController->AddAnimation(PlayerAnim::jump);
 
-	m_animationController->Play(m_anim.idle);
+	m_animationController->Play(PlayerAnim::idle);
 
 	int test = MV1SetupCollInfo(m_stageModelHandle, -1, 8, 8, 8);
 
@@ -80,14 +83,22 @@ void Player::Update()
 	Vector2 leftStick = input.GetLeftStick();
 	//移動ベクトル生成
 	Vector3 move = { 0.0f,0.0f,0.0f };
-	move += cameraTransform.Right() * leftStick.x * kSpeed;
-	move += cameraTransform.Forward() * leftStick.y * kSpeed;
+	move += Vector3{cameraTransform.Right().x,0.0f,cameraTransform.Right().z} *leftStick.x;
+	move += Vector3{cameraTransform.Forward().x,0.0f,cameraTransform.Forward().z} * leftStick.y;
+	move.Normalize();
+	move.x *= kSpeed;
+	move.z *= kSpeed;
 	move.y = 0.0f;
 	m_velocity.x = move.x;
 	m_velocity.z = move.z;
 	//スティックが倒されてる時だけ回転
 	if (move.Length() > 0.0f)
 	{
+		if(m_isGround)
+		{
+			m_animationController->Play(PlayerAnim::run);
+		}
+
 		Vector3 dir = move.Normalized();
 
 		DrawFormatString(16, 150, 0xffffff, L"dir : %f,%f,%f", dir.x, dir.y, dir.z);
@@ -101,6 +112,13 @@ void Player::Update()
 
 		m_transform.SetRotate(rot);
 	}
+	else
+	{
+		if (m_isGround)
+		{
+			m_animationController->Play(PlayerAnim::idle);
+		}
+	}
 
 	if (input.IsTriggered("A"))
 	{
@@ -108,20 +126,19 @@ void Player::Update()
 		{
 			m_velocity.y = kJumpPowor;
 			m_isGround = false;
+			m_animationController->Play(PlayerAnim::jump,false);
 		}
 	}
 
 	m_velocity.y -= kGravity;
 
-	m_capsuleCol.Update(m_transform.GetPosition() + move);
+	m_capsuleCol.Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + move);
 
 	auto capsuleInfo = m_capsuleCol.GetCapsuleInfo();
 	auto capColInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
 
 	if (capColInfo.HitNum > 0)
 	{
-		m_capsuleCol.Hit();
-
 		for (int i = 0; i < capColInfo.HitNum; i++)
 		{
 			auto& poly = capColInfo.Dim[i];
@@ -134,6 +151,7 @@ void Player::Update()
 			if (dot < 0.0f)
 			{
 				move -= normal * dot;
+				m_capsuleCol.Hit();
 			}
 		}
 	}
@@ -156,7 +174,7 @@ void Player::Update()
 		{
 			hitCount++;
 
-			if (hitCount >= 2)
+			if (hitCount >= 1)
 			{
 				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,rayColInfo.HitPosition.y,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
 				m_isGround = true;
