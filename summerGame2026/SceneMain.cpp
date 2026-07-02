@@ -50,7 +50,7 @@ void SceneMain::Update()
 	auto& cameraManager = CameraManager::GetInstance();
 	cameraManager.Update();
 	cameraManager.Apply();
-	SetLightDirection(cameraManager.GetTransfrom().Forward().ChangeDxVector());
+	SetLightDirection(cameraManager.GetTransfrom().Forward());
 }
 
 void SceneMain::Draw()

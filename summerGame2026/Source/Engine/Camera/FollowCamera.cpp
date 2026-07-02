@@ -42,14 +42,42 @@ void FollowCamera::Update()
 	//オフセットを回転
 	Vector3 offset = rot.Rotate(kOffset);
 	//ポジションを適用
-	m_transform.SetPosition(m_target->position + offset);
+	auto player = GameObjectManager::GetInstance().Find<Player>();
+
+	
+	m_groundPlayerHeight = std::lerp(m_groundPlayerHeight, player->GetGroundPlayerPos().y, 0.06f);
+
+	if (m_groundPlayerHeight > player->GetGroundPlayerPos().y)
+	{
+		m_groundPlayerHeight = player->GetGroundPlayerPos().y;
+	}
+
+	m_pos = player->GetTransform()->position;
+	
+	if (m_pos.y > m_groundPlayerHeight)
+	{
+		m_pos.y = m_groundPlayerHeight;
+	}
+
+	m_transform.SetPosition(m_pos + offset);
 }
 
 void FollowCamera::Apply()
 {
+	auto player = GameObjectManager::GetInstance().Find<Player>();
+
+	m_targetPos = m_target->position;
+
+	if (m_targetPos.y > m_groundPlayerHeight)
+	{
+		m_targetPos.y = m_groundPlayerHeight;
+	}
+
+	Vector3 temp = {0.0f,200.0f,0.0f};
+
 	SetCameraPositionAndTarget_UpVecY(
-		m_transform.position.ChangeDxVector(),
-		m_target->position.ChangeDxVector()
+		m_transform.position,
+		m_targetPos + temp
 	);
 }
 

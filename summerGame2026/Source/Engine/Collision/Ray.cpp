@@ -31,7 +31,7 @@ void Ray::Update(const Vector3& pos)
 
 void Ray::Draw()
 {
-	DrawLine3D(m_info.start.ChangeDxVector(),m_info.end.ChangeDxVector(),0x00ff00);
+	DrawLine3D(m_info.start,m_info.end,0x00ff00);
 }
 
 RayInfo Ray::GetRayInfo() const

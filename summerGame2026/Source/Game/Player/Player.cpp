@@ -10,7 +10,7 @@ namespace
 
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
-	constexpr float kCapsuleHeightOffset = 5.0f;
+	constexpr float kCapsuleHeightOffset = 10.0f;
 	constexpr float kCapsuleRadius = 30.0f;
 	constexpr float kCapsuleHeight = 130.0f;
 
@@ -36,7 +36,8 @@ Player::Player(int playerModel, int stageModel) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_velocity({}),
-	m_isGround(false)
+	m_isGround(false),
+	m_groundPlayerPos({ 0.0f,0.0f,0.0f })
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
@@ -182,6 +183,7 @@ void Player::Update()
 				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,groundHeight,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
 				m_isGround = true;
 				m_velocity = { 0.0f,0.0f,0.0f };
+				m_groundPlayerPos = m_transform.GetPosition();
 			}
 		}
 	}
@@ -243,4 +245,9 @@ void Player::Draw()
 Transform* Player::GetTransform()
 {
 	return &m_transform;
+}
+
+Vector3 Player::GetGroundPlayerPos() const
+{
+	return m_groundPlayerPos;
 }

@@ -22,6 +22,10 @@ public:
 private:
 	Transform* m_target = nullptr;
 
+	Vector3 m_pos;
+	Vector3 m_targetPos;
+	float m_groundPlayerHeight;
+
 	float m_yaw;
 	float m_pitch;
 };

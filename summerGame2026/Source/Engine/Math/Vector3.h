@@ -55,12 +55,20 @@ struct Vector3
 	/// <param name="other">ベクトル</param>
 	/// <returns>外積の結果</returns>
 	Vector3 Cross(const Vector3& other)const;
-	/// <summary>
-	/// DxLibのVECTORに変換する
-	/// </summary>
-	/// <param name="other">Vector3</param>
-	/// <returns>DxLib::VECTOR</returns>
-	VECTOR ChangeDxVector()const;
+
+	//DXlibのVECTOR型に変換できるようにする
+	operator VECTOR() const
+	{
+		return VGet(x, y, z);
+	}
+	//DXlibのVECTOR型を代入できるようにする
+	Vector3& operator=(const VECTOR& v)
+	{
+		x = v.x;
+		y = v.y;
+		z = v.z;
+		return *this;
+	}
 
 	//ベクトルを反転する
 	Vector3 operator-()const;

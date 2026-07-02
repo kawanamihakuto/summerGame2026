@@ -23,7 +23,7 @@ void SphereCollider::ReUpdate(const Vector3& pos)
 
 void SphereCollider::Draw()
 {
-	DrawSphere3D(m_info.pos.ChangeDxVector(), m_info.radius, 8, 0x00ff00, 0x00ff00, false);
+	DrawSphere3D(m_info.pos, m_info.radius, 8, 0x00ff00, 0x00ff00, false);
 }
 
 void SphereCollider::Hit()

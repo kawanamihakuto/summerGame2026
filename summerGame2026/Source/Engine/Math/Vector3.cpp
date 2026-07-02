@@ -61,11 +61,6 @@ Vector3 Vector3::Cross(const Vector3& other) const
 			 x * other.y - y * other.x };
 }
 
-VECTOR Vector3::ChangeDxVector()const
-{
-	return VECTOR(x,y,z);
-}
-
 Vector3 Vector3::operator-() const
 {
 	return { -x,-y,-z };

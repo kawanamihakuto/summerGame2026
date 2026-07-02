@@ -23,6 +23,8 @@ public:
 	void Draw()override;
 
 	Transform* GetTransform();
+
+	Vector3 GetGroundPlayerPos()const;
 private:
 	int m_modelHandle;
 
@@ -36,5 +38,7 @@ private:
 	Vector3 m_velocity;
 
 	bool m_isGround;
+
+	Vector3 m_groundPlayerPos;
 };
 
