@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Core\ICollider.cpp" />
     <ClCompile Include="PlayerIdleState.cpp" />
     <ClCompile Include="PlayerStateBase.cpp" />
     <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
@@ -167,6 +168,8 @@
     <ClCompile Include="StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Collision\CollisionLayer.h" />
+    <ClInclude Include="Source\Engine\Core\ICollider.h" />
     <ClInclude Include="PlayerIdleState.h" />
     <ClInclude Include="PlayerStateBase.h" />
     <ClInclude Include="Source\Engine\Collision\Ray.h" />

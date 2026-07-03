@@ -242,6 +242,26 @@ void Player::Draw()
 #endif // _DEBUG
 }
 
+const Collider& Player::GetCollider() const
+{
+	return m_capsuleCol;
+}
+
+const Ray& Player::GetRay() const
+{
+	return m_ray[0];
+}
+
+CollisionLayer Player::GetCollisionLayer() const
+{
+	return CollisionLayers::kPlayer;
+}
+
+CollisionLayer Player::GetCollisionMask() const
+{
+	return CollisionLayers::kEnemy;
+}
+
 Transform* Player::GetTransform()
 {
 	return &m_transform;

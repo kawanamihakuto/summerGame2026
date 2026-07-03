@@ -1,5 +1,6 @@
 #pragma once
 #include"Engine/Core/GameObject.h"
+#include"Engine/Core/ICollider.h"
 #include"Engine/Collision/CapsuleCollider.h"
 #include"Engine/Collision/Ray.h"
 
@@ -11,7 +12,7 @@ namespace PlayerAnim
 };
 
 class AnimationController;
-class Player : public GameObject
+class Player : public GameObject , public ICollider
 {
 public:
 	Player(int playerModel,int stageModel);
@@ -21,6 +22,11 @@ public:
 	void End()override;
 	void Update()override;
 	void Draw()override;
+
+	const Collider& GetCollider()const override;
+	const Ray& GetRay()const override;
+	CollisionLayer GetCollisionLayer()const override;
+	CollisionLayer GetCollisionMask()const override;
 
 	Transform* GetTransform();
 

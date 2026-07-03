@@ -1,8 +1,9 @@
 #pragma once
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Math/Vector3.h"
+#include"Engine/Core/ICollider.h"
 
-class GameObject;
+class ICollider;
 class CollisionManager
 {
 public:
@@ -11,7 +12,7 @@ public:
 	/// オブジェクトの追加
 	/// </summary>
 	/// <param name="object"></param>
-	void AddObject(GameObject& object);
+	void AddObject(ICollider& object);
 	/// <summary>
 	/// オブジェクトのクリア
 	/// </summary>
@@ -19,7 +20,7 @@ public:
 	/// <summary>
 	/// 衝突のチェック
 	/// </summary>
-	void CheckCollisions();
+	void CheckAllCollisions();
 
 private:
 	/// <summary>
@@ -28,9 +29,9 @@ private:
 	/// <param name="obj1"></param>
 	/// <param name="obj2"></param>
 	/// <returns></returns>
-	bool CanCollide(GameObject& obj1, GameObject& obj2);
+	bool CanCollide(ICollider& obj1, ICollider& obj2);
 	//オブジェクトたち
-	std::vector<std::shared_ptr<GameObject>> m_objects;
+	std::vector<ICollider*> m_objects;
 
 public:
 	static MV1_COLL_RESULT_POLY_DIM CheckCollCapsuleAndPolygon(int handle,int frameIndex,const Vector3& start,const Vector3& end,float radius);
