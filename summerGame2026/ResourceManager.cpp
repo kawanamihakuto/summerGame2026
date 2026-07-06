@@ -2,14 +2,16 @@
 
 namespace
 {
-    const wchar_t* kPlayerModelPath = L"data/model/Player.mv1";
-    const wchar_t* kStageModelPath = L"data/test2.mv1";
+    const wchar_t* kPlayerModelPath = L"data/model/player/Player.mv1";
+    const wchar_t* kStageModelPath = L"data/model/stage/test2.mv1";
+	const wchar_t* kCrabEnemyModelPath = L"data/model/enemy/Crab.mv1";
 }
 
 
 ResourceManager::ResourceManager():
     m_playerModelHandle(-1),
-    m_stageModelHandle(-1)
+    m_stageModelHandle(-1),
+	m_crabEnemyModelHandle(-1)
 {
 }
 
@@ -32,6 +34,9 @@ void ResourceManager::LoadResources()
     //ステージ
     m_stageModelHandle = MV1LoadModel(kStageModelPath);
     m_modelHandleTable[ModelType::stage] = { m_stageModelHandle };
+	//カニ敵
+	m_crabEnemyModelHandle = MV1LoadModel(kCrabEnemyModelPath);
+	m_modelHandleTable[ModelType::crabEnemy] = { m_crabEnemyModelHandle };
 }
 
 void ResourceManager::ReleaseResources()

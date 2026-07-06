@@ -4,7 +4,8 @@
 enum class ModelType
 {
 	player,
-	stage
+	stage,
+	crabEnemy
 };
 
 class ResourceManager
@@ -34,5 +35,6 @@ private:
 
 	int m_playerModelHandle;
 	int m_stageModelHandle;
+	int m_crabEnemyModelHandle;
 };
 

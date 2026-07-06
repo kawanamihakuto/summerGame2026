@@ -1,27 +1,24 @@
 ﻿#pragma once
 #include"CameraBase.h"
 #include"Engine/Core/Precompiled.h"
+
+class CameraBase;
 class CameraManager
 {
-private:
-	CameraManager() = default;
-	// コピー禁止
-	CameraManager(const CameraManager&) = delete;
-	CameraManager& operator=(const CameraManager&) = delete;
 public:
+	CameraManager();
+	~CameraManager();
 
-	static CameraManager& GetInstance();
-
-	void Init(std::unique_ptr<CameraBase>camera);
+	void Init();
 	void Update();
+	void AddCamera(std::shared_ptr<CameraBase> camera);
 	void Apply();
-
-	void ChangeCamera(std::unique_ptr<CameraBase> newCamera);
 
 	Transform& GetTransfrom();
 	const Transform& GetTransfrom()const;
 
-private:
-	std::unique_ptr<CameraBase>m_currentCamera;
-};
+	void ChangeCamera(CameraName name);
 
+private:
+	std::vector<std::shared_ptr<CameraBase>> m_camrea;
+};

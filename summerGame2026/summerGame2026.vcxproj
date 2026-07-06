@@ -139,9 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Core\Character.cpp" />
+    <ClCompile Include="Source\Engine\Core\ICameraTarget.cpp" />
+    <ClCompile Include="Source\Game\Enemy\CrabEnemy.cpp" />
     <ClCompile Include="Source\Engine\Core\ICollider.cpp" />
-    <ClCompile Include="PlayerIdleState.cpp" />
-    <ClCompile Include="PlayerStateBase.cpp" />
+    <ClCompile Include="Source\Game\Player\PlayerIdleState.cpp" />
+    <ClCompile Include="Source\Game\Player\PlayerStateBase.cpp" />
     <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CollisionManager.cpp" />
@@ -165,13 +168,16 @@
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
     <ClCompile Include="Source\Engine\Collision\SphereCollider.cpp" />
     <ClCompile Include="Stage.cpp" />
-    <ClCompile Include="StateBase.cpp" />
+    <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Core\Character.h" />
+    <ClInclude Include="Source\Engine\Core\ICameraTarget.h" />
+    <ClInclude Include="Source\Game\Enemy\CrabEnemy.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionLayer.h" />
     <ClInclude Include="Source\Engine\Core\ICollider.h" />
-    <ClInclude Include="PlayerIdleState.h" />
-    <ClInclude Include="PlayerStateBase.h" />
+    <ClInclude Include="Source\Game\Player\PlayerIdleState.h" />
+    <ClInclude Include="Source\Game\Player\PlayerStateBase.h" />
     <ClInclude Include="Source\Engine\Collision\Ray.h" />
     <ClInclude Include="ResourceManager.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionManager.h" />
@@ -196,7 +202,7 @@
     <ClInclude Include="Source\Engine\Math\Transform.h" />
     <ClInclude Include="Source\Engine\Collision\SphereCollider.h" />
     <ClInclude Include="Stage.h" />
-    <ClInclude Include="StateBase.h" />
+    <ClInclude Include="Source\Engine\Core\StateBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,45 +1,78 @@
 #include "CameraManager.h"
 
-CameraManager& CameraManager::GetInstance()
+CameraManager::CameraManager()
 {
-	static CameraManager instance;
-	return instance;
 }
 
-void CameraManager::Init(std::unique_ptr<CameraBase>camera)
+CameraManager::~CameraManager()
 {
-	m_currentCamera = std::move(camera);
-	m_currentCamera->Init();
+}
+
+void CameraManager::Init()
+{
+	for (auto& c : m_camrea)
+	{
+		c->Init();
+	}
 }
 
 void CameraManager::Update()
 {
-	m_currentCamera->Update();
+	for (auto& c : m_camrea)
+	{
+		c->Update();
+	}
+}
+
+void CameraManager::AddCamera(std::shared_ptr<CameraBase> camera)
+{
+	m_camrea.push_back(camera);
 }
 
 void CameraManager::Apply()
 {
-	m_currentCamera->Apply();
-}
-
-void CameraManager::ChangeCamera(std::unique_ptr<CameraBase> newCamera)
-{
-	if (m_currentCamera != newCamera)
+	for (auto& c : m_camrea)
 	{
-		m_currentCamera->End();
-
-		m_currentCamera = std::move(newCamera);
-
-		m_currentCamera->Init();
+		if (c->GetIsApply())
+		{
+			c->Apply();
+		}
 	}
 }
 
 Transform& CameraManager::GetTransfrom()
 {
-	return m_currentCamera->GetTransform();
+	for (auto& c : m_camrea)
+	{
+		if (c->GetIsApply())
+		{
+			return c->GetTransform();
+		}
+	}
 }
 
 const Transform& CameraManager::GetTransfrom() const
 {
-	return m_currentCamera->GetTransform();
+	for (auto& c : m_camrea)
+	{
+		if (c->GetIsApply())
+		{
+			return c->GetTransform();
+		}
+	}
+}
+
+void CameraManager::ChangeCamera(CameraName name)
+{
+	for (auto& c : m_camrea)
+	{
+		if (c->GetCameraName() == name)
+		{
+			c->SetIsApply(true);
+		}
+		else
+		{
+			c->SetIsApply(false);
+		}
+	}
 }

@@ -1,5 +1,12 @@
 ﻿#pragma once
-#include "ENgine/Core/GameObject.h"
+#include "Engine/Core/GameObject.h"
+#include"Engine/Math/Transform.h"
+
+enum class CameraName
+{
+	follow,
+};
+
 class CameraBase : public GameObject
 {
 public:
@@ -15,6 +22,13 @@ public:
 	//DxLibへの反映
 	virtual void Apply()abstract;
 
+	//自身のCameraNameを返す
+	virtual CameraName GetCameraName()abstract;
+
+	void SetIsApply(bool is);
+
+	bool GetIsApply();
+
 	/// <summary>
 	/// カメラのTransformを取得する
 	/// </summary>
@@ -25,5 +39,8 @@ public:
 	/// </summary>
 	/// <returns>Transform</returns>
 	const Transform& GetTransform()const;
+
+protected:
+	bool m_isApply;
 };
 

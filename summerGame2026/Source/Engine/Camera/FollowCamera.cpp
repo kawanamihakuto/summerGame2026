@@ -7,14 +7,23 @@ namespace
 {
 	//カメラの後方オフセット
 	constexpr Vector3 kOffset = { 0.0f,100.0f,-500.0f };
+	constexpr Vector3 kCameraHeightOffset = { 0.0f,200.0f,0.0f };
 	constexpr float kRotateSpeed = 0.03f;
+}
+
+FollowCamera::FollowCamera(ICameraTarget* target):
+	m_yaw(0.0f),
+	m_pitch(0.0f),
+	m_groundPlayerHeight(0.0f),
+	m_pos({}),
+	m_targetPos({})
+{
+	SetTarget(target);
 }
 
 void FollowCamera::Init()
 {
-	auto player = GameObjectManager::GetInstance().Find<Player>();
-
-	SetTarget(player->GetTransform());
+	
 }
 
 void FollowCamera::End()
@@ -42,46 +51,38 @@ void FollowCamera::Update()
 	//オフセットを回転
 	Vector3 offset = rot.Rotate(kOffset);
 	//ポジションを適用
-	auto player = GameObjectManager::GetInstance().Find<Player>();
+	m_groundPlayerHeight = std::lerp(m_groundPlayerHeight, m_target->GetCameraAnchor().groundHeight, 0.06f);
 
-	
-	m_groundPlayerHeight = std::lerp(m_groundPlayerHeight, player->GetGroundPlayerPos().y, 0.06f);
-
-	if (m_groundPlayerHeight > player->GetGroundPlayerPos().y)
+	if (m_groundPlayerHeight > m_target->GetCameraAnchor().groundHeight)
 	{
-		m_groundPlayerHeight = player->GetGroundPlayerPos().y;
+		m_groundPlayerHeight = m_target->GetCameraAnchor().groundHeight;
 	}
 
-	m_pos = player->GetTransform()->position;
-	
-	if (m_pos.y > m_groundPlayerHeight)
-	{
-		m_pos.y = m_groundPlayerHeight;
-	}
+	m_pos.x = std::lerp(m_pos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
+	m_pos.y = std::lerp(m_pos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.03f);
+	m_pos.z = std::lerp(m_pos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);
 
 	m_transform.SetPosition(m_pos + offset);
+
+	m_targetPos.x = std::lerp(m_targetPos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
+	m_targetPos.y = std::lerp(m_targetPos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.06f);
+	m_targetPos.z = std::lerp(m_targetPos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);
 }
 
 void FollowCamera::Apply()
 {
-	auto player = GameObjectManager::GetInstance().Find<Player>();
-
-	m_targetPos = m_target->position;
-
-	if (m_targetPos.y > m_groundPlayerHeight)
-	{
-		m_targetPos.y = m_groundPlayerHeight;
-	}
-
-	Vector3 temp = {0.0f,200.0f,0.0f};
-
 	SetCameraPositionAndTarget_UpVecY(
 		m_transform.position,
-		m_targetPos + temp
+		m_targetPos+kCameraHeightOffset
 	);
 }
 
-void FollowCamera::SetTarget(Transform* target)
+void FollowCamera::SetTarget(ICameraTarget* target)
 {
 	m_target = target;
+}
+
+CameraName FollowCamera::GetCameraName()
+{
+	return CameraName::follow;
 }

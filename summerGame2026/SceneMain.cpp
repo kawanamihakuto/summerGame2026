@@ -7,6 +7,7 @@
 #include"Engine/Camera/FollowCamera.h"
 #include"Stage.h"
 #include"ResourceManager.h"
+#include"Game/Enemy/CrabEnemy.h"
 
 SceneMain::SceneMain():
 m_frameCount(0)
@@ -31,13 +32,17 @@ void SceneMain::Init()
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.LoadResources();
 
-	auto& gameObjectManager = GameObjectManager::GetInstance();
-	gameObjectManager.Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage)));
-	gameObjectManager.Init();
+	m_collisionManager = std::make_shared<CollisionManager>();
+	m_cameraManager = std::make_shared<CameraManager>();
 
-	auto& cameraManager = CameraManager::GetInstance();
-	cameraManager.Init(std::make_unique<FollowCamera>());
+	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
+	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage),*m_cameraManager));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage)));
+	
+	m_gameObjectManager->Init();
 
+	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
+	m_cameraManager->ChangeCamera(CameraName::follow);
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
 }
 
@@ -45,18 +50,17 @@ void SceneMain::Update()
 {
 	m_frameCount++;
 	InputManager::GetInstance().Update();
-	auto& gameObjectManager = GameObjectManager::GetInstance();
-	gameObjectManager.Update();
-	auto& cameraManager = CameraManager::GetInstance();
-	cameraManager.Update();
-	cameraManager.Apply();
-	SetLightDirection(cameraManager.GetTransfrom().Forward());
+
+	m_gameObjectManager->Update();
+	m_cameraManager->Update();
+	m_cameraManager->Apply();
+	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
 }
 
 void SceneMain::Draw()
 {
-	auto& gameObjectManager = GameObjectManager::GetInstance();
-	gameObjectManager.Draw();
+
+	m_gameObjectManager->Draw();
 
 	m_stage->Draw();
 
@@ -87,8 +91,7 @@ void SceneMain::DrawGrid()
 
 void SceneMain::End()
 {
-	auto& gameObjectManager = GameObjectManager::GetInstance();
-	gameObjectManager.Clear();
+	m_gameObjectManager->Clear();
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.ReleaseResources();
 }

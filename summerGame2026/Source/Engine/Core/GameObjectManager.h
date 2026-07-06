@@ -1,20 +1,14 @@
 ﻿#pragma once
 #include"Precompiled.h"
 
+class CollisionManager;
 class GameObject;
 class GameObjectManager
 {
-private:
-    GameObjectManager() = default;
-    // コピー禁止
-    GameObjectManager(const GameObjectManager&) = delete;
-    GameObjectManager& operator=(const GameObjectManager&) = delete;
 public:
-    /// <summary>
-    /// インスタンスを取得する関数
-    /// </summary>
-    /// <returns></returns>
-    static GameObjectManager& GetInstance();
+    GameObjectManager(CollisionManager& collisionManager);
+    ~GameObjectManager();
+
     /// <summary>
     /// オブジェクトを追加する
     /// </summary>
@@ -44,6 +38,9 @@ public:
 private:
     //オブジェクト配列
     std::vector<std::unique_ptr<GameObject>> m_objects;
+
+	//コリジョンマネージャー
+	CollisionManager& m_collisionManager;
 };
 
 

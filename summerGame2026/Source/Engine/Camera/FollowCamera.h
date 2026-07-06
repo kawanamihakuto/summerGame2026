@@ -1,9 +1,14 @@
 ﻿#pragma once
 #include "CameraBase.h"
 #include"Engine/Math/Transform.h"
+#include"Engine/Core/ICameraTarget.h"
+
+class Player;
 class FollowCamera : public CameraBase
 {
 public:
+	FollowCamera(ICameraTarget* target);
+
 	//初期化
 	void Init()override;
 	//終了時処理
@@ -17,10 +22,14 @@ public:
 	/// Followするターゲットをセットする
 	/// </summary>
 	/// <param name="target">ターゲットのTransformポインタ</param>
-	void SetTarget(Transform* target);
+	void SetTarget(ICameraTarget* target);
+
+	//自身のCameraNameを返す
+	CameraName GetCameraName()override;
 
 private:
-	Transform* m_target = nullptr;
+	ICameraTarget* m_target = nullptr;
+	Player* m_player = nullptr;
 
 	Vector3 m_pos;
 	Vector3 m_targetPos;

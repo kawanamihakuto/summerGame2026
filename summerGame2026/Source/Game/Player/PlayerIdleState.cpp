@@ -1,8 +1,8 @@
 #include "PlayerIdleState.h"
-#include"Game/Player/Player.h"
+#include"Player.h"
 void PlayerIdleState::Enter()
 {
-
+	
 }
 
 void PlayerIdleState::Update()

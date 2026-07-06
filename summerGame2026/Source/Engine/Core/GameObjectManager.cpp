@@ -1,14 +1,27 @@
 ﻿#include"GameObjectManager.h"
 #include"GameObject.h"
-GameObjectManager& GameObjectManager::GetInstance()
+#include"Engine/Collision/CollisionManager.h"
+#include"ICollider.h"
+
+GameObjectManager::GameObjectManager(CollisionManager& collisionManager):
+	m_collisionManager(collisionManager)
 {
-	static GameObjectManager instance;
-	return instance;
+}
+GameObjectManager::~GameObjectManager()
+{
 }
 void GameObjectManager::Add(std::unique_ptr<GameObject> object)
 {
 	//追加
 	m_objects.push_back(std::move(object));
+
+	//追加したオブジェクトがIColliderを継承しているか確認
+	GameObject* obj = m_objects.back().get();
+	if(auto collider = dynamic_cast<ICollider*>(obj))
+	{
+		//コリジョンマネージャーに追加
+		m_collisionManager.AddObject(*collider);
+	}
 }
 
 void GameObjectManager::Init()
