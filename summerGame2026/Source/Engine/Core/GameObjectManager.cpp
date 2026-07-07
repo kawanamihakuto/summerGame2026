@@ -1,7 +1,7 @@
 ﻿#include"GameObjectManager.h"
 #include"GameObject.h"
 #include"Engine/Collision/CollisionManager.h"
-#include"ICollider.h"
+#include"Engine/Collision/ICollider.h"
 
 GameObjectManager::GameObjectManager(CollisionManager& collisionManager):
 	m_collisionManager(collisionManager)

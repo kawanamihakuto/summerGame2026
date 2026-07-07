@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Math/Vector3.h"
-#include"Engine/Core/ICollider.h"
+#include"Engine/Collision/ICollider.h"
 
 class SphereCollider;
 class CapsuleCollider;

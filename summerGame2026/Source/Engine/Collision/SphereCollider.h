@@ -11,18 +11,12 @@ struct SphereInfo
 class SphereCollider : public Collider
 {
 public:
-	SphereCollider();
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	/// <param name="pos">ポジション</param>
-	/// <param name="radius">半径</param>
-	void Init(const Vector3& pos, float radius);
+	SphereCollider(const Vector3& pos, float radius);
 	/// <summary>
 	/// 更新
 	/// </summary>
 	/// <param name="pos">ポジション</param>
-	void Update(const Vector3& pos);
+	void Update(const Vector3& pos)override;
 	/// <summary>
 	/// デバッグ表示用更新
 	/// </summary>
@@ -31,7 +25,10 @@ public:
 	/// <summary>
 	/// デバッグ表示
 	/// </summary>
-	void Draw();
+	void Draw()override;
+
+	std::vector<WallHitInfo> CheckWallCollision(int stageModelHandle)override;
+
 	/// <summary>
 	/// 当たり判定デバッグ用
 	/// </summary>

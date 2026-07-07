@@ -9,8 +9,8 @@
 #include"ResourceManager.h"
 #include"Game/Enemy/CrabEnemy.h"
 
-SceneMain::SceneMain():
-m_frameCount(0)
+SceneMain::SceneMain() :
+	m_frameCount(0)
 {
 }
 
@@ -36,9 +36,10 @@ void SceneMain::Init()
 	m_cameraManager = std::make_shared<CameraManager>();
 
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
-	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage),*m_cameraManager));
+	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
-	
+	m_gameObjectManager->Find<CrabEnemy>()->SetTarget(m_gameObjectManager->Find<Player>());
+
 	m_gameObjectManager->Init();
 
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
@@ -69,7 +70,7 @@ void SceneMain::Draw()
 
 	m_stage->Draw();
 
-//	DrawGrid();
+	//	DrawGrid();
 	DrawString(0, 0, L"SceneMain", GetColor(255, 255, 255));
 	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
 }

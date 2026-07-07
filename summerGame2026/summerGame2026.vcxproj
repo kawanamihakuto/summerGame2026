@@ -139,10 +139,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\AI\ITarget.cpp" />
     <ClCompile Include="Source\Engine\Core\Character.cpp" />
-    <ClCompile Include="Source\Engine\Core\ICameraTarget.cpp" />
+    <ClCompile Include="Source\Engine\Camera\ICameraTarget.cpp" />
     <ClCompile Include="Source\Game\Enemy\CrabEnemy.cpp" />
-    <ClCompile Include="Source\Engine\Core\ICollider.cpp" />
+    <ClCompile Include="Source\Engine\Collision\ICollider.cpp" />
     <ClCompile Include="Source\Game\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Source\Game\Player\PlayerStateBase.cpp" />
     <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
@@ -171,11 +172,12 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\AI\ITarget.h" />
     <ClInclude Include="Source\Engine\Core\Character.h" />
-    <ClInclude Include="Source\Engine\Core\ICameraTarget.h" />
+    <ClInclude Include="Source\Engine\Camera\ICameraTarget.h" />
     <ClInclude Include="Source\Game\Enemy\CrabEnemy.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionLayer.h" />
-    <ClInclude Include="Source\Engine\Core\ICollider.h" />
+    <ClInclude Include="Source\Engine\Collision\ICollider.h" />
     <ClInclude Include="Source\Game\Player\PlayerIdleState.h" />
     <ClInclude Include="Source\Game\Player\PlayerStateBase.h" />
     <ClInclude Include="Source\Engine\Collision\Ray.h" />

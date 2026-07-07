@@ -1,9 +1,8 @@
 #pragma once
-#include "Engine/Core/GameObject.h"
-#include"Engine/Core/Character.h"
-#include "Engine/Core/ICollider.h"
-#include"Engine/Collision/SphereCollider.h"
-#include"Engine/Collision/Ray.h"
+#include "Engine/Core/Character.h"
+#include "Engine/Collision/ICollider.h"
+#include "Engine/Collision/Ray.h"
+#include"Engine/AI/ITarget.h"
 
 namespace CrabEnemyAnim
 {
@@ -22,6 +21,13 @@ public:
 	void End()override;
 	void Update()override;
 	void Draw()override;
+
+	void SetTarget(const ITarget* target);
+
+
+	//------------------------------
+	// IColliderの関数
+	//------------------------------
 	const Collider& GetCollider()const override;
 	const Ray& GetRay()const override;
 	CollisionLayer GetCollisionLayer()const override;
@@ -29,12 +35,12 @@ public:
 	void OnCollision(ICollider& other) override;
 
 private:
+	const ITarget* m_target = nullptr;
+
 	int m_modelHandle;
 	int m_stageModelHandle;
 
 	std::shared_ptr<AnimationController>m_animationController;
-
-	SphereCollider m_sphereCol;
 	std::vector<Ray> m_ray;
 };
 

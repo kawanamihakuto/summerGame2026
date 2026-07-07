@@ -1,12 +1,9 @@
 #include "CapsuleCollider.h"
+#include"Engine/Core/Precompiled.h"
 
-CapsuleCollider::CapsuleCollider():
+CapsuleCollider::CapsuleCollider(const Vector3& pos, float radius, float height):
 	m_info({}, {},0.0f,0.0f),
 	m_col(0x00ff00)
-{
-}
-
-void CapsuleCollider::Init(const Vector3& pos, float radius, float height)
 {
 	Vector3 position = pos;
 
@@ -38,6 +35,32 @@ void CapsuleCollider::Draw()
 {
 	DrawCapsule3D(m_info.start, m_info.end,
 		m_info.radius,8,m_col,m_col,false );
+}
+
+std::vector<WallHitInfo> CapsuleCollider::CheckWallCollision(int stageModelHandle)
+{
+	auto result = MV1CollCheck_Capsule(stageModelHandle, -1,
+		m_info.start, m_info.end, m_info.radius);
+	
+	std::vector<WallHitInfo> info;
+	if (result.HitNum > 0)
+	{
+		info.resize(result.HitNum);
+		for (int i = 0; i < result.HitNum; i++)
+		{
+			auto& poly = result.Dim[i];
+
+			Vector3 normal = { poly.Normal.x,poly.Normal.y,poly.Normal.z };
+			normal.Normalize();
+
+			info[i].isHit = true;
+			info[i].normal = normal;
+		}
+	}
+
+	MV1CollResultPolyDimTerminate(result);
+
+	return info;
 }
 
 void CapsuleCollider::Hit()

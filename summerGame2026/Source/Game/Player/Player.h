@@ -1,9 +1,9 @@
 #pragma once
 #include"Engine/Core/Character.h"
-#include"Engine/Core/ICollider.h"
-#include"Engine/Collision/CapsuleCollider.h"
+#include"Engine/Collision/ICollider.h"
 #include"Engine/Collision/Ray.h"
-#include"Engine/Core/ICameraTarget.h"
+#include"Engine/Camera/ICameraTarget.h"
+#include"Engine/AI/ITarget.h"
 namespace PlayerAnim
 {
 	const std::wstring idle = L"Armature|Idle";
@@ -13,7 +13,7 @@ namespace PlayerAnim
 
 class CameraManager;
 class AnimationController;
-class Player : public Character, public ICollider, public ICameraTarget
+class Player : public Character, public ICollider, public ICameraTarget , public ITarget
 {
 public:
 	Player(int playerModel, int stageModel,CameraManager& cameraManager);
@@ -24,25 +24,32 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	//-----------------------------
+	// IColliderの関数
+	//-----------------------------
 	const Collider& GetCollider()const override;
 	const Ray& GetRay()const override;
-
-	CameraAnchor GetCameraAnchor() const override;
-
 	CollisionLayer GetCollisionLayer()const override;
 	CollisionLayer GetCollisionMask()const override;
-
 	void OnCollision(ICollider& other) override;
 
-	Transform* GetTransform();
+	//-----------------------------
+	//ICameraTargetの関数
+	//-----------------------------
+	CameraAnchor GetCameraAnchor() const override;
 
+	//-----------------------------
+	//ITargetの関数
+	//-----------------------------
+	Vector3 GetPosition()const override;
+
+	Transform* GetTransform();
 	Vector3 GetGroundPlayerPos()const;
 	
-	void Gravity();
-	void WallCollision();
 	void GroundCollision();
 	void UpdateModel();
 
+	//落下時地上に戻る
 	void ResetPlayerPos(const Vector3& pos);
 
 private:
@@ -52,7 +59,6 @@ private:
 
 	std::shared_ptr<AnimationController>m_animationController;
 
-	CapsuleCollider m_capsuleCol;
 	std::vector<Ray> m_ray;
 
 	bool m_isGround;

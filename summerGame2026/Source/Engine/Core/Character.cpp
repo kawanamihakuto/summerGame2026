@@ -1,6 +1,11 @@
 #include "Character.h"
 #include"InputManager.h"
 #include"Engine/Camera/CameraManager.h"
+#include"Engine/Collision/Collider.h"
+namespace
+{
+	constexpr float kGravity = 1.0f;
+}
 
 Character::Character(CameraManager& cameraManager):
 	m_cameraManager(cameraManager)
@@ -47,5 +52,27 @@ void Character::UpdateRotate(Quaternion rotationOffset)
 		Quaternion rot = Quaternion::Slerp(m_transform.GetRotation(), targetRot, 0.15f);
 
 		m_transform.SetRotate(rot);
+	}
+}
+
+void Character::Gravity()
+{
+	m_velocity.y -=kGravity;
+}
+
+void Character::WallCollision(int stageModelHandle)
+{
+	auto hits = m_collider->CheckWallCollision(stageModelHandle);
+
+	for (const auto& hit : hits)
+	{
+		Vector3 vel = { m_velocity.x,0.0f,m_velocity.z };
+
+		float dot = vel.Dot(hit.normal);
+
+		if (dot < 0.0f)
+		{
+			m_velocity -= hit.normal * dot;
+		}
 	}
 }

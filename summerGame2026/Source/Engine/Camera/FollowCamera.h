@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include "CameraBase.h"
 #include"Engine/Math/Transform.h"
-#include"Engine/Core/ICameraTarget.h"
+#include"Engine/Camera/ICameraTarget.h"
 
 class Player;
 class FollowCamera : public CameraBase

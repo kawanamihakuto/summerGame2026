@@ -4,6 +4,7 @@
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Animation/AnimationController.h"
 #include"Engine/Collision/CollisionManager.h"
+#include"Engine/Collision/CapsuleCollider.h"
 namespace
 {
 	constexpr float kSpeed = 5.0f;
@@ -26,9 +27,6 @@ namespace
 
 	constexpr float kGroundRayHeightOffset = 20.0f;
 	constexpr float kGroundRayLength = 25.0f;
-
-	constexpr float kGravity = 1.0f;
-
 	constexpr float kJumpPowor = 20.0f;
 }
 
@@ -41,6 +39,8 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
+
+	m_collider = std::make_unique<CapsuleCollider>(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
 }
 
 Player::~Player()
@@ -50,8 +50,6 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_capsuleCol.Init(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
-
 	m_ray.resize(kGroundRayNum);
 
 	for (int i = 0; i < 4; i++)
@@ -110,9 +108,9 @@ void Player::Update()
 		}
 	}
 
-	m_capsuleCol.Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+	m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 
-	WallCollision();
+	WallCollision(m_stageModelHandle);
 
 	GroundCollision();
 
@@ -122,7 +120,7 @@ void Player::Update()
 
 	m_animationController->Update();
 
-	m_capsuleCol.ReUpdate(m_transform.GetPosition());
+//	m_capsuleCol.ReUpdate(m_transform.GetPosition());
 }
 
 void Player::Draw()
@@ -130,7 +128,7 @@ void Player::Draw()
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
-	m_capsuleCol.Draw();
+	m_collider->Draw();
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
 		m_ray[i].Draw();
@@ -167,7 +165,7 @@ void Player::Draw()
 
 const Collider& Player::GetCollider() const
 {
-	return m_capsuleCol;
+	return *m_collider;
 }
 
 const Ray& Player::GetRay() const
@@ -200,6 +198,11 @@ void Player::OnCollision(ICollider& other)
 	}
 }
 
+Vector3 Player::GetPosition() const
+{
+	return m_transform.position;
+}
+
 Transform* Player::GetTransform()
 {
 	return &m_transform;
@@ -208,40 +211,6 @@ Transform* Player::GetTransform()
 Vector3 Player::GetGroundPlayerPos() const
 {
 	return m_groundPlayerPos;
-}
-
-void Player::Gravity()
-{
-	m_velocity.y -= kGravity;
-}
-
-void Player::WallCollision()
-{
-	auto capsuleInfo = m_capsuleCol.GetCapsuleInfo();
-	auto capColInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
-
-	if (capColInfo.HitNum > 0)
-	{
-		for (int i = 0; i < capColInfo.HitNum; i++)
-		{
-			auto& poly = capColInfo.Dim[i];
-
-			Vector3 normal = { poly.Normal.x,poly.Normal.y,poly.Normal.z };
-			normal.Normalize();
-
-			Vector3 velocity = { m_velocity.x, 0.0f, m_velocity.z };
-			float dot = velocity.Dot(normal);
-
-			if (dot < 0.0f)
-			{
-				m_velocity -= normal * dot;
-				m_capsuleCol.Hit();
-			}
-		}
-	}
-
-	//解放
-	MV1CollResultPolyDimTerminate(capColInfo);
 }
 
 void Player::GroundCollision()
