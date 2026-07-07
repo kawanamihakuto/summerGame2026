@@ -21,6 +21,8 @@ public:
 	/// </summary>
 	virtual void Draw()abstract;
 
+	Transform GetTransform()const { return m_transform; };
+
 protected:
 	Transform m_transform;
 };

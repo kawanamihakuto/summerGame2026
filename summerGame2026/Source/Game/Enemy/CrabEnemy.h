@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/Core/GameObject.h"
+#include"Engine/Core/Character.h"
 #include "Engine/Core/ICollider.h"
 #include"Engine/Collision/SphereCollider.h"
 #include"Engine/Collision/Ray.h"
@@ -12,10 +13,10 @@ namespace CrabEnemyAnim
 };
 
 class AnimationController;
-class CrabEnemy : public GameObject, public ICollider
+class CrabEnemy : public Character, public ICollider
 {
 public:
-	CrabEnemy(int enemyModel, int stageModel);
+	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea);
 	~CrabEnemy();
 	void Init()override;
 	void End()override;
@@ -26,6 +27,7 @@ public:
 	CollisionLayer GetCollisionLayer()const override;
 	CollisionLayer GetCollisionMask()const override;
 	void OnCollision(ICollider& other) override;
+
 private:
 	int m_modelHandle;
 	int m_stageModelHandle;

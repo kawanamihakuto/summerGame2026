@@ -110,6 +110,8 @@ void Player::Update()
 		}
 	}
 
+	m_capsuleCol.Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+
 	WallCollision();
 
 	GroundCollision();
@@ -190,7 +192,12 @@ CollisionLayer Player::GetCollisionMask() const
 
 void Player::OnCollision(ICollider& other)
 {
-
+	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
+	{
+#ifdef _DEBUG
+		DrawFormatString(16,300,0xffffff,L"敵にヒット");
+#endif // _DEBUG
+	}
 }
 
 Transform* Player::GetTransform()
@@ -210,8 +217,6 @@ void Player::Gravity()
 
 void Player::WallCollision()
 {
-	m_capsuleCol.Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
-
 	auto capsuleInfo = m_capsuleCol.GetCapsuleInfo();
 	auto capColInfo = CollisionManager::CheckCollCapsuleAndPolygon(m_stageModelHandle, -1, capsuleInfo.start, capsuleInfo.end, kCapsuleRadius);
 

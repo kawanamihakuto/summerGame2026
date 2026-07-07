@@ -37,13 +37,16 @@ void SceneMain::Init()
 
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage),*m_cameraManager));
-	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage)));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	
 	m_gameObjectManager->Init();
 
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	m_cameraManager->ChangeCamera(CameraName::follow);
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
+
+	m_collisionManager->AddObject(*m_gameObjectManager->Find<Player>());
+	m_collisionManager->AddObject(*m_gameObjectManager->Find<CrabEnemy>());
 }
 
 void SceneMain::Update()
@@ -52,6 +55,9 @@ void SceneMain::Update()
 	InputManager::GetInstance().Update();
 
 	m_gameObjectManager->Update();
+
+	m_collisionManager->CheckAllCollisions();
+
 	m_cameraManager->Update();
 	m_cameraManager->Apply();
 	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
@@ -59,7 +65,6 @@ void SceneMain::Update()
 
 void SceneMain::Draw()
 {
-
 	m_gameObjectManager->Draw();
 
 	m_stage->Draw();
@@ -92,6 +97,7 @@ void SceneMain::DrawGrid()
 void SceneMain::End()
 {
 	m_gameObjectManager->Clear();
+	m_collisionManager->ClearObjects();
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.ReleaseResources();
 }
