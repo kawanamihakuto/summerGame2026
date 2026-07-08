@@ -139,6 +139,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CaptureManager.cpp" />
+    <ClCompile Include="Source\Engine\Core\PhysicsObject.cpp" />
+    <ClCompile Include="Source\Game\Item\Hat.cpp" />
     <ClCompile Include="Source\Engine\Input\IControllable.cpp" />
     <ClCompile Include="Source\Engine\Input\PlayerController.cpp" />
     <ClCompile Include="Source\Engine\AI\ITarget.cpp" />
@@ -174,6 +177,9 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CaptureManager.h" />
+    <ClInclude Include="Source\Engine\Core\PhysicsObject.h" />
+    <ClInclude Include="Source\Game\Item\Hat.h" />
     <ClInclude Include="Source\Engine\Input\IControllable.h" />
     <ClInclude Include="Source\Engine\Input\PlayerController.h" />
     <ClInclude Include="Source\Engine\AI\ITarget.h" />

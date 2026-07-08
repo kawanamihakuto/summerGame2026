@@ -2,6 +2,7 @@
 #include"CameraBase.h"
 #include"Engine/Core/Precompiled.h"
 
+class FollowCamera;
 class CameraBase;
 class CameraManager
 {
@@ -18,6 +19,8 @@ public:
 	const Transform& GetTransfrom()const;
 
 	void ChangeCamera(CameraName name);
+
+	FollowCamera& GetFollowCamera()const;
 
 private:
 	std::vector<std::shared_ptr<CameraBase>> m_camrea;

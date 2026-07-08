@@ -27,7 +27,6 @@ namespace
 		{-kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
 	};
 
-
 	constexpr float kJumpPower = 20.0f;
 }
 

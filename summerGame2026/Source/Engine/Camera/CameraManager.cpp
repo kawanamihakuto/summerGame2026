@@ -1,5 +1,5 @@
 #include "CameraManager.h"
-
+#include"FollowCamera.h"
 CameraManager::CameraManager()
 {
 }
@@ -73,6 +73,17 @@ void CameraManager::ChangeCamera(CameraName name)
 		else
 		{
 			c->SetIsApply(false);
+		}
+	}
+}
+
+FollowCamera& CameraManager::GetFollowCamera()const
+{
+	for (auto& c : m_camrea)
+	{
+		if (auto cast = dynamic_cast<FollowCamera*>(c.get()))
+		{
+			return *cast;
 		}
 	}
 }
