@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\Input\IControllable.cpp" />
+    <ClCompile Include="Source\Engine\Input\PlayerController.cpp" />
     <ClCompile Include="Source\Engine\AI\ITarget.cpp" />
     <ClCompile Include="Source\Engine\Core\Character.cpp" />
     <ClCompile Include="Source\Engine\Camera\ICameraTarget.cpp" />
@@ -159,7 +161,7 @@
     <ClCompile Include="Source\Engine\Core\GameObjectManager.cpp" />
     <ClCompile Include="Source\Engine\Core\GameObject.cpp" />
     <ClCompile Include="Source\Game\Player\Player.cpp" />
-    <ClCompile Include="Source\Engine\Core\InputManager.cpp" />
+    <ClCompile Include="Source\Engine\Input\InputManager.cpp" />
     <ClCompile Include="Source\Engine\Math\Matrix4x4.cpp" />
     <ClCompile Include="Source\Engine\Core\Application.cpp" />
     <ClCompile Include="Source\Engine\Core\main.cpp" />
@@ -172,6 +174,8 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Engine\Input\IControllable.h" />
+    <ClInclude Include="Source\Engine\Input\PlayerController.h" />
     <ClInclude Include="Source\Engine\AI\ITarget.h" />
     <ClInclude Include="Source\Engine\Core\Character.h" />
     <ClInclude Include="Source\Engine\Camera\ICameraTarget.h" />
@@ -193,7 +197,7 @@
     <ClInclude Include="Source\Engine\Core\GameObjectManager.h" />
     <ClInclude Include="Source\Engine\Core\GameObject.h" />
     <ClInclude Include="Source\Game\Player\Player.h" />
-    <ClInclude Include="Source\Engine\Core\InputManager.h" />
+    <ClInclude Include="Source\Engine\Input\InputManager.h" />
     <ClInclude Include="Source\Engine\Math\Matrix4x4.h" />
     <ClInclude Include="Source\Engine\Core\Precompiled.h" />
     <ClInclude Include="Source\Engine\Core\Config.h" />

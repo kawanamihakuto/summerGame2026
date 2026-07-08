@@ -4,6 +4,7 @@
 #include"Engine/Collision/Ray.h"
 #include"Engine/Camera/ICameraTarget.h"
 #include"Engine/AI/ITarget.h"
+#include"Engine/Input/IControllable.h"
 namespace PlayerAnim
 {
 	const std::wstring idle = L"Armature|Idle";
@@ -13,7 +14,7 @@ namespace PlayerAnim
 
 class CameraManager;
 class AnimationController;
-class Player : public Character, public ICollider, public ICameraTarget , public ITarget
+class Player : public Character, public ICollider, public ICameraTarget , public ITarget ,public IControllable
 {
 public:
 	Player(int playerModel, int stageModel,CameraManager& cameraManager);
@@ -43,10 +44,15 @@ public:
 	//-----------------------------
 	Vector3 GetPosition()const override;
 
+	//----------------------------
+	//IControllableの関数
+	//----------------------------
+	void Move(const Vector2& input)override;
+	void Jump()override;
+
 	Transform* GetTransform();
 	Vector3 GetGroundPlayerPos()const;
 	
-	void GroundCollision();
 	void UpdateModel();
 
 	//落下時地上に戻る
@@ -58,10 +64,6 @@ private:
 	int m_stageModelHandle;
 
 	std::shared_ptr<AnimationController>m_animationController;
-
-	std::vector<Ray> m_ray;
-
-	bool m_isGround;
 
 	Vector3 m_groundPlayerPos;
 };

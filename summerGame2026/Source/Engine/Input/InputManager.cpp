@@ -31,9 +31,9 @@ InputManager::InputManager() :
 	m_inputTable["B"] = { {PeripheralType::keyBoard,KEY_INPUT_X},
 							{PeripheralType::pad1,PAD_INPUT_B} };
 	m_inputTable["X"] = { {PeripheralType::keyBoard,KEY_INPUT_C},
-							{PeripheralType::pad1,PAD_INPUT_X} };
+							{PeripheralType::pad1,PAD_INPUT_C} };
 	m_inputTable["Y"] = { {PeripheralType::keyBoard,KEY_INPUT_V},
-							{PeripheralType::pad1,PAD_INPUT_Y} };
+							{PeripheralType::pad1,PAD_INPUT_X} };
 	m_inputTable["START"] = { {PeripheralType::keyBoard,KEY_INPUT_RETURN},
 							{PeripheralType::pad1,PAD_INPUT_R} };
 	m_inputTable["SELECT"] = { {PeripheralType::keyBoard,KEY_INPUT_Z},

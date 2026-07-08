@@ -7,19 +7,19 @@ struct RayInfo
 	Vector3 end;
 	Vector3 direction;
 	float length;
+	Vector3 offset;
+};
+
+struct HitInfo
+{
+	bool isHit = false;
+	Vector3 hitPosition = {};
 };
 
 class Ray
 {
 public:
-	Ray();
-	/// <summary>
-	/// 初期化
-	/// </summary>
-	/// <param name="pos">ポジション</param>
-	/// <param name="dir">伸ばす方向</param>
-	/// <param name="length">長さ</param>
-	void Init(const Vector3& pos, const Vector3& dir,float length);
+	Ray(const Vector3& pos, const Vector3& dir, float length, const Vector3& offset);
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -35,6 +35,8 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	RayInfo GetRayInfo()const;
+
+	HitInfo CheckModelCollision(int modelHandle);
 
 private:
 	RayInfo m_info;

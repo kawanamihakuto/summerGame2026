@@ -1,7 +1,7 @@
 #include "SceneMain.h"
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
-#include"Engine/Core/InputManager.h"
+#include"Engine/Input/InputManager.h"
 #include"Game/Player/Player.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
@@ -45,17 +45,35 @@ void SceneMain::Init()
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	m_cameraManager->ChangeCamera(CameraName::follow);
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
+	int test = MV1SetupCollInfo(resouceManager.GetModel(ModelType::stage), -1, 8, 8, 8);
 
 	m_collisionManager->AddObject(*m_gameObjectManager->Find<Player>());
 	m_collisionManager->AddObject(*m_gameObjectManager->Find<CrabEnemy>());
+
+	m_playerController = std::make_shared<PlayerController>();
+	m_playerController->SetTarget(m_gameObjectManager->Find<Player>());
 }
 
 void SceneMain::Update()
 {
 	m_frameCount++;
-	InputManager::GetInstance().Update();
+	auto& input = InputManager::GetInstance();
+	input.Update();
+
+	if (input.IsTriggered("X"))
+	{
+		m_playerController->SetTarget(m_gameObjectManager->Find<CrabEnemy>());
+	}
+
+	if (input.IsTriggered("Y"))
+	{
+		m_playerController->SetTarget(m_gameObjectManager->Find<Player>());
+	}
+
+	m_playerController->Update();
 
 	m_gameObjectManager->Update();
+
 
 	m_collisionManager->CheckAllCollisions();
 

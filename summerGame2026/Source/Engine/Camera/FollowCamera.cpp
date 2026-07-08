@@ -1,5 +1,5 @@
 ﻿#include "FollowCamera.h"
-#include"Engine/Core/InputManager.h"
+#include"Engine/Input/InputManager.h"
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
 #include"Game/Player/Player.h"

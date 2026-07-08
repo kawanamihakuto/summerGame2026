@@ -1,6 +1,6 @@
 ﻿#include "Player.h"
 #include"Engine/Core/PreCompiled.h"
-#include"Engine/Core/InputManager.h"
+#include"Engine/Input/InputManager.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Animation/AnimationController.h"
 #include"Engine/Collision/CollisionManager.h"
@@ -16,31 +16,37 @@ namespace
 	constexpr float kCapsuleHeight = 130.0f;
 
 	constexpr int kGroundRayNum = 4;
-
+	constexpr float kGroundRayHeightOffset = 20.0f;
+	constexpr float kGroundRayWidthOffset = 15.0f;
+	constexpr float kGroundRayLength = 25.0f;
 	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
 	{
-		{0.0f,0.0f,15.0f},
-		{0.0f,0.0f,-15.0f},
-		{15.0f,0.0f,0.0f},
-		{-15.0f,0.0f,0.0f},
+		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},
+		{0.0f,kGroundRayHeightOffset,-kGroundRayWidthOffset},
+		{kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
+		{-kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
 	};
 
-	constexpr float kGroundRayHeightOffset = 20.0f;
-	constexpr float kGroundRayLength = 25.0f;
-	constexpr float kJumpPowor = 20.0f;
+
+	constexpr float kJumpPower = 20.0f;
 }
 
 Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	Character(cameraManager),
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
-	m_isGround(false),
 	m_groundPlayerPos({})
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
 
 	m_collider = std::make_unique<CapsuleCollider>(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
+
+	m_ray.resize(kGroundRayNum);
+	for (int i = 0; i < kGroundRayNum; i++)
+	{
+		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayOffsets[i]);
+	}
 }
 
 Player::~Player()
@@ -50,13 +56,6 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_ray.resize(kGroundRayNum);
-
-	for (int i = 0; i < 4; i++)
-	{
-		m_ray[i].Init(m_transform.GetPosition() + Vector3{ 0.0f,kGroundRayHeightOffset,0.0f } + kGroundRayOffsets[i], { 0.0f,-1.0f,0.0f }, kGroundRayLength);
-	}
-
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 
 	m_animationController->AddAnimation(PlayerAnim::idle);
@@ -64,8 +63,6 @@ void Player::Init()
 	m_animationController->AddAnimation(PlayerAnim::jump);
 
 	m_animationController->Play(PlayerAnim::idle);
-
-	int test = MV1SetupCollInfo(m_stageModelHandle, -1, 8, 8, 8);
 }
 
 void Player::End()
@@ -74,7 +71,6 @@ void Player::End()
 
 void Player::Update()
 {
-	InputMove(kSpeed);
 	UpdateMove();
 	UpdateRotate(kModelRotationOffset);
 
@@ -97,22 +93,21 @@ void Player::Update()
 
 	Gravity();
 
-	auto& input = InputManager::GetInstance();
-	if (input.IsTriggered("A"))
-	{
-		if (m_isGround)
-		{
-			m_velocity.y = kJumpPowor;
-			m_isGround = false;
-			m_animationController->Play(PlayerAnim::jump,false);
-		}
-	}
-
 	m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 
 	WallCollision(m_stageModelHandle);
 
-	GroundCollision();
+	for (auto& ray : m_ray)
+	{
+		ray->Update(m_transform.GetPosition() + m_velocity);
+	}
+	
+	GroundCollision(m_stageModelHandle);
+
+	if (!m_isGround)
+	{
+		m_transform.Translate(m_velocity);
+	}
 
 	ResetPlayerPos({0.0f,0.0f,0.0f});
 
@@ -131,8 +126,12 @@ void Player::Draw()
 	m_collider->Draw();
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i].Draw();
+		m_ray[i]->Draw();
 	}
+
+	DrawFormatString(16,96,0xffffff,L"isGround : %d",m_isGround);
+
+	/*
 	DrawFormatString(16, 32, 0xffffff, L"pos : %f,%f,%f", m_transform.position.x, m_transform.position.y, m_transform.position.z);
 	DrawFormatString(16, 48, 0xffffff, L"scale : %f,%f,%f", m_transform.scale.x, m_transform.scale.y, m_transform.scale.z);
 
@@ -160,6 +159,7 @@ void Player::Draw()
 		m.m00, m.m01, m.m02,
 		m.m10, m.m11, m.m12,
 		m.m20, m.m21, m.m22);
+		*/
 #endif // _DEBUG
 }
 
@@ -170,7 +170,7 @@ const Collider& Player::GetCollider() const
 
 const Ray& Player::GetRay() const
 {
-	return m_ray[0];
+	return *m_ray[0];
 }
 
 CameraAnchor Player::GetCameraAnchor() const
@@ -203,6 +203,29 @@ Vector3 Player::GetPosition() const
 	return m_transform.position;
 }
 
+void Player::Move(const Vector2& input)
+{	
+	auto& camera = m_cameraManager.GetTransfrom();
+	//移動ベクトル生成
+	m_moveInput = Vector3::Zero();
+	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * input.x;
+	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
+	m_moveInput.Normalize();
+	m_moveInput.x *= kSpeed;
+	m_moveInput.z *= kSpeed;
+	m_moveInput.y = 0.0f;
+}
+
+void Player::Jump()
+{
+	if (m_isGround)
+	{
+		m_velocity.y = kJumpPower;
+		m_isGround = false;
+		m_animationController->Play(PlayerAnim::jump, false);
+	}
+}
+
 Transform* Player::GetTransform()
 {
 	return &m_transform;
@@ -211,40 +234,6 @@ Transform* Player::GetTransform()
 Vector3 Player::GetGroundPlayerPos() const
 {
 	return m_groundPlayerPos;
-}
-
-void Player::GroundCollision()
-{
-	float groundHeight = -10000.0f;
-	m_isGround = false;
-
-	for (int i = 0; i < kGroundRayNum; i++)
-	{
-		m_ray[i].Update(m_transform.GetPosition() + m_velocity + Vector3{ 0.0f,kGroundRayHeightOffset,0.0f } + kGroundRayOffsets[i]);
-		auto rayInfo = m_ray[i].GetRayInfo();
-		auto rayColInfo = CollisionManager::CheckCollRayAndPolygon(m_stageModelHandle, -1, rayInfo.start, rayInfo.end);
-
-		if (rayColInfo.HitFlag)
-		{
-			if (groundHeight < rayColInfo.HitPosition.y)
-			{
-				groundHeight = rayColInfo.HitPosition.y;
-			}
-
-			if (groundHeight > -10000.0f)
-			{
-				m_transform.SetPosition(Vector3{ rayColInfo.HitPosition.x,groundHeight,rayColInfo.HitPosition.z } + -kGroundRayOffsets[i]);
-				m_isGround = true;
-				m_velocity = { 0.0f,0.0f,0.0f };
-				m_groundPlayerPos = m_transform.GetPosition();
-			}
-		}
-	}
-
-	if (!m_isGround)
-	{
-		m_transform.Translate(m_velocity);
-	}
 }
 
 void Player::UpdateModel()

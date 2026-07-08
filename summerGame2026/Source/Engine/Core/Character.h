@@ -4,6 +4,7 @@
 
 class CameraManager;
 class Collider;
+class Ray;
 class Character : public GameObject
 {
 public:
@@ -15,6 +16,8 @@ public:
 
 	void WallCollision(int stageModelHandle);
 
+	void GroundCollision(int stageModelHandle);
+
 protected:
 	Vector3 m_velocity{};
 
@@ -23,4 +26,8 @@ protected:
 	CameraManager& m_cameraManager;
 
 	std::unique_ptr<Collider> m_collider;
+
+	std::vector<std::unique_ptr<Ray>> m_ray;
+
+	bool m_isGround;
 };

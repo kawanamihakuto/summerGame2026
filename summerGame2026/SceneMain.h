@@ -2,7 +2,7 @@
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Core/GameObjectManager.h"
 #include"Engine/Collision/CollisionManager.h"
-
+#include"Engine/Input/PlayerController.h"
 class CameraManager;
 class Stage;
 class SceneMain
@@ -28,5 +28,7 @@ private:
 	std::shared_ptr<CollisionManager> m_collisionManager;
 
 	std::shared_ptr<CameraManager> m_cameraManager;
+
+	std::shared_ptr<PlayerController> m_playerController;
 };
 

@@ -3,7 +3,7 @@
 #include "Engine/Collision/ICollider.h"
 #include "Engine/Collision/Ray.h"
 #include"Engine/AI/ITarget.h"
-
+#include"Engine/Input/IControllable.h"
 namespace CrabEnemyAnim
 {
 	const std::wstring idle = L"MonsterArmature|Idle";
@@ -12,7 +12,7 @@ namespace CrabEnemyAnim
 };
 
 class AnimationController;
-class CrabEnemy : public Character, public ICollider
+class CrabEnemy : public Character, public ICollider,public IControllable
 {
 public:
 	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea);
@@ -24,7 +24,6 @@ public:
 
 	void SetTarget(const ITarget* target);
 
-
 	//------------------------------
 	// IColliderの関数
 	//------------------------------
@@ -34,6 +33,12 @@ public:
 	CollisionLayer GetCollisionMask()const override;
 	void OnCollision(ICollider& other) override;
 
+	//------------------------------
+	// IControllableの関数
+	//------------------------------
+	void Move(const Vector2& input)override;
+	void Jump()override;
+
 private:
 	const ITarget* m_target = nullptr;
 
@@ -41,6 +46,5 @@ private:
 	int m_stageModelHandle;
 
 	std::shared_ptr<AnimationController>m_animationController;
-	std::vector<Ray> m_ray;
 };
 
