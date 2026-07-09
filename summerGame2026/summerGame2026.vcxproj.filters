@@ -120,7 +120,10 @@
     <ClCompile Include="Source\Engine\Core\PhysicsObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="CaptureManager.cpp">
+    <ClCompile Include="Source\Engine\Capture\CaptureManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Capture\ICaptureTarget.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -236,7 +239,10 @@
     <ClInclude Include="Source\Engine\Core\PhysicsObject.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="CaptureManager.h">
+    <ClInclude Include="Source\Engine\Capture\CaptureManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Capture\ICaptureTarget.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

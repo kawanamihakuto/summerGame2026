@@ -188,3 +188,8 @@ void CrabEnemy::Jump()
 		m_animationController->Play(CrabEnemyAnim::jump, false);
 	}
 }
+
+CameraAnchor CrabEnemy::GetCameraAnchor() const
+{
+	return CameraAnchor();
+}

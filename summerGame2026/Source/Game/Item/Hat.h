@@ -1,10 +1,12 @@
 #pragma once
 #include "Engine/Core/PhysicsObject.h"
 #include"Engine/Collision/ICollider.h"
-class Hat : public PhysicsObject , public ICollider
+
+class ICaptureTarget;
+class Hat : public PhysicsObject, public ICollider
 {
 public:
-	Hat(const Vector3& pos,const Vector3& dir);
+	Hat(int modelHandle, int stageModelHandle,ICaptureTarget& target);
 	~Hat();
 
 	void Init()override;
@@ -22,6 +24,14 @@ public:
 	void OnCollision(ICollider& other) override;
 
 private:
+	int m_modelHandle;
+	int m_stageModelHandle;
 
 	Vector3 m_direction;
+
+	Vector3 m_targetPos;
+
+	Vector3 m_playerPos;
+
+	ICaptureTarget& m_target;
 };

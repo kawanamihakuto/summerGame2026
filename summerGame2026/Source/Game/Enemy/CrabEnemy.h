@@ -4,6 +4,7 @@
 #include "Engine/Collision/Ray.h"
 #include"Engine/AI/ITarget.h"
 #include"Engine/Input/IControllable.h"
+#include"Engine/Capture/ICaptureTarget.h"
 namespace CrabEnemyAnim
 {
 	const std::wstring idle = L"MonsterArmature|Idle";
@@ -12,7 +13,7 @@ namespace CrabEnemyAnim
 };
 
 class AnimationController;
-class CrabEnemy : public Character, public ICollider,public IControllable
+class CrabEnemy : public Character, public ICollider,public ICaptureTarget
 {
 public:
 	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea);
@@ -38,6 +39,11 @@ public:
 	//------------------------------
 	void Move(const Vector2& input)override;
 	void Jump()override;
+
+	//-----------------------------
+	//ICameraTargetの関数
+	//-----------------------------
+	CameraAnchor GetCameraAnchor() const override;
 
 private:
 	const ITarget* m_target = nullptr;

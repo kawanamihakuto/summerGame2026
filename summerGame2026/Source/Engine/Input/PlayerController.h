@@ -1,10 +1,11 @@
 #pragma once
 #include"IControllable.h"
+#include"Game/Item/Hat.h"
 
 class PlayerController
 {
 public:
-	PlayerController();
+	PlayerController(Hat& hat);
 	~PlayerController();
 
 	void Update();
@@ -13,5 +14,6 @@ public:
 
 private:
 	IControllable* m_target = nullptr;
+	Hat& m_hat;
 };
 

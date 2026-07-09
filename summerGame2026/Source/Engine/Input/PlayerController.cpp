@@ -1,6 +1,7 @@
 #include "PlayerController.h"
 #include"InputManager.h"
-PlayerController::PlayerController()
+PlayerController::PlayerController(Hat& hat):
+	m_hat(hat)
 {
 }
 

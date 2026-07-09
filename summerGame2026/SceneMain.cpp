@@ -39,6 +39,7 @@ void SceneMain::Init()
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	m_gameObjectManager->Find<CrabEnemy>()->SetTarget(m_gameObjectManager->Find<Player>());
+	m_gameObjectManager->Add(std::make_unique<Hat>());
 
 	m_gameObjectManager->Init();
 

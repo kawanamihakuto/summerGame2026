@@ -5,6 +5,8 @@
 #include"Engine/Camera/ICameraTarget.h"
 #include"Engine/AI/ITarget.h"
 #include"Engine/Input/IControllable.h"
+#include"Engine/Capture/ICaptureTarget.h"
+
 namespace PlayerAnim
 {
 	const std::wstring idle = L"Armature|Idle";
@@ -14,7 +16,7 @@ namespace PlayerAnim
 
 class CameraManager;
 class AnimationController;
-class Player : public Character, public ICollider, public ICameraTarget , public ITarget ,public IControllable
+class Player : public Character, public ICollider, public ITarget ,public ICaptureTarget
 {
 public:
 	Player(int playerModel, int stageModel,CameraManager& cameraManager);
@@ -49,6 +51,12 @@ public:
 	//----------------------------
 	void Move(const Vector2& input)override;
 	void Jump()override;
+
+	//----------------------------
+	//ICaptureTargetの関数
+	//----------------------------
+	Vector3 GetPosition()override;
+	
 
 	Transform* GetTransform();
 	Vector3 GetGroundPlayerPos()const;
