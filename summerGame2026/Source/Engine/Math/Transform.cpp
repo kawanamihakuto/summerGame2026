@@ -60,3 +60,12 @@ void Transform::SetScale(const Vector3& s)
 {
     scale = s;
 }
+
+Transform Transform::FromMatrix(const Matrix4x4& mat)
+{
+    Transform t;
+    t.SetPosition(mat.GetTranslation());
+    t.SetRotate(Quaternion::FromMatrix(mat.GetRotationMatrix()));
+    t.SetScale(mat.GetScale());
+    return t;
+}

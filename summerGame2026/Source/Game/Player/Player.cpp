@@ -28,6 +28,8 @@ namespace
 	};
 
 	constexpr float kJumpPower = 20.0f;
+
+	constexpr const wchar_t* kHeadFrameName = L"mixamorig:HeadTop_End";
 }
 
 Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
@@ -46,6 +48,8 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	{
 		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayOffsets[i]);
 	}
+
+	m_headFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
 }
 
 Player::~Player()
@@ -174,7 +178,7 @@ const Ray& Player::GetRay() const
 
 CameraAnchor Player::GetCameraAnchor() const
 {
-	return CameraAnchor{ m_transform, m_groundPlayerPos.y };
+	return CameraAnchor{m_transform};
 }
 
 CollisionLayer Player::GetCollisionLayer() const
@@ -200,6 +204,17 @@ void Player::OnCollision(ICollider& other)
 Vector3 Player::GetPosition() const
 {
 	return m_transform.position;
+}
+
+Matrix4x4 Player::GetHatMatrix() const
+{
+	Matrix4x4 mat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headFrameIndex);
+
+	Matrix4x4 offsetMat = Matrix4x4::Translate({ 0.0f,-10.0f,-10.0f });
+
+	mat*= offsetMat;
+
+	return mat;
 }
 
 void Player::Move(const Vector2& input)

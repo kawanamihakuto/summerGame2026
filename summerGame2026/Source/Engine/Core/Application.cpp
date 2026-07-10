@@ -29,7 +29,7 @@ bool Application::Init()
 	ChangeWindowMode(true);
 #else
 	//フルスクリーン
-	ChangeWindowMode(false);
+	ChangeWindowMode(true);
 #endif // _DEBUG
 
 	//ウィンドウのタイトル設定

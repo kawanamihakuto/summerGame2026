@@ -19,7 +19,10 @@ void SphereCollider::ReUpdate(const Vector3& pos)
 
 void SphereCollider::Draw()
 {
-	DrawSphere3D(m_info.pos, m_info.radius, 8, 0x00ff00, 0x00ff00, false);
+	if (m_isActive)
+	{
+		DrawSphere3D(m_info.pos, m_info.radius, 8, 0x00ff00, 0x00ff00, false);
+	}
 }
 
 std::vector<WallHitInfo> SphereCollider::CheckWallCollision(int stageModelHandle)

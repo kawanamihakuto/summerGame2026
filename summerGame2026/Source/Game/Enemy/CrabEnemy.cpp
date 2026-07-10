@@ -25,6 +25,8 @@ namespace
 	};
 
 	constexpr float kJumpPower = 10.0f;
+
+	constexpr const wchar_t* kHeadFrameName = L"Head3"; 
 }
 
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera) :
@@ -40,6 +42,8 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera) :
 	{
 		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayOffsets[i]);
 	}
+
+	m_HeadFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
 }
 
 CrabEnemy::~CrabEnemy()
@@ -92,6 +96,23 @@ void CrabEnemy::Update()
 	}
 	else
 	{
+		Vector3 dir = m_moveInput;
+		if (dir.Length() > 0.0f)
+		{
+			if (m_isGround)
+			{
+				m_animationController->Play(CrabEnemyAnim::walk);
+			}
+		}
+
+		if (m_moveInput.Length() == 0)
+		{
+			if (m_isGround)
+			{
+				m_animationController->Play(CrabEnemyAnim::idle);
+			}
+		}
+
 		UpdateMove();
 	}
 	
@@ -152,7 +173,8 @@ CollisionLayer CrabEnemy::GetCollisionLayer() const
 
 CollisionLayer CrabEnemy::GetCollisionMask() const
 {
-	return CollisionLayers::kPlayer;
+	return CollisionLayers::kPlayer |
+		CollisionLayers::kHat;
 }
 
 void CrabEnemy::OnCollision(ICollider& other)
@@ -191,5 +213,11 @@ void CrabEnemy::Jump()
 
 CameraAnchor CrabEnemy::GetCameraAnchor() const
 {
-	return CameraAnchor();
+	return {m_transform};
+}
+
+Matrix4x4 CrabEnemy::GetHatMatrix() const
+{
+	Matrix4x4 mat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_HeadFrameIndex);
+	return mat;
 }

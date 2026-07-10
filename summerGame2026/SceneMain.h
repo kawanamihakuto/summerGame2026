@@ -3,6 +3,8 @@
 #include"Engine/Core/GameObjectManager.h"
 #include"Engine/Collision/CollisionManager.h"
 #include"Engine/Input/PlayerController.h"
+#include"Engine/Capture/CaptureManager.h"
+
 class CameraManager;
 class Stage;
 class SceneMain
@@ -30,5 +32,7 @@ private:
 	std::shared_ptr<CameraManager> m_cameraManager;
 
 	std::shared_ptr<PlayerController> m_playerController;
+
+	std::shared_ptr<CaptureManager> m_captureManager;
 };
 

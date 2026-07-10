@@ -3,8 +3,7 @@
 
 struct CameraAnchor
 {
-	Transform transform;
-	float groundHeight;
+	Transform transform = {};
 };
 
 class ICameraTarget

@@ -8,7 +8,6 @@
 #include"Stage.h"
 #include"ResourceManager.h"
 #include"Game/Enemy/CrabEnemy.h"
-
 SceneMain::SceneMain() :
 	m_frameCount(0)
 {
@@ -39,7 +38,7 @@ void SceneMain::Init()
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	m_gameObjectManager->Find<CrabEnemy>()->SetTarget(m_gameObjectManager->Find<Player>());
-	m_gameObjectManager->Add(std::make_unique<Hat>());
+	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat),resouceManager.GetModel(ModelType::stage),m_gameObjectManager->Find<Player>()));
 
 	m_gameObjectManager->Init();
 
@@ -48,11 +47,7 @@ void SceneMain::Init()
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
 	int test = MV1SetupCollInfo(resouceManager.GetModel(ModelType::stage), -1, 8, 8, 8);
 
-	m_collisionManager->AddObject(*m_gameObjectManager->Find<Player>());
-	m_collisionManager->AddObject(*m_gameObjectManager->Find<CrabEnemy>());
-
-	m_playerController = std::make_shared<PlayerController>();
-	m_playerController->SetTarget(m_gameObjectManager->Find<Player>());
+	m_playerController = std::make_shared<PlayerController>(m_gameObjectManager->Find<Hat>(),m_gameObjectManager->Find<Player>(),*m_cameraManager);
 }
 
 void SceneMain::Update()
@@ -60,16 +55,6 @@ void SceneMain::Update()
 	m_frameCount++;
 	auto& input = InputManager::GetInstance();
 	input.Update();
-
-	if (input.IsTriggered("X"))
-	{
-		m_playerController->SetTarget(m_gameObjectManager->Find<CrabEnemy>());
-	}
-
-	if (input.IsTriggered("Y"))
-	{
-		m_playerController->SetTarget(m_gameObjectManager->Find<Player>());
-	}
 
 	m_playerController->Update();
 

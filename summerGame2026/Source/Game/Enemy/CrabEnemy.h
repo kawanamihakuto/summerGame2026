@@ -45,11 +45,19 @@ public:
 	//-----------------------------
 	CameraAnchor GetCameraAnchor() const override;
 
+	//------------------------------
+	//ICaptureTargetの関数
+	//------------------------------
+	Matrix4x4 GetHatMatrix()const override;
+
+
 private:
 	const ITarget* m_target = nullptr;
 
 	int m_modelHandle;
 	int m_stageModelHandle;
+
+	int m_HeadFrameIndex;
 
 	std::shared_ptr<AnimationController>m_animationController;
 };

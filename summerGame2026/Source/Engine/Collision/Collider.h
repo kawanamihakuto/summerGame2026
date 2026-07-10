@@ -31,5 +31,12 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	virtual ColliderType GetType()const = 0;
+
+	bool IsActive() { return m_isActive; }
+
+	void SetIsActive(bool is) { m_isActive = is; }
+
+protected:
+	bool m_isActive = true;
 };
 

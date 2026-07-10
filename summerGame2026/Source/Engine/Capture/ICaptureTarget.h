@@ -7,7 +7,6 @@ class ICaptureTarget : public IControllable,public ICameraTarget
 public:
 	virtual ~ICaptureTarget() = default;
 
-	virtual Vector3 GetPosition()abstract;
-	virtual int GetModel()abstract;
+	virtual Matrix4x4 GetHatMatrix()const abstract;
 };
 

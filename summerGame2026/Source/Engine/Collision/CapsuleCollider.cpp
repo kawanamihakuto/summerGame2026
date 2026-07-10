@@ -33,8 +33,11 @@ void CapsuleCollider::ReUpdate(const Vector3& pos)
 
 void CapsuleCollider::Draw()
 {
-	DrawCapsule3D(m_info.start, m_info.end,
-		m_info.radius,8,m_col,m_col,false );
+	if (m_isActive)
+	{
+		DrawCapsule3D(m_info.start, m_info.end,
+			m_info.radius, 8, m_col, m_col, false);
+	}
 }
 
 std::vector<WallHitInfo> CapsuleCollider::CheckWallCollision(int stageModelHandle)

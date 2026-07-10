@@ -51,13 +51,6 @@ void FollowCamera::Update()
 	//オフセットを回転
 	Vector3 offset = rot.Rotate(kOffset);
 	//ポジションを適用
-	m_groundPlayerHeight = std::lerp(m_groundPlayerHeight, m_target->GetCameraAnchor().groundHeight, 0.06f);
-
-	if (m_groundPlayerHeight > m_target->GetCameraAnchor().groundHeight)
-	{
-		m_groundPlayerHeight = m_target->GetCameraAnchor().groundHeight;
-	}
-
 	m_pos.x = std::lerp(m_pos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
 	m_pos.y = std::lerp(m_pos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.03f);
 	m_pos.z = std::lerp(m_pos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);

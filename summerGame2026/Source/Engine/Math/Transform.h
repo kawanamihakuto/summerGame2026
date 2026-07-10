@@ -68,4 +68,11 @@ struct Transform
 	/// </summary>
 	/// <param name="scale">拡大縮小倍率</param>
 	void SetScale(const Vector3& s);
+
+	/// <summary>
+	/// 行列から各要素を取得
+	/// </summary>
+	/// <param name="mat"></param>
+	/// <returns></returns>
+	static Transform FromMatrix(const Matrix4x4& mat);
 };

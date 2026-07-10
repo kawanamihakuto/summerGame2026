@@ -55,8 +55,7 @@ public:
 	//----------------------------
 	//ICaptureTargetの関数
 	//----------------------------
-	Vector3 GetPosition()override;
-	
+	Matrix4x4 GetHatMatrix()const override;
 
 	Transform* GetTransform();
 	Vector3 GetGroundPlayerPos()const;
@@ -70,6 +69,8 @@ private:
 	int m_modelHandle;
 
 	int m_stageModelHandle;
+
+	int m_headFrameIndex;
 
 	std::shared_ptr<AnimationController>m_animationController;
 
