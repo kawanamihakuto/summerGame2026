@@ -2,7 +2,8 @@
 #include"Engine/Collision/CollisionLayer.h"
 #include"Engine/Collision/Collider.h"
 #include"Engine/Collision/Ray.h"
-
+#include"CollisionManager.h"
+class CollisionManager;
 class ICollider
 {
 public:
@@ -25,6 +26,6 @@ public:
 	/// 当たった
 	/// </summary>
 	/// <param name="other"></param>
-	virtual void OnCollision(ICollider& other) abstract;
+	virtual void OnCollision(ICollider& other,CollisionResult& result) abstract;
 };
 

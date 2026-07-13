@@ -4,14 +4,14 @@
 #include"Engine/Capture/ICaptureTarget.h"
 #include"Engine/Math/Transform.h"
 #include"Engine/Math/Quaternion.h"
-
+#include"Engine/Collision/CollisionManager.h"
 namespace
 {
 	constexpr float kGoSpeed = 14.0f;
 	constexpr float kBackSpeed = 25.0f;
 	constexpr float kLength = 200.0f;
 
-	constexpr float kSphereRadius = 30.0f;
+	constexpr float kSphereRadius = 40.0f;
 
 	constexpr Vector3 kModelScale = { 60.0f,60.0f,60.0f };
 
@@ -148,7 +148,7 @@ CollisionLayer Hat::GetCollisionMask() const
 	return CollisionLayers::kEnemy;
 }
 
-void Hat::OnCollision(ICollider& other)
+void Hat::OnCollision(ICollider& other,CollisionResult& result)
 {
 	if (m_state == HatState::have)
 	{

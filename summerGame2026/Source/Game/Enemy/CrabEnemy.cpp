@@ -4,19 +4,22 @@
 #include"Engine/Math/Quaternion.h"
 #include"Engine/Collision/SphereCollider.h"
 #include"Engine/Camera/CameraManager.h"
+#include"Engine/Capture/CaptureManager.h"
+#include"Engine/Collision/CollisionManager.h"
 namespace
 {
 	constexpr Vector3 kSphereOffset = { 0.0f,50.0f,0.0f };
 	constexpr float kSpeed = 2.0f;
+	constexpr float kCapturedSpeed = 4.0f;
 	constexpr float kMaxSpeed = 3.0f;
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 	constexpr Vector3 kScale = { 0.5f,0.5f,0.5f };
 	constexpr float kRadius = 40.0f;
 
 	constexpr int kGroundRayNum = 4;
-	constexpr float kGroundRayHeightOffset = 10.0f;
+	constexpr float kGroundRayHeightOffset = 20.0f;
 	constexpr float kGroundRayWidthOffset = 15.0f;
-	constexpr float kGroundRayLength = 15.0f;
+	constexpr float kGroundRayLength = 25.0f;
 	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
 	{
 		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},
@@ -25,13 +28,14 @@ namespace
 		{-kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
 	};
 
-	constexpr float kJumpPower = 10.0f;
+	constexpr float kJumpPower = 16.0f;
 
-	constexpr const wchar_t* kHeadFrameName = L"Head3"; 
+	constexpr const wchar_t* kHeadFrameName = L"Head3";
 }
 
-CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera) :
-	Character(camera)
+CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager) :
+	Character(camera),
+	m_captureManager(captureManager)
 {
 	m_modelHandle = MV1DuplicateModel(enemyModel);
 	m_stageModelHandle = stageModel;
@@ -62,7 +66,7 @@ void CrabEnemy::Init()
 
 	m_transform.SetPosition({ 0.0f,-200.0f,0.0f });
 
-	MV1SetScale(m_modelHandle,kScale);
+	MV1SetScale(m_modelHandle, kScale);
 }
 
 void CrabEnemy::End()
@@ -73,24 +77,21 @@ void CrabEnemy::Update()
 {
 	if (!m_isControll)
 	{
-		if (m_target != nullptr)
+		Vector3 vec = m_captureManager.GetTarget()->GetHatMatrix().GetTranslation() - m_transform.position;
+		vec.y = 0.0f;
+		if (vec.Length() > 1.0f)
 		{
-			Vector3 vec = m_target->GetPosition() - m_transform.position;
-			vec.y = 0.0f;
-			if (vec.Length() > 1.0f)
-			{
-				vec.Normalize();
-				m_animationController->Play(CrabEnemyAnim::walk);
-			}
-			else
-			{
-				vec = Vector3::Zero();
-				m_animationController->Play(CrabEnemyAnim::idle);
-			}
-
-			m_velocity.x = vec.x;
-			m_velocity.z = vec.z;
+			vec.Normalize();
+			m_animationController->Play(CrabEnemyAnim::walk);
 		}
+		else
+		{
+			vec = Vector3::Zero();
+			m_animationController->Play(CrabEnemyAnim::idle);
+		}
+
+		m_velocity.x = vec.x;
+		m_velocity.z = vec.z;
 
 		m_velocity.x *= kSpeed;
 		m_velocity.z *= kSpeed;
@@ -116,12 +117,12 @@ void CrabEnemy::Update()
 
 		UpdateMove();
 	}
-	
+
 	UpdateRotate(kModelRotationOffset);
 
 	Gravity();
 
-	m_collider->Update(m_transform.position + kSphereOffset);
+	m_collider->Update(m_transform.position + kSphereOffset + m_velocity);
 
 	WallCollision(m_stageModelHandle);
 
@@ -137,6 +138,8 @@ void CrabEnemy::Update()
 		m_transform.Translate(m_velocity);
 	}
 
+	ResetEnemyPos({ 0.0f,0.0f,0.0f });
+
 	MV1SetPosition(m_modelHandle, m_transform.GetPosition());
 	MV1SetRotationMatrix(m_modelHandle, m_transform.GetRotationMatrix().ChangeDxMat());
 	m_animationController->Update();
@@ -148,13 +151,21 @@ void CrabEnemy::Draw()
 
 #ifdef _DEBUG
 	m_collider->Draw();
+	for (auto& ray : m_ray)
+	{
+		ray->Draw();
+	}
+
 #endif // _DEBUG
 
 }
 
-void CrabEnemy::SetTarget(const ITarget* target)
+void CrabEnemy::ResetEnemyPos(const Vector3& pos)
 {
-	m_target = target;
+	if (m_transform.GetPosition().y <= -10000.0f)
+	{
+		m_transform.SetPosition(pos);
+	}
 }
 
 const Collider& CrabEnemy::GetCollider() const
@@ -175,16 +186,22 @@ CollisionLayer CrabEnemy::GetCollisionLayer() const
 CollisionLayer CrabEnemy::GetCollisionMask() const
 {
 	return CollisionLayers::kPlayer |
-		CollisionLayers::kHat;
+		CollisionLayers::kHat|
+		CollisionLayers::kEnemy;
 }
 
-void CrabEnemy::OnCollision(ICollider& other)
+void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 {
 	if (other.GetCollisionLayer() == CollisionLayers::kPlayer)
 	{
 #ifdef _DEBUG
 		DrawFormatString(16, 316, 0xffffff, L"プレイヤーにヒット");
 #endif // _DEBUG
+	}
+	
+	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
+	{
+		m_transform.Translate(result.normal * result.penetartion);
 	}
 }
 
@@ -196,8 +213,8 @@ void CrabEnemy::Move(const Vector2& input)
 	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * input.x;
 	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
 	m_moveInput.Normalize();
-	m_moveInput.x *= kSpeed;
-	m_moveInput.z *= kSpeed;
+	m_moveInput.x *= kCapturedSpeed;
+	m_moveInput.z *= kCapturedSpeed;
 	m_moveInput.y = 0.0f;
 }
 
@@ -214,7 +231,7 @@ void CrabEnemy::Jump()
 
 CameraAnchor CrabEnemy::GetCameraAnchor() const
 {
-	return {m_transform};
+	return { m_transform };
 }
 
 Matrix4x4 CrabEnemy::GetHatMatrix() const

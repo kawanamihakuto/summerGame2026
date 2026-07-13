@@ -1,6 +1,7 @@
 #include "CollisionManager.h"
 #include"CapsuleCollider.h"
 #include"SphereCollider.h"
+#include"ICollider.h"
 
 CollisionManager::CollisionManager()
 {
@@ -27,50 +28,69 @@ void CollisionManager::CheckAllCollisions()
 				if (m_objects[i]->GetCollider().GetType() == ColliderType::capsule &&
 					m_objects[j]->GetCollider().GetType() == ColliderType::capsule)
 				{
-					if (
-						CheckCapsuleCapsule(
+					auto res = CheckCapsuleCapsule(
 						static_cast<const CapsuleCollider&>(m_objects[i]->GetCollider()),
 						static_cast<const CapsuleCollider&>(m_objects[j]->GetCollider())
-						)) 
+					);
+
+					auto res2 = res;
+					res2.normal *= 1.0f;
+
+					if (res.isHit)
 					{
-						m_objects[i]->OnCollision(*m_objects[j]);
-						m_objects[j]->OnCollision(*m_objects[i]);
+						m_objects[i]->OnCollision(*m_objects[j],res);
+						m_objects[j]->OnCollision(*m_objects[i],res2);
 					}
 				}
 				else if (m_objects[i]->GetCollider().GetType() == ColliderType::capsule &&
 					m_objects[j]->GetCollider().GetType() == ColliderType::sphere)
 				{
-					if (CheckCapsuleSphere(
+					auto res = CheckCapsuleSphere(
 						static_cast<const CapsuleCollider&>(m_objects[i]->GetCollider()),
 						static_cast<const SphereCollider&>(m_objects[j]->GetCollider())
-						))
+					);
+
+					auto res2 = res;
+					res2.normal *= 1.0f;
+
+					if (res.isHit)
 					{
-						m_objects[i]->OnCollision(*m_objects[j]);
-						m_objects[j]->OnCollision(*m_objects[i]);
+						m_objects[i]->OnCollision(*m_objects[j], res);
+						m_objects[j]->OnCollision(*m_objects[i], res2);
 					}
 				}
 				else if (m_objects[i]->GetCollider().GetType() == ColliderType::sphere &&
 					m_objects[j]->GetCollider().GetType() == ColliderType::capsule)
 				{
-					if (CheckCapsuleSphere(
+					auto res = CheckCapsuleSphere(
 						static_cast<const CapsuleCollider&>(m_objects[j]->GetCollider()),
 						static_cast<const SphereCollider&>(m_objects[i]->GetCollider())
-						))
+					);
+
+					auto res2 = res;
+					res2.normal *= 1.0f;
+
+					if (res.isHit)
 					{
-						m_objects[i]->OnCollision(*m_objects[j]);
-						m_objects[j]->OnCollision(*m_objects[i]);
+						m_objects[i]->OnCollision(*m_objects[j], res);
+						m_objects[j]->OnCollision(*m_objects[i], res2);
 					}
 				}
 				else if (m_objects[i]->GetCollider().GetType() == ColliderType::sphere &&
 					m_objects[j]->GetCollider().GetType() == ColliderType::sphere)
 				{
-					if (CheckSphereSphere(
+					auto res = CheckSphereSphere(
 						static_cast<const SphereCollider&>(m_objects[i]->GetCollider()),
 						static_cast<const SphereCollider&>(m_objects[j]->GetCollider())
-						))
+					);
+
+					auto res2 = res;
+					res2.normal *= 1.0f;
+
+					if (res.isHit)
 					{
-						m_objects[i]->OnCollision(*m_objects[j]);
-						m_objects[j]->OnCollision(*m_objects[i]);
+						m_objects[i]->OnCollision(*m_objects[j], res);
+						m_objects[j]->OnCollision(*m_objects[i], res2);
 					}
 				}
 			}
@@ -92,27 +112,41 @@ bool CollisionManager::CanCollide(ICollider& obj1, ICollider& obj2)
 	return true;
 }
 
-bool CollisionManager::CheckSphereSphere(const SphereCollider& a, const SphereCollider& b)
+CollisionResult CollisionManager::CheckSphereSphere(const SphereCollider& a, const SphereCollider& b)
 {
 	SphereInfo infoA = a.GetSphereInfo();
 	SphereInfo infoB = b.GetSphereInfo();
 
 	Vector3 vec = infoA.pos - infoB.pos;
 
-	if (vec.Length() < (infoA.radius + infoB.radius))
+	float radiusSum = infoA.radius + infoB.radius;
+
+	if (vec.Length() < radiusSum)
 	{
-		return true;
+
+		Vector3 normal = vec.Normalized();
+				
+		if(vec.Length() <= 0.01f)
+		{
+			normal = { 1.0f,0.0f,0.0f };
+		}
+
+		float penetartion = radiusSum - vec.Length();
+
+		CollisionResult result = { true,normal,penetartion };
+
+		return result;
 	}
 
-	return false;
+	return CollisionResult();
 }
 
-bool CollisionManager::CheckCapsuleCapsule(const CapsuleCollider& a, const CapsuleCollider& b)
+CollisionResult CollisionManager::CheckCapsuleCapsule(const CapsuleCollider& a, const CapsuleCollider& b)
 {
-	return false;
+	return CollisionResult();
 }
 
-bool CollisionManager::CheckCapsuleSphere(const CapsuleCollider& a, const SphereCollider& b)
+CollisionResult CollisionManager::CheckCapsuleSphere(const CapsuleCollider& a, const SphereCollider& b)
 {
 	CapsuleInfo capsule = a.GetCapsuleInfo();
 	SphereInfo sphere = b.GetSphereInfo();
@@ -128,30 +162,18 @@ bool CollisionManager::CheckCapsuleSphere(const CapsuleCollider& a, const Sphere
 
 	Vector3 vec = sphere.pos - pos;
 
-#ifdef _DEBUG
-	DrawLine3D(sphere.pos,pos,0xff00ff);
+	float radiusSum = capsule.radius + sphere.radius;
 
-	DrawFormatString(16, 420, 0xffffff,
-		L"start:%f,%f,%f",
-		capsule.start.x,
-		capsule.start.y,
-		capsule.start.z);
-
-	DrawFormatString(16, 438, 0xffffff,
-		L"end:%f,%f,%f",
-		capsule.end.x,
-		capsule.end.y,
-		capsule.end.z);
-
-	DrawFormatString(16, 400, 0xffffff, L"t:%f", t);
-	DrawFormatString(16,364,0xffffff,L"pos:%f,%f,%f",pos.x,pos.y,pos.z);
-	DrawFormatString(16,382,0xffffff,L"vecLen:%f",vec.Length());
-#endif // _DEBUG
-
-	if (vec.Length() < capsule.radius + sphere.radius)
+	if (vec.Length() < radiusSum)
 	{
-		return true;
+		Vector3 normal = vec.Normalized();
+
+		float penetartion = radiusSum - vec.Length();
+
+		CollisionResult result = { true,normal,penetartion };
+
+		return result;
 	}
 
-	return false;
+	return CollisionResult();
 }

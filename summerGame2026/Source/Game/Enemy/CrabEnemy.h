@@ -12,19 +12,20 @@ namespace CrabEnemyAnim
 	const std::wstring jump = L"MonsterArmature|Jump";
 };
 
+class CaptureManager;
 class AnimationController;
 class CrabEnemy : public Character, public ICollider,public ICaptureTarget
 {
 public:
-	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea);
+	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea,CaptureManager& captureManager);
 	~CrabEnemy();
 	void Init()override;
 	void End()override;
 	void Update()override;
 	void Draw()override;
 
-	void SetTarget(const ITarget* target);
-
+	//落下時地上に戻る
+	void ResetEnemyPos(const Vector3& pos);
 	//------------------------------
 	// IColliderの関数
 	//------------------------------
@@ -32,7 +33,7 @@ public:
 	const Ray& GetRay()const override;
 	CollisionLayer GetCollisionLayer()const override;
 	CollisionLayer GetCollisionMask()const override;
-	void OnCollision(ICollider& other) override;
+	void OnCollision(ICollider& other, CollisionResult& result) override;
 
 	//------------------------------
 	// IControllableの関数
@@ -49,10 +50,7 @@ public:
 	//ICaptureTargetの関数
 	//------------------------------
 	Matrix4x4 GetHatMatrix()const override;
-
-
 private:
-	const ITarget* m_target = nullptr;
 
 	int m_modelHandle;
 	int m_stageModelHandle;
@@ -60,5 +58,7 @@ private:
 	int m_HeadFrameIndex;
 
 	std::shared_ptr<AnimationController>m_animationController;
+
+	CaptureManager& m_captureManager;
 };
 

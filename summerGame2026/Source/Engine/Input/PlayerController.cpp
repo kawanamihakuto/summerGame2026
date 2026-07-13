@@ -2,12 +2,13 @@
 #include"InputManager.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
-PlayerController::PlayerController(Hat* hat, Player* player,CameraManager& cameraManager) :
+#include"Engine/Capture/CaptureManager.h"
+PlayerController::PlayerController(Hat* hat, Player* player, CaptureManager& captureManager):
 	m_hat(hat),
 	m_player(player),
-	m_cameraManager(cameraManager)
+	m_captureManager(captureManager)
 {
-	SetTarget(m_player);
+	SetTarget(player);
 }
 
 PlayerController::~PlayerController()
@@ -41,13 +42,15 @@ void PlayerController::Update()
 	{
 		if (!m_player->IsActive())
 		{
-			Release();
+			m_captureManager.Release();
+			SetTarget(m_player);
 		}
 	}
 
 	if (m_hat->GetCaptureFlag())
 	{
-		Capture(m_hat->GetCaptureTarget());
+		m_captureManager.Capture(m_hat->GetCaptureTarget());
+		SetTarget(m_hat->GetCaptureTarget());
 		m_hat->ResetCaptureFlag();
 	}
 }
@@ -60,20 +63,4 @@ void PlayerController::SetTarget(ICaptureTarget* target)
 	}
 	m_target = target;
 	m_target->Controll(true);
-}
-
-void PlayerController::Capture(ICaptureTarget* target)
-{
-	m_cameraManager.GetFollowCamera().SetTarget(target);
-	SetTarget(target);
-	m_player->SetIsActive(false);
-}
-
-void PlayerController::Release()
-{
-	m_player->SetIsActive(true);
-	m_player->CaptureReleaseAction(m_target->GetHatMatrix().GetTranslation());
-	m_hat->SetTarget(m_player);
-	m_cameraManager.GetFollowCamera().SetTarget(m_player);
-	SetTarget(m_player);
 }

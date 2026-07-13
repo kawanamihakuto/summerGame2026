@@ -39,7 +39,7 @@ public:
 	const Ray& GetRay()const override;
 	CollisionLayer GetCollisionLayer()const override;
 	CollisionLayer GetCollisionMask()const override;
-	void OnCollision(ICollider& other) override;
+	void OnCollision(ICollider& other, CollisionResult& result) override;
 	
 private:
 	int m_modelHandle;

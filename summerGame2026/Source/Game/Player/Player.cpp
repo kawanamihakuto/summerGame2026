@@ -134,43 +134,16 @@ void Player::Draw()
 	}
 
 #ifdef _DEBUG
-	m_collider->Draw();
-	for (int i = 0; i < kGroundRayNum; i++)
+	if (m_isActive)
 	{
-		m_ray[i]->Draw();
+		m_collider->Draw();
+		for (int i = 0; i < kGroundRayNum; i++)
+		{
+			m_ray[i]->Draw();
+		}
 	}
 
 	DrawFormatString(16,96,0xffffff,L"isGround : %d",m_isGround);
-
-	/*
-	DrawFormatString(16, 32, 0xffffff, L"pos : %f,%f,%f", m_transform.position.x, m_transform.position.y, m_transform.position.z);
-	DrawFormatString(16, 48, 0xffffff, L"scale : %f,%f,%f", m_transform.scale.x, m_transform.scale.y, m_transform.scale.z);
-
-	Matrix4x4 mat = Matrix4x4::RotationY(DX_PI_F / 2);
-	Vector3 v1 = mat.TransformVector({ 0,0,1 });
-	DrawFormatString(16, 184, 0xffffff, L"v : %f,%f,%f", v1.x, v1.y, v1.z);
-
-	Quaternion q = Quaternion::AngleAxis(DX_PI_F / 2, Vector3::Up());
-	Vector3 v2 = q.ToMatrix().TransformVector({ 0,0,1 });
-	DrawFormatString(16, 200, 0xffffff, L"v : %f,%f,%f", v2.x, v2.y, v2.z);
-
-	Quaternion a =
-		Quaternion::LookRotation(
-			Vector3::Forward(),
-			Vector3::Up());
-
-	Vector3 f = a.Rotate(Vector3::Forward());
-
-	DrawFormatString(16, 216, 0xffffff, L"v : %f,%f,%f", f.x, f.y, f.z);
-
-	Quaternion b = Quaternion::AngleAxis(DX_PI_F / 2.0f, Vector3::Up());
-	Matrix4x4 m = b.ToMatrix();
-
-	DrawFormatString(16, 248, 0xffffff, L"m : %f,%f,%f\n%f,%f,%f\n%f,%f,%f",
-		m.m00, m.m01, m.m02,
-		m.m10, m.m11, m.m12,
-		m.m20, m.m21, m.m22);
-		*/
 #endif // _DEBUG
 }
 
@@ -199,7 +172,7 @@ CollisionLayer Player::GetCollisionMask() const
 	return CollisionLayers::kEnemy;
 }
 
-void Player::OnCollision(ICollider& other)
+void Player::OnCollision(ICollider& other, CollisionResult& result)
 {
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{

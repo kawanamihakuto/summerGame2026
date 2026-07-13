@@ -6,15 +6,16 @@
 class CaptureManager
 {
 public:
-	CaptureManager(PlayerController& controller,CameraManager& camreaManager,ICaptureTarget* player);
+	CaptureManager(Player* player,Hat* hat,CameraManager& camreaManager,ICaptureTarget* target);
 
 	void Capture(ICaptureTarget* target);
-
 	void Release();
 
+	ICaptureTarget* GetTarget();
 private:
-	PlayerController& m_playerController;
+	Player* m_player;
+	Hat* m_hat;
 	CameraManager& m_cameraManager;
-	ICaptureTarget* m_player = nullptr;
+	ICaptureTarget* m_currentTarget = nullptr;
 };
 

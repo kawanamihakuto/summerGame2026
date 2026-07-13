@@ -1,7 +1,13 @@
 ﻿#pragma once
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Math/Vector3.h"
-#include"Engine/Collision/ICollider.h"
+
+struct CollisionResult
+{
+	bool isHit = false;
+	Vector3 normal = {};
+	float penetartion = 0.0f;
+};
 
 class SphereCollider;
 class CapsuleCollider;
@@ -39,21 +45,21 @@ private:
 	/// <param name="a"></param>
 	/// <param name="b"></param>
 	/// <returns></returns>
-	bool CheckSphereSphere(const SphereCollider& a, const SphereCollider& b);
+	CollisionResult CheckSphereSphere(const SphereCollider& a, const SphereCollider& b);
 	/// <summary>
 	/// カプセルとカプセルの当たり判定
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="b"></param>
 	/// <returns></returns>
-	bool CheckCapsuleCapsule(const CapsuleCollider& a, const CapsuleCollider& b);
+	CollisionResult CheckCapsuleCapsule(const CapsuleCollider& a, const CapsuleCollider& b);
 	/// <summary>
 	/// カプセルと球の当たり判定
 	/// </summary>
 	/// <param name="a"></param>
 	/// <param name="b"></param>
 	/// <returns></returns>
-	bool CheckCapsuleSphere(const CapsuleCollider& a, const SphereCollider& b);
+	CollisionResult CheckCapsuleSphere(const CapsuleCollider& a, const SphereCollider& b);
 
 	//オブジェクトたち
 	std::vector<ICollider*> m_objects;

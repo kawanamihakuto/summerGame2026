@@ -36,18 +36,26 @@ void SceneMain::Init()
 
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
-	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
-	m_gameObjectManager->Find<CrabEnemy>()->SetTarget(m_gameObjectManager->Find<Player>());
-	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat),resouceManager.GetModel(ModelType::stage),m_gameObjectManager->Find<Player>()));
-
-	m_gameObjectManager->Init();
+	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<Player>()));
 
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	m_cameraManager->ChangeCamera(CameraName::follow);
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
 	int test = MV1SetupCollInfo(resouceManager.GetModel(ModelType::stage), -1, 8, 8, 8);
 
-	m_playerController = std::make_shared<PlayerController>(m_gameObjectManager->Find<Hat>(),m_gameObjectManager->Find<Player>(),*m_cameraManager);
+	m_captureManager = std::make_shared<CaptureManager>(
+		m_gameObjectManager->Find<Player>(),
+		m_gameObjectManager->Find<Hat>(),
+		*m_cameraManager,
+		m_gameObjectManager->Find<Player>());
+
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
+	
+	m_gameObjectManager->Init();
+	
+	m_playerController = std::make_shared<PlayerController>(m_gameObjectManager->Find<Hat>(), m_gameObjectManager->Find<Player>(), *m_captureManager);
 }
 
 void SceneMain::Update()
