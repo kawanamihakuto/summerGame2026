@@ -15,7 +15,7 @@ public:
 
 protected:
 	Vector3 m_moveInput{};
-
+	Vector3 m_lastMoveInput{};
 	CameraManager& m_cameraManager;
 
 };

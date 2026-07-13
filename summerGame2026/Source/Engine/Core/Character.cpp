@@ -7,6 +7,7 @@
 namespace
 {
 	constexpr float kGravity = 1.0f;
+	constexpr float kRotateLerpTime = 0.3f;
 }
 
 Character::Character(CameraManager& cameraManager) :
@@ -32,8 +33,26 @@ void Character::InputMove(float speed)
 
 void Character::UpdateMove()
 {
-	m_velocity.x = m_moveInput.x;
-	m_velocity.z = m_moveInput.z;
+	if (m_isGround)
+	{
+		m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, 0.15f);
+		m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, 0.15f);
+
+		Vector3 vec = { m_velocity.x,0.0f,m_velocity.z };
+		if (vec.Length() < 0.15f)
+		{
+			m_velocity.x = 0.0f;
+			m_velocity.z = 0.0f;
+		}
+	}
+	else
+	{
+		if (m_moveInput.Length() > 0.0f)
+		{
+			m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, 0.15f);
+			m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, 0.15f);
+		}
+	}
 }
 
 void Character::UpdateRotate(Quaternion rotationOffset)
@@ -44,14 +63,12 @@ void Character::UpdateRotate(Quaternion rotationOffset)
 	{
 		dir.Normalize();
 
-		DrawFormatString(16, 150, 0xffffff, L"dir : %f,%f,%f", dir.x, dir.y, dir.z);
-
 		//目標の回転を作成
 		Quaternion targetRot = Quaternion::LookRotation(dir, Vector3::Up());
 		targetRot = targetRot * rotationOffset;
 
 		//現在の回転から補間
-		Quaternion rot = Quaternion::Slerp(m_transform.GetRotation(), targetRot, 0.15f);
+		Quaternion rot = Quaternion::Slerp(m_transform.GetRotation(), targetRot, kRotateLerpTime);
 
 		m_transform.SetRotate(rot);
 	}

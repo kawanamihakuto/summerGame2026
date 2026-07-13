@@ -8,7 +8,7 @@
 namespace
 {
 	constexpr float kGoSpeed = 14.0f;
-	constexpr float kBackSpeed = 20.0f;
+	constexpr float kBackSpeed = 25.0f;
 	constexpr float kLength = 200.0f;
 
 	constexpr float kSphereRadius = 30.0f;
@@ -121,7 +121,7 @@ void Hat::Throw(const Vector3& dir)
 {
 	if (m_state == HatState::have)
 	{
-		m_direction = -dir.Normalized();
+		m_direction = dir.Normalized();
 		m_collider->SetIsActive(true);
 		m_state = HatState::go;
 		m_count = 0;
@@ -150,12 +150,17 @@ CollisionLayer Hat::GetCollisionMask() const
 
 void Hat::OnCollision(ICollider& other)
 {
+	if (m_state == HatState::have)
+	{
+		return;
+	}
+
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
 		if (auto cast = dynamic_cast<ICaptureTarget*>(&other))
 		{
 			SetTarget(cast);
-
+			m_state = HatState::have;
 			m_CaptureFlag = true;
 		}
 	}
@@ -164,6 +169,10 @@ void Hat::OnCollision(ICollider& other)
 void Hat::SetTarget(ICaptureTarget* target)
 {
 	m_target = target;
+	m_state = HatState::have;
+	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
+	m_collider->Update(m_transform.position);
+	m_collider->SetIsActive(false);
 }
 
 ICaptureTarget* Hat::GetCaptureTarget()

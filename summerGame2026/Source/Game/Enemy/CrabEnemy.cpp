@@ -8,9 +8,10 @@ namespace
 {
 	constexpr Vector3 kSphereOffset = { 0.0f,50.0f,0.0f };
 	constexpr float kSpeed = 2.0f;
+	constexpr float kMaxSpeed = 3.0f;
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 	constexpr Vector3 kScale = { 0.5f,0.5f,0.5f };
-	constexpr float kRadius = 50.0f;
+	constexpr float kRadius = 40.0f;
 
 	constexpr int kGroundRayNum = 4;
 	constexpr float kGroundRayHeightOffset = 10.0f;

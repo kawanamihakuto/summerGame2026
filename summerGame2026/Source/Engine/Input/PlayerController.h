@@ -11,14 +11,14 @@ public:
 
 	void Update();
 
-	void SetTarget(IControllable* target);
+	void SetTarget(ICaptureTarget* target);
 
 	void Capture(ICaptureTarget* target);
 
 	void Release();
 
 private:
-	IControllable* m_target = nullptr;
+	ICaptureTarget* m_target = nullptr;
 	Hat* m_hat;
 	Player* m_player;
 	CameraManager& m_cameraManager;

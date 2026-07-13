@@ -31,7 +31,18 @@ void PlayerController::Update()
 
 	if (input.IsTriggered("X"))
 	{
-		m_hat->Throw(m_player->GetTransform()->Forward());
+		if (m_player->IsActive())
+		{
+			m_hat->Throw(m_player->GetLastMoveDirection());
+		}
+	}
+
+	if (input.IsTriggered("Y"))
+	{
+		if (!m_player->IsActive())
+		{
+			Release();
+		}
 	}
 
 	if (m_hat->GetCaptureFlag())
@@ -41,7 +52,7 @@ void PlayerController::Update()
 	}
 }
 
-void PlayerController::SetTarget(IControllable* target)
+void PlayerController::SetTarget(ICaptureTarget* target)
 {
 	if (m_target)
 	{
@@ -55,10 +66,14 @@ void PlayerController::Capture(ICaptureTarget* target)
 {
 	m_cameraManager.GetFollowCamera().SetTarget(target);
 	SetTarget(target);
+	m_player->SetIsActive(false);
 }
 
 void PlayerController::Release()
 {
+	m_player->SetIsActive(true);
+	m_player->CaptureReleaseAction(m_target->GetHatMatrix().GetTranslation());
+	m_hat->SetTarget(m_player);
 	m_cameraManager.GetFollowCamera().SetTarget(m_player);
 	SetTarget(m_player);
 }

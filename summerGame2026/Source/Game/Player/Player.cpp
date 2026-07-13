@@ -8,6 +8,7 @@
 namespace
 {
 	constexpr float kSpeed = 5.0f;
+	constexpr float kMaxSpeed = 6.0f;
 
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
@@ -36,7 +37,8 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	Character(cameraManager),
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
-	m_groundPlayerPos({})
+	m_groundPlayerPos({}),
+	m_isActive(true)
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
@@ -74,56 +76,62 @@ void Player::End()
 
 void Player::Update()
 {
-	UpdateMove();
-	UpdateRotate(kModelRotationOffset);
-
-	Vector3 dir = { m_velocity.x, 0.0f, m_velocity.z };
-	if (dir.Length() > 0.0f)
+	if (m_isActive)
 	{
-		if (m_isGround)
+		UpdateMove();
+		UpdateRotate(kModelRotationOffset);
+
+		Vector3 dir = { m_velocity.x, 0.0f, m_velocity.z };
+		if (dir.Length() > 0.0f)
 		{
-			m_animationController->Play(PlayerAnim::run);
+			if (m_isGround)
+			{
+				m_animationController->Play(PlayerAnim::run);
+			}
 		}
-	}
 
-	if(m_moveInput.Length() == 0)
-	{
-		if (m_isGround)
+		if (m_velocity.Length() == 0)
 		{
-			m_animationController->Play(PlayerAnim::idle);
+			if (m_isGround)
+			{
+				m_animationController->Play(PlayerAnim::idle);
+			}
 		}
+
+		Gravity();
+
+		m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+
+		WallCollision(m_stageModelHandle);
+
+		for (auto& ray : m_ray)
+		{
+			ray->Update(m_transform.GetPosition() + m_velocity);
+		}
+
+		GroundCollision(m_stageModelHandle);
+
+		if (!m_isGround)
+		{
+			m_transform.Translate(m_velocity);
+		}
+
+		ResetPlayerPos({ 0.0f,0.0f,0.0f });
+
+		UpdateModel();
+
+		m_animationController->Update();
+
+		//	m_capsuleCol.ReUpdate(m_transform.GetPosition());
 	}
-
-	Gravity();
-
-	m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
-
-	WallCollision(m_stageModelHandle);
-
-	for (auto& ray : m_ray)
-	{
-		ray->Update(m_transform.GetPosition() + m_velocity);
-	}
-	
-	GroundCollision(m_stageModelHandle);
-
-	if (!m_isGround)
-	{
-		m_transform.Translate(m_velocity);
-	}
-
-	ResetPlayerPos({0.0f,0.0f,0.0f});
-
-	UpdateModel();
-
-	m_animationController->Update();
-
-//	m_capsuleCol.ReUpdate(m_transform.GetPosition());
 }
 
 void Player::Draw()
 {
-	MV1DrawModel(m_modelHandle);
+	if (m_isActive)
+	{
+		MV1DrawModel(m_modelHandle);
+	}
 
 #ifdef _DEBUG
 	m_collider->Draw();
@@ -228,6 +236,11 @@ void Player::Move(const Vector2& input)
 	m_moveInput.x *= kSpeed;
 	m_moveInput.z *= kSpeed;
 	m_moveInput.y = 0.0f;
+
+	if (m_moveInput.Length() > 0.0f)
+	{
+		m_lastMoveInput = m_moveInput;
+	}
 }
 
 void Player::Jump()
@@ -263,4 +276,16 @@ void Player::ResetPlayerPos(const Vector3& pos)
 	{
 		m_transform.SetPosition(pos);
 	}
+}
+
+void Player::CaptureReleaseAction(const Vector3& pos)
+{
+	m_transform.SetPosition(pos);
+	m_velocity.x = GetRand(2) - 1.0f;
+	m_velocity.x *= 6.0f;
+	m_velocity.z = GetRand(2) - 1.0f;
+	m_velocity.z *= 6.0f;
+	m_velocity.y = kJumpPower;
+	m_isGround = false;
+	m_animationController->Play(PlayerAnim::jump, false);
 }
