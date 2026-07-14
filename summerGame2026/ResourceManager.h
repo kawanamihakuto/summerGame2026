@@ -9,6 +9,16 @@ enum class ModelType
 	hat
 };
 
+enum class GraphType
+{
+	skyFront,
+	skyRight,
+	skyBack,
+	skyLeft,
+	skyUp,
+	skyBottom,
+};
+
 class ResourceManager
 {
 private:
@@ -29,14 +39,20 @@ public:
 	void ReleaseResources();
 	//指定したモデルハンドルを取得する
 	int GetModel(ModelType type)const;
+	//指定した画像のハンドルを取得する
+	int GetGraph(GraphType type)const;
 
 private:
 	//モデルの種類と実際のハンドル
 	std::map<ModelType, int>m_modelHandleTable;
+	//画像の種類と実際のハンドル
+	std::map<GraphType, int>m_graphHandleTable;
 
 	int m_playerModelHandle;
 	int m_stageModelHandle;
 	int m_crabEnemyModelHandle;
 	int m_hatModelHandle;
+
+	int m_skyBoxGraphHandles[6];
 };
 

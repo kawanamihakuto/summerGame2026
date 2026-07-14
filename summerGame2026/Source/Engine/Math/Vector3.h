@@ -79,10 +79,12 @@ struct Vector3
 	//ベクトルをn倍する
 	void operator*=(const float scale);
 	//加算
-	Vector3 operator+(const Vector3& val);
+	Vector3 operator+(const Vector3& val)const;
 	//減算
 	Vector3 operator-(const Vector3& val)const;
 	//ベクトルの累乗
 	Vector3 operator*(float scale)const;
+
+	Vector3 operator/(float scale)const;
 };
 

@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Source\Engine\Capture\CaptureManager.cpp" />
     <ClCompile Include="Source\Engine\Capture\ICaptureTarget.cpp" />
     <ClCompile Include="Source\Engine\Core\PhysicsObject.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Source\Engine\Capture\CaptureManager.h" />
     <ClInclude Include="Source\Engine\Capture\ICaptureTarget.h" />
     <ClInclude Include="Source\Engine\Core\PhysicsObject.h" />

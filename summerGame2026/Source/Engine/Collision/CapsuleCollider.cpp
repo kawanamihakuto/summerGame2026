@@ -58,6 +58,7 @@ std::vector<WallHitInfo> CapsuleCollider::CheckWallCollision(int stageModelHandl
 
 			info[i].isHit = true;
 			info[i].normal = normal;
+			info[i].hitPos = poly.HitPosition;
 		}
 	}
 
@@ -79,4 +80,9 @@ CapsuleInfo CapsuleCollider::GetCapsuleInfo() const
 ColliderType CapsuleCollider::GetType() const
 {
 	return ColliderType::capsule;
+}
+
+float CapsuleCollider::GetRadius() const
+{
+	return m_info.radius;
 }

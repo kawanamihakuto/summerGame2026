@@ -35,11 +35,6 @@ public:
     template<typename T>
     T* Find();
 
-    /// <summary>
-    /// 地形から押し戻す
-    /// </summary>
-    /// <param name="stageModelHandle"></param>
-    void ResolveWallPosition(int stageModelHandle);
 
 private:
     //オブジェクト配列
@@ -48,7 +43,6 @@ private:
 	//コリジョンマネージャー
 	CollisionManager& m_collisionManager;
 };
-
 
 template<typename T>
 inline T* GameObjectManager::Find()

@@ -7,6 +7,7 @@
 
 class CameraManager;
 class Stage;
+class SkyBox;
 class SceneMain
 {
 public:
@@ -34,5 +35,7 @@ private:
 	std::shared_ptr<PlayerController> m_playerController;
 
 	std::shared_ptr<CaptureManager> m_captureManager;
+
+	std::shared_ptr<SkyBox>m_skyBox;
 };
 

@@ -6,7 +6,7 @@ struct CollisionResult
 {
 	bool isHit = false;
 	Vector3 normal = {};
-	float penetartion = 0.0f;
+	float penetration = 0.0f;
 };
 
 class SphereCollider;

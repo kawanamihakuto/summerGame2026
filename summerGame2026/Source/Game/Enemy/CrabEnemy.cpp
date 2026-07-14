@@ -201,7 +201,24 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 	
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
-		m_transform.Translate(result.normal * result.penetartion);
+		Vector3 push = result.normal * result.penetration;
+
+		auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
+
+		for (const auto& hit : hits)
+		{
+			if (hit.normal.y > 0.7f)
+				continue;
+
+			float dot = push.Dot(hit.normal);
+
+			if (dot < 0.0f)
+			{
+				push -= hit.normal * dot;
+			}
+		}
+
+		m_transform.Translate(push);
 	}
 }
 

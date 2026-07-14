@@ -41,7 +41,9 @@ std::vector<WallHitInfo> SphereCollider::CheckWallCollision(int stageModelHandle
 			Vector3 normal = { poly.Normal.x,poly.Normal.y,poly.Normal.z };
 			normal.Normalize();
 
+			info[i].isHit = true;
 			info[i] .normal = normal;
+			info[i].hitPos = poly.HitPosition;
 		}
 	}
 
@@ -62,4 +64,9 @@ SphereInfo SphereCollider::GetSphereInfo() const
 ColliderType SphereCollider::GetType() const
 {
 	return ColliderType::sphere;
+}
+
+float SphereCollider::GetRadius() const
+{
+	return m_info.radius;
 }

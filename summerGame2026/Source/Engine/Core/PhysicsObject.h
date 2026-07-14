@@ -8,7 +8,6 @@ class PhysicsObject : public GameObject
 {
 public:
 	void ResolveWallVelocity(int stageModelHandle);
-	void ResolveWallPosition(int stageModelHandle);
 	void GroundCollision(int stageModelHandle);
 	void Gravity();
 

@@ -8,6 +8,7 @@
 #include"Stage.h"
 #include"ResourceManager.h"
 #include"Game/Enemy/CrabEnemy.h"
+#include"SkyBox.h"
 SceneMain::SceneMain() :
 	m_frameCount(0)
 {
@@ -56,6 +57,16 @@ void SceneMain::Init()
 	m_gameObjectManager->Init();
 	
 	m_playerController = std::make_shared<PlayerController>(m_gameObjectManager->Find<Hat>(), m_gameObjectManager->Find<Player>(), *m_captureManager);
+
+	m_skyBox = std::make_shared<SkyBox>(
+		resouceManager.GetGraph(GraphType::skyFront),
+		resouceManager.GetGraph(GraphType::skyRight),
+		resouceManager.GetGraph(GraphType::skyBack),
+		resouceManager.GetGraph(GraphType::skyLeft),
+		resouceManager.GetGraph(GraphType::skyUp),
+		resouceManager.GetGraph(GraphType::skyBottom)
+	);
+	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 }
 
 void SceneMain::Update()
@@ -70,15 +81,18 @@ void SceneMain::Update()
 
 	m_collisionManager->CheckAllCollisions();
 
-	m_gameObjectManager->ResolveWallPosition(ResourceManager::GetInstance().GetModel(ModelType::stage));
-
 	m_cameraManager->Update();
 	m_cameraManager->Apply();
+
+	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
+
 	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
 }
 
 void SceneMain::Draw()
 {
+	m_skyBox->Draw();
+
 	m_gameObjectManager->Draw();
 
 	m_stage->Draw();

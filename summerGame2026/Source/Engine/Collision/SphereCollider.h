@@ -41,6 +41,8 @@ public:
 
 	ColliderType GetType()const override;
 
+	float GetRadius()const override;
+
 private:
 	SphereInfo m_info;
 };

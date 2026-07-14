@@ -57,14 +57,3 @@ void GameObjectManager::Clear()
 	//解放
 	m_objects.clear();
 }
-
-void GameObjectManager::ResolveWallPosition(int stageModelHandle)
-{
-	for (auto& obj : m_objects)
-	{
-		if (auto physics = dynamic_cast<PhysicsObject*>(obj.get()))
-		{
-			physics->ResolveWallPosition(stageModelHandle);
-		}
-	}
-}

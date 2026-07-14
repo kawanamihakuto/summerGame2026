@@ -22,24 +22,6 @@ void PhysicsObject::ResolveWallVelocity(int stageModelHandle)
 	}
 }
 
-void PhysicsObject::ResolveWallPosition(int stageModelHandle)
-{
-	for (int i = 0; i < 10; i++)
-	{
-		auto hits = m_collider->CheckWallCollision(stageModelHandle);
-
-		for (const auto& hit : hits)
-		{
-			if (hit.normal.y > 0.7f)
-			{
-				continue;
-			}
-
-			m_transform.Translate(hit.normal * 0.5f);
-		}
-	}
-}
-
 void PhysicsObject::GroundCollision(int stageModelHandle)
 {
 	float groundHeight = -10000.0f;

@@ -87,7 +87,7 @@ void Vector3::operator*=(const float scale)
 	z *= scale;
 }
 
-Vector3 Vector3::operator+(const Vector3& val)
+Vector3 Vector3::operator+(const Vector3& val)const
 {
 	return { x + val.x,y + val.y,z + val.z };
 }
@@ -100,4 +100,9 @@ Vector3 Vector3::operator-(const Vector3& val)const
 Vector3 Vector3::operator*(float scale) const
 {
 	return { x * scale,y * scale,z * scale };
+}
+
+Vector3 Vector3::operator/(float scale) const
+{
+	return { x / scale,y / scale,z / scale };
 }

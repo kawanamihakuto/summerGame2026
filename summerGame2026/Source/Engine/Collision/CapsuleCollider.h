@@ -51,6 +51,8 @@ public:
 	/// <returns></returns>
 	ColliderType GetType()const override;
 
+	float GetRadius()const override;
+
 private:
 	CapsuleInfo m_info;
 
