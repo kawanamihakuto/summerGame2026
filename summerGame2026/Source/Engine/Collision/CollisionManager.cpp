@@ -34,7 +34,7 @@ void CollisionManager::CheckAllCollisions()
 					);
 
 					auto res2 = res;
-					res2.normal *= 1.0f;
+					res2.normal *= -1.0f;
 
 					if (res.isHit)
 					{
@@ -51,7 +51,7 @@ void CollisionManager::CheckAllCollisions()
 					);
 
 					auto res2 = res;
-					res2.normal *= 1.0f;
+					res2.normal *= -1.0f;
 
 					if (res.isHit)
 					{
@@ -68,7 +68,7 @@ void CollisionManager::CheckAllCollisions()
 					);
 
 					auto res2 = res;
-					res2.normal *= 1.0f;
+					res2.normal *= -1.0f;
 
 					if (res.isHit)
 					{
@@ -85,7 +85,7 @@ void CollisionManager::CheckAllCollisions()
 					);
 
 					auto res2 = res;
-					res2.normal *= 1.0f;
+					res2.normal *= -1.0f;
 
 					if (res.isHit)
 					{

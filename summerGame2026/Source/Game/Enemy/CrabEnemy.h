@@ -17,7 +17,7 @@ class AnimationController;
 class CrabEnemy : public Character, public ICollider,public ICaptureTarget
 {
 public:
-	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea,CaptureManager& captureManager);
+	CrabEnemy(int enemyModel, int stageModel,CameraManager& camrea,CaptureManager& captureManager,const Vector3& pos);
 	~CrabEnemy();
 	void Init()override;
 	void End()override;

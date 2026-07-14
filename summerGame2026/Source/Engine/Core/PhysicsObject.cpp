@@ -5,7 +5,7 @@ namespace
 	constexpr float kGravity = 1.0f;
 }
 
-void PhysicsObject::WallCollision(int stageModelHandle)
+void PhysicsObject::ResolveWallVelocity(int stageModelHandle)
 {
 	auto hits = m_collider->CheckWallCollision(stageModelHandle);
 
@@ -18,6 +18,24 @@ void PhysicsObject::WallCollision(int stageModelHandle)
 		if (dot < 0.0f)
 		{
 			m_velocity -= hit.normal * dot;
+		}
+	}
+}
+
+void PhysicsObject::ResolveWallPosition(int stageModelHandle)
+{
+	for (int i = 0; i < 10; i++)
+	{
+		auto hits = m_collider->CheckWallCollision(stageModelHandle);
+
+		for (const auto& hit : hits)
+		{
+			if (hit.normal.y > 0.7f)
+			{
+				continue;
+			}
+
+			m_transform.Translate(hit.normal * 0.5f);
 		}
 	}
 }

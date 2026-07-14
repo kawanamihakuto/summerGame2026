@@ -1,6 +1,7 @@
 ﻿#include"GameObjectManager.h"
 #include"GameObject.h"
 #include"Engine/Collision/CollisionManager.h"
+#include"PhysicsObject.h"
 #include"Engine/Collision/ICollider.h"
 
 GameObjectManager::GameObjectManager(CollisionManager& collisionManager):
@@ -55,4 +56,15 @@ void GameObjectManager::Clear()
 {
 	//解放
 	m_objects.clear();
+}
+
+void GameObjectManager::ResolveWallPosition(int stageModelHandle)
+{
+	for (auto& obj : m_objects)
+	{
+		if (auto physics = dynamic_cast<PhysicsObject*>(obj.get()))
+		{
+			physics->ResolveWallPosition(stageModelHandle);
+		}
+	}
 }

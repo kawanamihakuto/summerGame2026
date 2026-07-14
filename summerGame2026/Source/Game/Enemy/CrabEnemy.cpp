@@ -33,7 +33,7 @@ namespace
 	constexpr const wchar_t* kHeadFrameName = L"Head3";
 }
 
-CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager) :
+CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager,const Vector3& pos) :
 	Character(camera),
 	m_captureManager(captureManager)
 {
@@ -49,6 +49,8 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	}
 
 	m_HeadFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
+
+	m_transform.SetPosition(pos);
 }
 
 CrabEnemy::~CrabEnemy()
@@ -63,8 +65,6 @@ void CrabEnemy::Init()
 	m_animationController->AddAnimation(CrabEnemyAnim::walk);
 	m_animationController->AddAnimation(CrabEnemyAnim::jump);
 	m_animationController->Play(CrabEnemyAnim::idle);
-
-	m_transform.SetPosition({ 0.0f,-200.0f,0.0f });
 
 	MV1SetScale(m_modelHandle, kScale);
 }
@@ -124,7 +124,7 @@ void CrabEnemy::Update()
 
 	m_collider->Update(m_transform.position + kSphereOffset + m_velocity);
 
-	WallCollision(m_stageModelHandle);
+	ResolveWallVelocity(m_stageModelHandle);
 
 	for (auto& ray : m_ray)
 	{

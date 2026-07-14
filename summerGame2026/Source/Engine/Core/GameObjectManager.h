@@ -35,6 +35,12 @@ public:
     template<typename T>
     T* Find();
 
+    /// <summary>
+    /// 地形から押し戻す
+    /// </summary>
+    /// <param name="stageModelHandle"></param>
+    void ResolveWallPosition(int stageModelHandle);
+
 private:
     //オブジェクト配列
     std::vector<std::unique_ptr<GameObject>> m_objects;

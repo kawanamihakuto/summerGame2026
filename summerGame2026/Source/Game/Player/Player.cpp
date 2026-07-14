@@ -102,7 +102,7 @@ void Player::Update()
 
 		m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 
-		WallCollision(m_stageModelHandle);
+		ResolveWallVelocity(m_stageModelHandle);
 
 		for (auto& ray : m_ray)
 		{

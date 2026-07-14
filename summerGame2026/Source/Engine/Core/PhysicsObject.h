@@ -7,7 +7,8 @@
 class PhysicsObject : public GameObject
 {
 public:
-	void WallCollision(int stageModelHandle);
+	void ResolveWallVelocity(int stageModelHandle);
+	void ResolveWallPosition(int stageModelHandle);
 	void GroundCollision(int stageModelHandle);
 	void Gravity();
 

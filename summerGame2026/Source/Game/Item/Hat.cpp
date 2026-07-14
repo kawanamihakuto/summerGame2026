@@ -63,7 +63,7 @@ void Hat::Update()
 
 		m_collider->Update(m_transform.position + m_velocity);
 
-		WallCollision(m_stageModelHandle);
+		ResolveWallVelocity(m_stageModelHandle);
 
 		m_transform.Translate(m_velocity);
 
@@ -95,7 +95,7 @@ void Hat::Update()
 
 		m_collider->Update(m_transform.position + m_velocity);
 
-		WallCollision(m_stageModelHandle);
+		ResolveWallVelocity(m_stageModelHandle);
 
 		m_transform.Translate(m_velocity);
 		break;

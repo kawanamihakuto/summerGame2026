@@ -49,9 +49,9 @@ void SceneMain::Init()
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
 
-	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
-	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
-	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{0.0f,-200.0f,0.0f}));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 100.0f,-200.0f,0.0f }));
+	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 0.0f,-200.0f,100.0f }));
 	
 	m_gameObjectManager->Init();
 	
@@ -68,8 +68,9 @@ void SceneMain::Update()
 
 	m_gameObjectManager->Update();
 
-
 	m_collisionManager->CheckAllCollisions();
+
+	m_gameObjectManager->ResolveWallPosition(ResourceManager::GetInstance().GetModel(ModelType::stage));
 
 	m_cameraManager->Update();
 	m_cameraManager->Apply();
