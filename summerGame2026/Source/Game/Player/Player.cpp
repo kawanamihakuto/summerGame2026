@@ -17,9 +17,10 @@ namespace
 	constexpr float kCapsuleHeight = 130.0f;
 
 	constexpr int kGroundRayNum = 4;
-	constexpr float kGroundRayHeightOffset = 20.0f;
+	constexpr float kGroundRayHeightOffset = 135.0f;
+	constexpr float kGroundRayLength = 140.0f;
 	constexpr float kGroundRayWidthOffset = 15.0f;
-	constexpr float kGroundRayLength = 25.0f;
+	
 	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
 	{
 		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},

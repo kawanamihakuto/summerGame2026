@@ -3,7 +3,7 @@
 namespace
 {
     constexpr const wchar_t* kPlayerModelPath = L"data/model/player/Player.mv1";
-    constexpr const wchar_t* kStageModelPath = L"data/model/stage/test2.mv1";
+    constexpr const wchar_t* kStageModelPath = L"data/model/stage/stage.mv1";
     constexpr const wchar_t* kCrabEnemyModelPath = L"data/model/enemy/Crab.mv1";
     constexpr const wchar_t* kHatModelPath = L"data/model/hat/hat.mv1";
 

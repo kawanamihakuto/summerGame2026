@@ -87,6 +87,12 @@ void SceneMain::Update()
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 
 	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
+
+	if (input.GetInstance().IsTriggered("SELECT"))
+	{
+		auto& resouceManager = ResourceManager::GetInstance();
+		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 0.0f,-200.0f,100.0f }));
+	}
 }
 
 void SceneMain::Draw()

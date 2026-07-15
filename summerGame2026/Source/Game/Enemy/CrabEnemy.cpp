@@ -51,6 +51,14 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	m_HeadFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
 
 	m_transform.SetPosition(pos);
+
+	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
+	m_animationController->AddAnimation(CrabEnemyAnim::idle);
+	m_animationController->AddAnimation(CrabEnemyAnim::walk);
+	m_animationController->AddAnimation(CrabEnemyAnim::jump);
+	m_animationController->Play(CrabEnemyAnim::idle);
+
+	MV1SetScale(m_modelHandle, kScale);
 }
 
 CrabEnemy::~CrabEnemy()
@@ -60,13 +68,7 @@ CrabEnemy::~CrabEnemy()
 
 void CrabEnemy::Init()
 {
-	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
-	m_animationController->AddAnimation(CrabEnemyAnim::idle);
-	m_animationController->AddAnimation(CrabEnemyAnim::walk);
-	m_animationController->AddAnimation(CrabEnemyAnim::jump);
-	m_animationController->Play(CrabEnemyAnim::idle);
-
-	MV1SetScale(m_modelHandle, kScale);
+	
 }
 
 void CrabEnemy::End()

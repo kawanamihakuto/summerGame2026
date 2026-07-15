@@ -24,34 +24,67 @@ void PhysicsObject::ResolveWallVelocity(int stageModelHandle)
 
 void PhysicsObject::GroundCollision(int stageModelHandle)
 {
-	float groundHeight = -10000.0f;
+	float groundHeight = 10000.0f;
 	m_isGround = false;
-
 	Vector3 result = {};
-	for (auto& ray : m_ray)
+	if (m_velocity.y > 0.0f)
 	{
-		auto info = ray->CheckModelCollision(stageModelHandle);
+		groundHeight = 10000.0f;
 
-		if (info.isHit)
+		for (auto& ray : m_ray)
 		{
-			if (groundHeight < info.hitPosition.y)
-			{
-				groundHeight = info.hitPosition.y;
-			}
+			auto info = ray->CheckModelCollision(stageModelHandle);
 
-			if (groundHeight > -10000.0f)
+			if (info.isHit)
 			{
-				Vector3 offset = ray->GetRayInfo().offset;
-				result = { info.hitPosition.x - offset.x,groundHeight,info.hitPosition.z - offset.z };
-				m_isGround = true;
-				m_velocity.y = 0.0f;
+				if (groundHeight > info.hitPosition.y)
+				{
+					groundHeight = info.hitPosition.y;
+				}
+
+				if (groundHeight < 10000.0f)
+				{
+					Vector3 offset = ray->GetRayInfo().offset;
+					result = { info.hitPosition.x - offset.x,groundHeight - (ray->GetRayInfo().start.y - ray->GetRayInfo().end.y),info.hitPosition.z - offset.z};
+					m_velocity.y = 0.0f;
+				}
 			}
 		}
+		
+		if (groundHeight != 10000.0f)
+		{
+			m_transform.SetPosition(result);
+		}
 	}
-
-	if (m_isGround)
+	else
 	{
-		m_transform.SetPosition(result);
+		groundHeight = -10000.0f;
+
+		for (auto& ray : m_ray)
+		{
+			auto info = ray->CheckModelCollision(stageModelHandle);
+
+			if (info.isHit)
+			{
+				if (groundHeight < info.hitPosition.y)
+				{
+					groundHeight = info.hitPosition.y;
+				}
+
+				if (groundHeight > -10000.0f)
+				{
+					Vector3 offset = ray->GetRayInfo().offset;
+					result = { info.hitPosition.x - offset.x,groundHeight,info.hitPosition.z - offset.z };
+					m_velocity.y = 0.0f;
+					m_isGround = true;
+				}
+			}
+		}
+
+		if (m_isGround)
+		{
+			m_transform.SetPosition(result);
+		}
 	}
 }
 
