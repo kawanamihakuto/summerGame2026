@@ -2,7 +2,7 @@
 #include"CapsuleCollider.h"
 #include"SphereCollider.h"
 #include"ICollider.h"
-
+#include"Engine/Core/GameObject.h"
 CollisionManager::CollisionManager()
 {
 }
@@ -96,6 +96,11 @@ void CollisionManager::CheckAllCollisions()
 			}
 		}
 	}
+}
+
+void CollisionManager::RemoveObject(ICollider* collider)
+{
+	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), collider),m_objects.end());
 }
 
 bool CollisionManager::CanCollide(ICollider& obj1, ICollider& obj2)

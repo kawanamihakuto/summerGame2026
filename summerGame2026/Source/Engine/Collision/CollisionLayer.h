@@ -9,4 +9,5 @@ namespace CollisionLayers
 	constexpr CollisionLayer kPlayer = 1 << 0;
 	constexpr CollisionLayer kEnemy = 1 << 1;
 	constexpr CollisionLayer kHat = 1 << 2;
+	constexpr CollisionLayer kControllEnemy = 1 << 3;
 }

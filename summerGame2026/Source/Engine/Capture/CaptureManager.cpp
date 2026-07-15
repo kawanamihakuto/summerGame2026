@@ -13,7 +13,7 @@ void CaptureManager::Capture(ICaptureTarget* target)
 {
 	m_currentTarget = target;
 	m_cameraManager.GetFollowCamera().SetTarget(target);
-	m_player->SetIsActive(false);
+	m_player->SetActive(false);
 }
 
 void CaptureManager::Release()
@@ -22,7 +22,7 @@ void CaptureManager::Release()
 	m_currentTarget = m_player;
 	m_cameraManager.GetFollowCamera().SetTarget(m_player);
 	m_hat->SetTarget(m_player);
-	m_player->SetIsActive(true);	
+	m_player->SetActive(true);	
 }
 
 ICaptureTarget* CaptureManager::GetTarget()

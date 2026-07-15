@@ -38,7 +38,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_groundPlayerPos({}),
-	m_isActive(true)
+	m_isNextJump(false)
 {
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
@@ -78,8 +78,15 @@ void Player::Update()
 {
 	if (m_isActive)
 	{
+		if (m_isNextJump)
+		{
+			Jump();
+		}
+
 		UpdateMove();
 		UpdateRotate(kModelRotationOffset);
+
+		Gravity();
 
 		Vector3 dir = { m_velocity.x, 0.0f, m_velocity.z };
 		if (dir.Length() > 0.0f)
@@ -90,15 +97,13 @@ void Player::Update()
 			}
 		}
 
-		if (m_velocity.Length() == 0)
+		if (dir.Length() == 0)
 		{
 			if (m_isGround)
 			{
 				m_animationController->Play(PlayerAnim::idle);
 			}
 		}
-
-		Gravity();
 
 		m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 
@@ -176,6 +181,10 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 {
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
+		if (m_velocity.y < 0.0f)
+		{
+			m_isNextJump = true;
+		}
 #ifdef _DEBUG
 		DrawFormatString(16,300,0xffffff,L"敵にヒット");
 #endif // _DEBUG
@@ -218,10 +227,11 @@ void Player::Move(const Vector2& input)
 
 void Player::Jump()
 {
-	if (m_isGround)
+	if (m_isGround || m_isNextJump)
 	{
 		m_velocity.y = kJumpPower;
 		m_isGround = false;
+		m_isNextJump = false;
 		m_animationController->Play(PlayerAnim::jump, false);
 	}
 }

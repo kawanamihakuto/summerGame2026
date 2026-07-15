@@ -65,10 +65,6 @@ public:
 	//落下時地上に戻る
 	void ResetPlayerPos(const Vector3& pos);
 
-	bool IsActive() { return m_isActive; }
-
-	void SetIsActive(bool is) { m_isActive = is; }
-
 	Vector3 GetLastMoveDirection() { return { m_lastMoveInput.x,0.0f,m_lastMoveInput.z }; }
 
 	void CaptureReleaseAction(const Vector3& pos);
@@ -83,6 +79,6 @@ private:
 
 	Vector3 m_groundPlayerPos;
 
-	bool m_isActive;
+	bool m_isNextJump;
 };
 

@@ -29,6 +29,10 @@ public:
 	/// 衝突のチェック
 	/// </summary>
 	void CheckAllCollisions();
+	/// <summary>
+	/// 特定のオブジェクトをクリアする
+	/// </summary>
+	void RemoveObject(ICollider* collider);
 
 private:
 	/// <summary>

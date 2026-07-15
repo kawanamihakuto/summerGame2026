@@ -41,6 +41,27 @@ void GameObjectManager::Update()
 	{
 		obj->Update();
 	}
+
+	//削除
+	m_objects.erase(
+		std::remove_if(m_objects.begin(), m_objects.end(),
+			[this](const std::unique_ptr<GameObject>& obj)
+			{
+				if (!obj->IsPendingDestroy())
+				{
+					return false;
+				}
+
+				if (auto collider = dynamic_cast<ICollider*>(obj.get()))
+				{
+					m_collisionManager.RemoveObject(collider);
+				}
+
+				return true;
+
+			}),
+		m_objects.end()
+	);
 }
 
 void GameObjectManager::Draw()

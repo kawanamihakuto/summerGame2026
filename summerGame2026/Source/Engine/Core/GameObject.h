@@ -23,7 +23,19 @@ public:
 
 	Transform GetTransform()const { return m_transform; };
 
+	bool IsActive() const{ return m_isActive; }
+
+	bool IsPendingDestroy()const { return m_isPendingDestroy; }
+
+	void SetActive(bool active) { m_isActive = active; }
+
+	void Destroy() { m_isPendingDestroy = true; }
+
 protected:
 	Transform m_transform;
+
+	bool m_isActive = true;
+
+	bool m_isPendingDestroy = false;
 };
 

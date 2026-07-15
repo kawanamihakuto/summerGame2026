@@ -79,7 +79,7 @@ void CrabEnemy::Update()
 	{
 		Vector3 vec = m_captureManager.GetTarget()->GetHatMatrix().GetTranslation() - m_transform.position;
 		vec.y = 0.0f;
-		if (vec.Length() > 1.0f)
+		if (vec.Length() > 1.0f && vec.Length() < 300.0f)
 		{
 			vec.Normalize();
 			m_animationController->Play(CrabEnemyAnim::walk);
@@ -180,45 +180,75 @@ const Ray& CrabEnemy::GetRay() const
 
 CollisionLayer CrabEnemy::GetCollisionLayer() const
 {
-	return CollisionLayers::kEnemy;
+	if (m_isControll)
+	{
+		return CollisionLayers::kControllEnemy;
+	}
+	else
+	{
+		return CollisionLayers::kEnemy;
+	}
 }
 
 CollisionLayer CrabEnemy::GetCollisionMask() const
 {
 	return CollisionLayers::kPlayer |
-		CollisionLayers::kHat|
-		CollisionLayers::kEnemy;
+		CollisionLayers::kHat |
+		CollisionLayers::kEnemy |
+		CollisionLayers::kControllEnemy;
 }
 
 void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 {
 	if (other.GetCollisionLayer() == CollisionLayers::kPlayer)
 	{
-#ifdef _DEBUG
-		DrawFormatString(16, 316, 0xffffff, L"プレイヤーにヒット");
-#endif // _DEBUG
-	}
-	
-	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
-	{
-		Vector3 push = result.normal * result.penetration;
-
-		auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
-
-		for (const auto& hit : hits)
+		if (auto obj = dynamic_cast<PhysicsObject*>(&other))
 		{
-			if (hit.normal.y > 0.7f)
-				continue;
-
-			float dot = push.Dot(hit.normal);
-
-			if (dot < 0.0f)
+			if (result.normal.y > 0.7f && obj->GetVelocity().y < 0.0f)
 			{
-				push -= hit.normal * dot;
+				Destroy();
 			}
 		}
 
-		m_transform.Translate(push);
+#ifdef _DEBUG
+	//	DrawFormatString(16, 316, 0xffffff, L"プレイヤーにヒット");
+#endif // _DEBUG
+	}
+
+	if (!m_isControll)
+	{
+		if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
+		{
+			Vector3 push = result.normal * result.penetration;
+
+			auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
+
+			for (const auto& hit : hits)
+			{
+				if (hit.normal.y > 0.7f)
+					continue;
+
+				float dot = push.Dot(hit.normal);
+
+				if (dot < 0.0f)
+				{
+					push -= hit.normal * dot;
+				}
+			}
+
+			m_transform.Translate(push);
+		}
+	}
+
+	if (other.GetCollisionLayer() == CollisionLayers::kControllEnemy)
+	{
+		if (auto obj = dynamic_cast<PhysicsObject*>(&other))
+		{
+			if (result.normal.y < -0.7f && obj->GetVelocity().y < 0.0f)
+			{
+				Destroy();
+			}
+		}	
 	}
 }
 

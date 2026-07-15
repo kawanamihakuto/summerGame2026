@@ -2,7 +2,7 @@
 
 namespace
 {
-	constexpr float kGravity = 1.0f;
+	constexpr float kGravity = 0.9f;
 }
 
 void PhysicsObject::ResolveWallVelocity(int stageModelHandle)

@@ -16,6 +16,8 @@ public:
 	virtual void Update()override abstract;
 	virtual void Draw()override abstract;
 
+	Vector3 GetVelocity() const { return m_velocity; }
+
 protected:
 	Vector3 m_velocity = {};
 
