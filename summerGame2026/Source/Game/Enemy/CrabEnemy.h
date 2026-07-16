@@ -12,6 +12,13 @@ namespace CrabEnemyAnim
 	const std::wstring jump = L"MonsterArmature|Jump";
 };
 
+enum class State
+{
+	ai,
+	controll,
+	tower
+};
+
 class CaptureManager;
 class AnimationController;
 class CrabEnemy : public Character, public ICollider,public ICaptureTarget
@@ -60,5 +67,7 @@ private:
 	std::shared_ptr<AnimationController>m_animationController;
 
 	CaptureManager& m_captureManager;
+
+	State m_state;
 };
 

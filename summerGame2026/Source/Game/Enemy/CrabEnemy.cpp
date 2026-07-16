@@ -40,6 +40,8 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	m_modelHandle = MV1DuplicateModel(enemyModel);
 	m_stageModelHandle = stageModel;
 
+	m_state = State::ai;
+
 	m_collider = std::make_unique<SphereCollider>(m_transform.position, kRadius);
 
 	m_ray.resize(kGroundRayNum);
