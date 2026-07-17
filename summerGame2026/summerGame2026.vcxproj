@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="Source\Game\Graphics\SkyBox.cpp" />
     <ClCompile Include="Source\Engine\Capture\CaptureManager.cpp" />
     <ClCompile Include="Source\Engine\Capture\ICaptureTarget.cpp" />
     <ClCompile Include="Source\Engine\Core\PhysicsObject.cpp" />
@@ -154,7 +154,7 @@
     <ClCompile Include="Source\Game\Player\PlayerIdleState.cpp" />
     <ClCompile Include="Source\Game\Player\PlayerStateBase.cpp" />
     <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
-    <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="Source\Engine\Core\ResourceManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CollisionManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CapsuleCollider.cpp" />
     <ClCompile Include="Source\Engine\Collision\Collider.cpp" />
@@ -175,11 +175,11 @@
     <ClCompile Include="Source\Engine\Math\Vector3.cpp" />
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
     <ClCompile Include="Source\Engine\Collision\SphereCollider.cpp" />
-    <ClCompile Include="Stage.cpp" />
+    <ClCompile Include="Source\Game\Stage\Stage.cpp" />
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="Source\Game\Graphics\SkyBox.h" />
     <ClInclude Include="Source\Engine\Capture\CaptureManager.h" />
     <ClInclude Include="Source\Engine\Capture\ICaptureTarget.h" />
     <ClInclude Include="Source\Engine\Core\PhysicsObject.h" />
@@ -195,7 +195,7 @@
     <ClInclude Include="Source\Game\Player\PlayerIdleState.h" />
     <ClInclude Include="Source\Game\Player\PlayerStateBase.h" />
     <ClInclude Include="Source\Engine\Collision\Ray.h" />
-    <ClInclude Include="ResourceManager.h" />
+    <ClInclude Include="Source\Engine\Core\ResourceManager.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Source\Engine\Collision\CapsuleCollider.h" />
     <ClInclude Include="Source\Engine\Collision\Collider.h" />
@@ -217,7 +217,7 @@
     <ClInclude Include="Source\Engine\Math\Vector3.h" />
     <ClInclude Include="Source\Engine\Math\Transform.h" />
     <ClInclude Include="Source\Engine\Collision\SphereCollider.h" />
-    <ClInclude Include="Stage.h" />
+    <ClInclude Include="Source\Game\Stage\Stage.h" />
     <ClInclude Include="Source\Engine\Core\StateBase.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

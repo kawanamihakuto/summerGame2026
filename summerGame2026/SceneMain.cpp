@@ -5,10 +5,10 @@
 #include"Game/Player/Player.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
-#include"Stage.h"
-#include"ResourceManager.h"
+#include"Game/Stage/Stage.h"
+#include"Engine/Core/ResourceManager.h"
 #include"Game/Enemy/CrabEnemy.h"
-#include"SkyBox.h"
+#include"Game/Graphics/SkyBox.h"
 SceneMain::SceneMain() :
 	m_frameCount(0)
 {
