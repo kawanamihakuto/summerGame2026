@@ -51,6 +51,8 @@ public:
 	/// <returns></returns>
 	ColliderType GetType()const override;
 
+	void SetHeight(float height);
+
 	float GetRadius()const override;
 
 private:

@@ -3,11 +3,12 @@
 #include"Engine/Math/Transform.h"
 #include"Engine/Camera/ICameraTarget.h"
 
+class ICaptureTarget;
 class Player;
 class FollowCamera : public CameraBase
 {
 public:
-	FollowCamera(ICameraTarget* target);
+	FollowCamera(ICaptureTarget* target);
 
 	//初期化
 	void Init()override;
@@ -22,13 +23,13 @@ public:
 	/// Followするターゲットをセットする
 	/// </summary>
 	/// <param name="target">ターゲットのTransformポインタ</param>
-	void SetTarget(ICameraTarget* target);
+	void SetTarget(ICaptureTarget* target);
 
 	//自身のCameraNameを返す
 	CameraName GetCameraName()override;
 
 private:
-	ICameraTarget* m_target = nullptr;
+	ICaptureTarget* m_target = nullptr;
 	Player* m_player = nullptr;
 
 	Vector3 m_pos;

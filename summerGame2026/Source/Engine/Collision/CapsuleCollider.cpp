@@ -82,6 +82,11 @@ ColliderType CapsuleCollider::GetType() const
 	return ColliderType::capsule;
 }
 
+void CapsuleCollider::SetHeight(float height)
+{
+	m_info.height = height;
+}
+
 float CapsuleCollider::GetRadius() const
 {
 	return m_info.radius;

@@ -8,5 +8,9 @@ public:
 	virtual ~ICaptureTarget() = default;
 
 	virtual Matrix4x4 GetHatMatrix()const abstract;
+
+	virtual ICaptureTarget* GetControllTarget()abstract;
+
+	virtual ICaptureTarget* GetHatAndCameraTarget()abstract;
 };
 

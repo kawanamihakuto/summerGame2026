@@ -182,7 +182,7 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 {
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
-		if (m_velocity.y < 0.0f)
+		if (result.normal.y < -0.5f && m_velocity.y < 0.0f)
 		{
 			m_isNextJump = true;
 		}
@@ -206,6 +206,16 @@ Matrix4x4 Player::GetHatMatrix() const
 	mat*= offsetMat;
 
 	return mat;
+}
+
+ICaptureTarget* Player::GetControllTarget()
+{
+	return this;
+}
+
+ICaptureTarget* Player::GetHatAndCameraTarget()
+{
+	return this;
 }
 
 void Player::Move(const Vector2& input)
@@ -235,6 +245,16 @@ void Player::Jump()
 		m_isNextJump = false;
 		m_animationController->Play(PlayerAnim::jump, false);
 	}
+}
+
+void Player::Controll()
+{
+	m_isActive = true;
+}
+
+void Player::ExitControll()
+{
+	m_isActive = false;
 }
 
 Transform* Player::GetTransform()

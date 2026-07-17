@@ -9,9 +9,9 @@ public:
 	virtual void Move(const Vector2& input) abstract;
 	virtual void Jump()abstract;
 
-	void Controll(bool is) {m_isControll = is;};
+	virtual void Controll()abstract;
 
+	virtual void ExitControll()abstract;
 protected:
-	bool m_isControll = false;
 };
 

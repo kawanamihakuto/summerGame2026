@@ -17,9 +17,9 @@ namespace
 	constexpr float kRadius = 40.0f;
 
 	constexpr int kGroundRayNum = 4;
-	constexpr float kGroundRayHeightOffset = 20.0f;
+	constexpr float kGroundRayHeightOffset = 85.0f;
 	constexpr float kGroundRayWidthOffset = 15.0f;
-	constexpr float kGroundRayLength = 25.0f;
+	constexpr float kGroundRayLength = 90.0f;
 	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
 	{
 		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},
@@ -33,7 +33,7 @@ namespace
 	constexpr const wchar_t* kHeadFrameName = L"Head3";
 }
 
-CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager,const Vector3& pos) :
+CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
 	Character(camera),
 	m_captureManager(captureManager)
 {
@@ -70,7 +70,7 @@ CrabEnemy::~CrabEnemy()
 
 void CrabEnemy::Init()
 {
-	
+
 }
 
 void CrabEnemy::End()
@@ -79,7 +79,7 @@ void CrabEnemy::End()
 
 void CrabEnemy::Update()
 {
-	if (!m_isControll)
+	if (m_state == State::ai)
 	{
 		Vector3 vec = m_captureManager.GetTarget()->GetHatMatrix().GetTranslation() - m_transform.position;
 		vec.y = 0.0f;
@@ -100,7 +100,7 @@ void CrabEnemy::Update()
 		m_velocity.x *= kSpeed;
 		m_velocity.z *= kSpeed;
 	}
-	else
+	else if (m_state == State::controll)
 	{
 		Vector3 dir = m_moveInput;
 		if (dir.Length() > 0.0f)
@@ -122,24 +122,39 @@ void CrabEnemy::Update()
 		UpdateMove();
 	}
 
-	UpdateRotate(kModelRotationOffset);
+	if (m_state != State::tower)
+	{
+		UpdateRotate(kModelRotationOffset);
 
-	Gravity();
-
+		Gravity();
+	}
 	m_collider->Update(m_transform.position + kSphereOffset + m_velocity);
-
-	ResolveWallVelocity(m_stageModelHandle);
+	if (m_state != State::tower)
+	{
+		ResolveWallVelocity(m_stageModelHandle);
+	}
 
 	for (auto& ray : m_ray)
 	{
 		ray->Update(m_transform.GetPosition() + m_velocity);
 	}
 
-	GroundCollision(m_stageModelHandle);
+	if (m_state != State::tower)
+	{
+		GroundCollision(m_stageModelHandle);
+	}
 
 	if (!m_isGround)
 	{
 		m_transform.Translate(m_velocity);
+	}
+
+	if (m_lower == nullptr)
+	{
+		if (m_upper)
+		{
+			m_upper->FollowTower(this);
+		}
 	}
 
 	ResetEnemyPos({ 0.0f,0.0f,0.0f });
@@ -159,9 +174,57 @@ void CrabEnemy::Draw()
 	{
 		ray->Draw();
 	}
-
 #endif // _DEBUG
+}
 
+void CrabEnemy::ChangeState(State nextState)
+{
+	m_state = nextState;
+}
+
+void CrabEnemy::SetUpper(CrabEnemy* upper)
+{
+	m_upper = upper;
+}
+
+void CrabEnemy::SetLower(CrabEnemy* lower)
+{
+	m_lower = lower;
+}
+
+CrabEnemy* CrabEnemy::GetTop()
+{
+	CrabEnemy* current = this;
+
+	while (current->m_upper)
+	{
+		current = current->m_upper;
+	}
+
+	return current;
+}
+
+CrabEnemy* CrabEnemy::GetBottom()
+{
+	CrabEnemy* current = this;
+
+	while (current->m_lower)
+	{
+		current = current->m_lower;
+	}
+
+	return current;
+}
+
+void CrabEnemy::FollowTower(CrabEnemy* lower)
+{
+	m_transform.SetPosition(lower->GetHatMatrix().GetTranslation());
+	m_transform.SetRotate(lower->GetTransform().GetRotation());
+
+	if (m_upper)
+	{
+		m_upper->FollowTower(this);
+	}
 }
 
 void CrabEnemy::ResetEnemyPos(const Vector3& pos)
@@ -184,11 +247,15 @@ const Ray& CrabEnemy::GetRay() const
 
 CollisionLayer CrabEnemy::GetCollisionLayer() const
 {
-	if (m_isControll)
+	if (m_state == State::controll)
 	{
 		return CollisionLayers::kControllEnemy;
 	}
-	else
+	else if (m_state == State::ai)
+	{
+		return CollisionLayers::kEnemy;
+	}
+	else if (m_state == State::tower)
 	{
 		return CollisionLayers::kEnemy;
 	}
@@ -208,39 +275,52 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 	{
 		if (auto obj = dynamic_cast<PhysicsObject*>(&other))
 		{
-			if (result.normal.y > 0.7f && obj->GetVelocity().y < 0.0f)
+			if (result.normal.y > 0.5f && obj->GetVelocity().y < 0.0f)
 			{
+				if (m_lower)
+				{
+					if (m_upper)
+					{
+						m_lower->m_upper = m_upper;
+						m_upper->m_lower = m_lower;
+					}
+					else
+					{
+						m_lower->m_upper = nullptr;
+					}
+				}
 				Destroy();
 			}
 		}
-
-#ifdef _DEBUG
-	//	DrawFormatString(16, 316, 0xffffff, L"プレイヤーにヒット");
-#endif // _DEBUG
 	}
-
-	if (!m_isControll)
+	if (m_state == State::ai)
 	{
 		if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 		{
-			Vector3 push = result.normal * result.penetration;
-
-			auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
-
-			for (const auto& hit : hits)
+			if (auto crab = dynamic_cast<CrabEnemy*>(&other))
 			{
-				if (hit.normal.y > 0.7f)
-					continue;
-
-				float dot = push.Dot(hit.normal);
-
-				if (dot < 0.0f)
+				if (crab->m_state != State::tower)
 				{
-					push -= hit.normal * dot;
+					Vector3 push = result.normal * result.penetration;
+
+					auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
+
+					for (const auto& hit : hits)
+					{
+						if (hit.normal.y > 0.7f)
+							continue;
+
+						float dot = push.Dot(hit.normal);
+
+						if (dot < 0.0f)
+						{
+							push -= hit.normal * dot;
+						}
+					}
+
+					m_transform.Translate(push);
 				}
 			}
-
-			m_transform.Translate(push);
 		}
 	}
 
@@ -250,9 +330,16 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 		{
 			if (result.normal.y < -0.7f && obj->GetVelocity().y < 0.0f)
 			{
-				Destroy();
+				if (auto crab = dynamic_cast<CrabEnemy*>(obj))
+				{
+					SetUpper(crab);
+					crab->SetLower(this);
+
+					m_state = State::controll;
+					crab->ChangeState(State::tower);
+				}
 			}
-		}	
+		}
 	}
 }
 
@@ -271,13 +358,22 @@ void CrabEnemy::Move(const Vector2& input)
 
 void CrabEnemy::Jump()
 {
-
 	if (m_isGround)
 	{
 		m_velocity.y = kJumpPower;
 		m_isGround = false;
 		m_animationController->Play(CrabEnemyAnim::jump, false);
 	}
+}
+
+void CrabEnemy::Controll()
+{
+	m_state = State::controll;
+}
+
+void CrabEnemy::ExitControll()
+{
+	m_state = State::ai;
 }
 
 CameraAnchor CrabEnemy::GetCameraAnchor() const
@@ -289,4 +385,14 @@ Matrix4x4 CrabEnemy::GetHatMatrix() const
 {
 	Matrix4x4 mat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_HeadFrameIndex);
 	return mat;
+}
+
+ICaptureTarget* CrabEnemy::GetControllTarget()
+{
+	return GetBottom();
+}
+
+ICaptureTarget* CrabEnemy::GetHatAndCameraTarget()
+{
+	return GetTop();
 }

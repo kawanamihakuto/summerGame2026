@@ -11,7 +11,7 @@ namespace
 	constexpr float kRotateSpeed = 0.03f;
 }
 
-FollowCamera::FollowCamera(ICameraTarget* target):
+FollowCamera::FollowCamera(ICaptureTarget* target):
 	m_yaw(0.0f),
 	m_pitch(0.0f),
 	m_groundPlayerHeight(0.0f),
@@ -32,6 +32,7 @@ void FollowCamera::End()
 
 void FollowCamera::Update()
 {
+	m_target = m_target->GetHatAndCameraTarget();
 	//入力を取得
 	auto& input = InputManager::GetInstance();
 	Vector2 stick = input.GetRightStick();
@@ -70,7 +71,7 @@ void FollowCamera::Apply()
 	);
 }
 
-void FollowCamera::SetTarget(ICameraTarget* target)
+void FollowCamera::SetTarget(ICaptureTarget* target)
 {
 	m_target = target;
 }

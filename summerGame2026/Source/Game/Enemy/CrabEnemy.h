@@ -31,6 +31,14 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	void ChangeState(State nextState);
+
+	void SetUpper(CrabEnemy* upper);
+	void SetLower(CrabEnemy* lower);
+	CrabEnemy* GetTop();
+	CrabEnemy* GetBottom();
+	void FollowTower(CrabEnemy* lower);
+
 	//落下時地上に戻る
 	void ResetEnemyPos(const Vector3& pos);
 	//------------------------------
@@ -47,6 +55,8 @@ public:
 	//------------------------------
 	void Move(const Vector2& input)override;
 	void Jump()override;
+	void Controll()override;
+	void ExitControll()override;
 
 	//-----------------------------
 	//ICameraTargetの関数
@@ -57,6 +67,9 @@ public:
 	//ICaptureTargetの関数
 	//------------------------------
 	Matrix4x4 GetHatMatrix()const override;
+	ICaptureTarget* GetControllTarget()override;
+	ICaptureTarget* GetHatAndCameraTarget()override;
+
 private:
 
 	int m_modelHandle;
@@ -69,5 +82,8 @@ private:
 	CaptureManager& m_captureManager;
 
 	State m_state;
+
+	CrabEnemy* m_upper = nullptr;
+	CrabEnemy* m_lower = nullptr;
 };
 

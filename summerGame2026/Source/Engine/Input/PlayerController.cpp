@@ -6,9 +6,10 @@
 PlayerController::PlayerController(Hat* hat, Player* player, CaptureManager& captureManager):
 	m_hat(hat),
 	m_player(player),
-	m_captureManager(captureManager)
+	m_captureManager(captureManager),
+	m_target(player)
 {
-	SetTarget(player);
+	
 }
 
 PlayerController::~PlayerController()
@@ -19,6 +20,8 @@ void PlayerController::Update()
 {
 	auto& input = InputManager::GetInstance();
 	Vector2 move = input.GetLeftStick();
+
+	m_target = m_target->GetControllTarget();
 
 	if (m_target)
 	{
@@ -59,8 +62,8 @@ void PlayerController::SetTarget(ICaptureTarget* target)
 {
 	if (m_target)
 	{
-		m_target->Controll(false);
+		m_target->ExitControll();
 	}
-	m_target = target;
-	m_target->Controll(true);
+	m_target = target->GetControllTarget();
+	m_target->Controll();
 }

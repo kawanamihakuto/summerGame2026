@@ -168,7 +168,7 @@ void Hat::OnCollision(ICollider& other,CollisionResult& result)
 
 void Hat::SetTarget(ICaptureTarget* target)
 {
-	m_target = target;
+	m_target = target->GetHatAndCameraTarget();
 	m_state = HatState::have;
 	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
 	m_collider->Update(m_transform.position);

@@ -51,11 +51,15 @@ public:
 	//----------------------------
 	void Move(const Vector2& input)override;
 	void Jump()override;
+	void Controll()override;
+	void ExitControll()override;
 
 	//----------------------------
 	//ICaptureTargetの関数
 	//----------------------------
 	Matrix4x4 GetHatMatrix()const override;
+	ICaptureTarget* GetControllTarget()override;
+	ICaptureTarget* GetHatAndCameraTarget()override;
 
 	Transform* GetTransform();
 	Vector3 GetGroundPlayerPos()const;
