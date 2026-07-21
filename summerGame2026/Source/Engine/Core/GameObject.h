@@ -20,22 +20,37 @@ public:
 	/// 描画関数
 	/// </summary>
 	virtual void Draw()abstract;
-
+	/// <summary>
+	/// トランスフォーム取得
+	/// </summary>
+	/// <returns></returns>
 	Transform GetTransform()const { return m_transform; };
-
+	/// <summary>
+	/// アクティブかどうか
+	/// </summary>
+	/// <returns></returns>
 	bool IsActive() const{ return m_isActive; }
-
+	/// <summary>
+	/// 削除依頼があるかどうか 
+	/// </summary>
+	/// <returns></returns>
 	bool IsPendingDestroy()const { return m_isPendingDestroy; }
-
+	/// <summary>
+	/// アクティブかどうかをセット
+	/// </summary>
+	/// <param name="active"></param>
 	void SetActive(bool active) { m_isActive = active; }
-
+	/// <summary>
+	/// 削除依頼を送る
+	/// </summary>
 	void Destroy() { m_isPendingDestroy = true; }
 
 protected:
+	//トランスフォーム
 	Transform m_transform;
-
+	//アクティブかどうか
 	bool m_isActive = true;
-
+	//削除依頼
 	bool m_isPendingDestroy = false;
 };
 

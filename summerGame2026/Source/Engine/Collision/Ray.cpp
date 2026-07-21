@@ -37,6 +37,7 @@ RayInfo Ray::GetRayInfo() const
 
 HitInfo Ray::CheckModelCollision(int modelHandle)
 {
+	//DxLibの関数でモデルとの当たり判定をする
 	auto result = MV1CollCheck_Line(modelHandle,-1,m_info.start,m_info.end);
 
 	HitInfo info;

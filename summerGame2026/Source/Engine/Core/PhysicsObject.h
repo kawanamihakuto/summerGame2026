@@ -7,8 +7,19 @@
 class PhysicsObject : public GameObject
 {
 public:
+	/// <summary>
+	/// 壁との当たり判定
+	/// </summary>
+	/// <param name="stageModelHandle"></param>
 	void ResolveWallVelocity(int stageModelHandle);
+	/// <summary>
+	/// 地面との当たり判定
+	/// </summary>
+	/// <param name="stageModelHandle"></param>
 	void GroundCollision(int stageModelHandle);
+	/// <summary>
+	/// 重力
+	/// </summary>
 	void Gravity();
 
 	virtual void Init()override abstract;
@@ -16,15 +27,20 @@ public:
 	virtual void Update()override abstract;
 	virtual void Draw()override abstract;
 
+	/// <summary>
+	/// 速度を取得
+	/// </summary>
+	/// <returns></returns>
 	Vector3 GetVelocity() const { return m_velocity; }
 
 protected:
+	//速度
 	Vector3 m_velocity = {};
-
+	//コライダー
 	std::unique_ptr<Collider> m_collider;
-
+	//レイ
 	std::vector<std::unique_ptr<Ray>> m_ray;
-
+	//地面にいるかどうか
 	bool m_isGround = false;
 };
 

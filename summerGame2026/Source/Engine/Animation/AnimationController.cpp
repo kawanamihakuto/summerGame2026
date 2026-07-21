@@ -28,18 +28,20 @@ void AnimationController::Update()
 	//アニメーション全体の時間を取得
 	float totalTime = MV1GetAnimTotalTime(m_modelHandle, m_currentAnimNo);
 
-	if (m_isLoop)
+	if (m_isLoop)//ループする場合
 	{
-		// ループする場合
+		//経過時間がアニメーションの時間を超えたら
+		//アニメーションの時間分戻す
 		while (m_currentTime > totalTime)
 			m_currentTime -= totalTime;
 		m_isEnd = false;
 	}
-	else
+	else// ループしない場合
 	{
-		// ループしない場合
+		//経過時間がアニメーションの時間を超えたら
 		if (m_currentTime > totalTime)
 		{
+			//アニメーションを止める
 			m_currentTime = totalTime;
 			m_isEnd = true;
 		}

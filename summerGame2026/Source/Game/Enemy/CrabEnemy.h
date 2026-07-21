@@ -1,10 +1,9 @@
 #pragma once
 #include "Engine/Core/Character.h"
 #include "Engine/Collision/ICollider.h"
-#include "Engine/Collision/Ray.h"
-#include"Engine/AI/ITarget.h"
-#include"Engine/Input/IControllable.h"
 #include"Engine/Capture/ICaptureTarget.h"
+
+//アニメーション名たち
 namespace CrabEnemyAnim
 {
 	const std::wstring idle = L"MonsterArmature|Idle";
@@ -12,6 +11,7 @@ namespace CrabEnemyAnim
 	const std::wstring jump = L"MonsterArmature|Jump";
 };
 
+//ステート
 enum class State
 {
 	ai,
@@ -33,14 +33,22 @@ public:
 
 	void ChangeState(State nextState);
 
+	//上に乗っている奴を保存
 	void SetUpper(CrabEnemy* upper);
+	//下にいる奴を保存
 	void SetLower(CrabEnemy* lower);
+	//一番上のやつ
 	CrabEnemy* GetTop();
+	//一番下のやつ
 	CrabEnemy* GetBottom();
+	//上のやつをついていかせる
 	void FollowTower(CrabEnemy* lower);
 
 	//落下時地上に戻る
 	void ResetEnemyPos(const Vector3& pos);
+
+	//コライダー系のまとめ
+	void ColliderUpdate();
 	//------------------------------
 	// IColliderの関数
 	//------------------------------
@@ -71,7 +79,6 @@ public:
 	ICaptureTarget* GetHatAndCameraTarget()override;
 
 private:
-
 	int m_modelHandle;
 	int m_stageModelHandle;
 

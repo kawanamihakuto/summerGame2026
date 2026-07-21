@@ -1,6 +1,6 @@
 #pragma once
 
-//プリコンパイル済みヘッダ
+//なんか使う時とりあえずインクルードできる.h
 #include"DxLib.h"
 #include<vector>
 #include<array>

@@ -79,19 +79,22 @@ void ResourceManager::LoadResources()
 
 void ResourceManager::ReleaseResources()
 {
+    //モデル全部解放
     for (const auto all : m_modelHandleTable)
     {
         MV1DeleteModel(all.second);
     }
 
+    //画像全部開放
     for (const auto all : m_graphHandleTable)
     {
-        MV1DeleteModel(all.second);
+        DeleteGraph(all.second);
     }
 }
 
 int ResourceManager::GetModel(ModelType type) const
 {
+    //モデル取得
     for (const auto all : m_modelHandleTable)
     {
         if (all.first == type)
@@ -104,6 +107,7 @@ int ResourceManager::GetModel(ModelType type) const
 
 int ResourceManager::GetGraph(GraphType type) const
 {
+    //画像グラフ
     for (const auto all : m_graphHandleTable)
     {
         if (all.first == type)

@@ -2,12 +2,18 @@
 #include "Collider.h"
 #include"Engine/Math/Vector3.h"
 
+/// <summary>
+/// 球の情報
+/// </summary>
 struct SphereInfo
 {
 	Vector3 pos;
 	float radius;
 };
 
+/// <summary>
+/// 球のコライダー
+/// </summary>
 class SphereCollider : public Collider
 {
 public:
@@ -27,20 +33,24 @@ public:
 	/// </summary>
 	void Draw()override;
 
-	std::vector<WallHitInfo> CheckWallCollision(int stageModelHandle)override;
-
 	/// <summary>
-	/// 当たり判定デバッグ用
+	/// モデル(壁)との当たり判定
 	/// </summary>
-	void Hit();
+	std::vector<WallHitInfo> CheckWallCollision(int stageModelHandle)override;
 	/// <summary>
 	/// 球の情報を取得する
 	/// </summary>
 	/// <returns></returns>
 	SphereInfo GetSphereInfo()const;
-
+	/// <summary>
+	/// コライダータイプのゲッター
+	/// </summary>
+	/// <returns></returns>
 	ColliderType GetType()const override;
-
+	/// <summary>
+	/// 半径のゲッター
+	/// </summary>
+	/// <returns></returns>
 	float GetRadius()const override;
 
 private:

@@ -51,13 +51,18 @@ void FollowCamera::Update()
 	m_transform.SetRotate(rot);
 	//オフセットを回転
 	Vector3 offset = rot.Rotate(kOffset);
-	//ポジションを適用
+
+	//-----------------------------------
+	// ここからのLerpのとこは修正するかも
+	//-----------------------------------
+
+	//カメラ自身のポジション
 	m_pos.x = std::lerp(m_pos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
 	m_pos.y = std::lerp(m_pos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.03f);
 	m_pos.z = std::lerp(m_pos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);
-
+	//トランスフォームに適用
 	m_transform.SetPosition(m_pos + offset);
-
+	//ターゲットのポジション
 	m_targetPos.x = std::lerp(m_targetPos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
 	m_targetPos.y = std::lerp(m_targetPos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.06f);
 	m_targetPos.z = std::lerp(m_targetPos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);
@@ -65,6 +70,7 @@ void FollowCamera::Update()
 
 void FollowCamera::Apply()
 {
+	//DxLibに反映
 	SetCameraPositionAndTarget_UpVecY(
 		m_transform.position,
 		m_targetPos+kCameraHeightOffset
@@ -73,10 +79,12 @@ void FollowCamera::Apply()
 
 void FollowCamera::SetTarget(ICaptureTarget* target)
 {
+	//ターゲット設定
 	m_target = target;
 }
 
 CameraName FollowCamera::GetCameraName()
 {
+	//フォローカメラです
 	return CameraName::follow;
 }

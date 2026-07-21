@@ -3,6 +3,9 @@
 
 using CollisionLayer = uint32_t;
 
+/// <summary>
+/// コリジョンのレイヤーをビットで行う
+/// </summary>
 namespace CollisionLayers
 {
 	constexpr CollisionLayer kNone = 0;

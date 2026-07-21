@@ -15,8 +15,8 @@ namespace
 
 	constexpr Vector3 kModelScale = { 60.0f,60.0f,60.0f };
 
-	constexpr int kGoFrame = 35.0f;
-	constexpr int kWaitFrame = 65.0f;
+	constexpr int kGoFrame = 35;
+	constexpr int kWaitFrame = 65;
 }
 
 Hat::Hat(int modelHandle, int stageModelHandle, ICaptureTarget* target) :
@@ -78,7 +78,7 @@ void Hat::Update()
 		if (m_count++ >= kWaitFrame)
 		{
 			m_state = HatState::back;
-			m_count = 0.0f;
+			m_count = 0;
 		}
 		break;
 	case HatState::back:

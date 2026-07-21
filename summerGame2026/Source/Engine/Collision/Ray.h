@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include"Engine/Math/Vector3.h"
 
+/// <summary>
+/// レイの情報
+/// </summary>
 struct RayInfo
 {
 	Vector3 start;
@@ -10,6 +13,9 @@ struct RayInfo
 	Vector3 offset;
 };
 
+/// <summary>
+/// モデルとの当たり判定の情報
+/// </summary>
 struct HitInfo
 {
 	bool isHit = false;
@@ -29,13 +35,16 @@ public:
 	/// デバッグ表示
 	/// </summary>
 	void Draw();
-
 	/// <summary>
 	/// Rayの情報を取得する
 	/// </summary>
 	/// <returns></returns>
 	RayInfo GetRayInfo()const;
-
+	/// <summary>
+	/// モデルとの当たり判定
+	/// </summary>
+	/// <param name="modelHandle"></param>
+	/// <returns></returns>
 	HitInfo CheckModelCollision(int modelHandle);
 
 private:

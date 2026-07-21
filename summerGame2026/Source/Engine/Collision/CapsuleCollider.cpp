@@ -2,30 +2,19 @@
 #include"Engine/Core/Precompiled.h"
 
 CapsuleCollider::CapsuleCollider(const Vector3& pos, float radius, float height):
-	m_info({}, {},0.0f,0.0f),
-	m_col(0x00ff00)
+	m_info({}, {},0.0f,0.0f)
 {
+	//各情報を設定
 	Vector3 position = pos;
-
 	m_info.radius = radius;
-
 	m_info.height = height;
-
 	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
 	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
 }
 
 void CapsuleCollider::Update(const Vector3& pos)
 {
-	Vector3 position = pos;
-	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
-	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
-
-	m_col = 0x00ff00;
-}
-
-void CapsuleCollider::ReUpdate(const Vector3& pos)
-{
+	//位置を更新
 	Vector3 position = pos;
 	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
 	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
@@ -33,21 +22,24 @@ void CapsuleCollider::ReUpdate(const Vector3& pos)
 
 void CapsuleCollider::Draw()
 {
+	//描画
 	if (m_isActive)
 	{
 		DrawCapsule3D(m_info.start, m_info.end,
-			m_info.radius, 8, m_col, m_col, false);
+			m_info.radius, 8, 0xff0000,0xff0000, false);
 	}
 }
 
 std::vector<WallHitInfo> CapsuleCollider::CheckWallCollision(int stageModelHandle)
 {
+	//DxLibの関数でモデルとの当たり判定をする
 	auto result = MV1CollCheck_Capsule(stageModelHandle, -1,
 		m_info.start, m_info.end, m_info.radius);
 	
 	std::vector<WallHitInfo> info;
 	if (result.HitNum > 0)
 	{
+		//当たった情報をポリゴン分保存
 		info.resize(result.HitNum);
 		for (int i = 0; i < result.HitNum; i++)
 		{
@@ -65,11 +57,6 @@ std::vector<WallHitInfo> CapsuleCollider::CheckWallCollision(int stageModelHandl
 	MV1CollResultPolyDimTerminate(result);
 
 	return info;
-}
-
-void CapsuleCollider::Hit()
-{
-	m_col = 0xff0000;
 }
 
 CapsuleInfo CapsuleCollider::GetCapsuleInfo() const

@@ -2,6 +2,9 @@
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Math/Vector3.h"
 
+/// <summary>
+/// コリジョン情報
+/// </summary>
 struct CollisionResult
 {
 	bool isHit = false;
@@ -12,6 +15,9 @@ struct CollisionResult
 class SphereCollider;
 class CapsuleCollider;
 class ICollider;
+/// <summary>
+/// コライダーの当たり判定を行う
+/// </summary>
 class CollisionManager
 {
 public:
@@ -38,31 +44,19 @@ private:
 	/// <summary>
 	/// 2つのオブジェクトが衝突するかを判定
 	/// </summary>
-	/// <param name="obj1"></param>
-	/// <param name="obj2"></param>
-	/// <returns></returns>
 	bool CanCollide(ICollider& obj1, ICollider& obj2);
 
 	/// <summary>
 	/// 球と球の当たり判定
 	/// </summary>
-	/// <param name="a"></param>
-	/// <param name="b"></param>
-	/// <returns></returns>
 	CollisionResult CheckSphereSphere(const SphereCollider& a, const SphereCollider& b);
 	/// <summary>
 	/// カプセルとカプセルの当たり判定
 	/// </summary>
-	/// <param name="a"></param>
-	/// <param name="b"></param>
-	/// <returns></returns>
 	CollisionResult CheckCapsuleCapsule(const CapsuleCollider& a, const CapsuleCollider& b);
 	/// <summary>
 	/// カプセルと球の当たり判定
 	/// </summary>
-	/// <param name="a"></param>
-	/// <param name="b"></param>
-	/// <returns></returns>
 	CollisionResult CheckCapsuleSphere(const CapsuleCollider& a, const SphereCollider& b);
 
 	//オブジェクトたち

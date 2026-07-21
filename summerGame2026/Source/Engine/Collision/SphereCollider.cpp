@@ -27,6 +27,7 @@ void SphereCollider::Draw()
 
 std::vector<WallHitInfo> SphereCollider::CheckWallCollision(int stageModelHandle)
 {
+	//DxLibの関数でモデルとの当たり判定をする
 	auto result = MV1CollCheck_Sphere(stageModelHandle, -1,
 		m_info.pos, m_info.radius);
 
@@ -51,11 +52,6 @@ std::vector<WallHitInfo> SphereCollider::CheckWallCollision(int stageModelHandle
 
 	return info;
 }
-
-void SphereCollider::Hit()
-{
-}
-
 SphereInfo SphereCollider::GetSphereInfo() const
 {
 	return m_info;

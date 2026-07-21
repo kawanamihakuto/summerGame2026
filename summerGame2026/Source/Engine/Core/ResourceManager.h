@@ -1,6 +1,9 @@
 ﻿#pragma once
 #include"Engine/Core/Precompiled.h"
 
+/// <summary>
+/// モデルの種類
+/// </summary>
 enum class ModelType
 {
 	player,
@@ -8,7 +11,9 @@ enum class ModelType
 	crabEnemy,
 	hat
 };
-
+/// <summary>
+/// グラフィックの種類
+/// </summary>
 enum class GraphType
 {
 	skyFront,
@@ -48,11 +53,16 @@ private:
 	//画像の種類と実際のハンドル
 	std::map<GraphType, int>m_graphHandleTable;
 
+	//プレイヤーモデル
 	int m_playerModelHandle;
+	//ステージモデル
 	int m_stageModelHandle;
+	//かにエネミーモデル
 	int m_crabEnemyModelHandle;
+	//帽子モデル
 	int m_hatModelHandle;
 
+	//スカイボックスグラフィック
 	int m_skyBoxGraphHandles[6];
 };
 

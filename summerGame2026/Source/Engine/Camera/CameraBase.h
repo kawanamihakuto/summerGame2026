@@ -21,14 +21,12 @@ public:
 	virtual void Draw()override {};
 	//DxLibへの反映
 	virtual void Apply()abstract;
-
 	//自身のCameraNameを返す
 	virtual CameraName GetCameraName()abstract;
-
+	//DxLibに反映するかどうかをセット
 	void SetIsApply(bool is);
-
+	//DxLibに反映するかどうか
 	bool GetIsApply();
-
 	/// <summary>
 	/// カメラのTransformを取得する
 	/// </summary>
@@ -41,6 +39,7 @@ public:
 	const Transform& GetTransform()const;
 
 protected:
-	bool m_isApply;
+	//DxLibに反映するかどうか
+	bool m_isApply = 0;
 };
 

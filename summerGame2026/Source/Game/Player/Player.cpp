@@ -127,8 +127,6 @@ void Player::Update()
 		UpdateModel();
 
 		m_animationController->Update();
-
-		//	m_capsuleCol.ReUpdate(m_transform.GetPosition());
 	}
 }
 

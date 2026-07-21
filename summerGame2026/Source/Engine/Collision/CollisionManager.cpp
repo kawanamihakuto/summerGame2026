@@ -9,11 +9,13 @@ CollisionManager::CollisionManager()
 
 void CollisionManager::AddObject(ICollider& object)
 {
+	//追加
 	m_objects.push_back(&object);
 }
 
 void CollisionManager::ClearObjects()
 {
+	//クリア
 	m_objects.clear();
 }
 
@@ -33,9 +35,10 @@ void CollisionManager::CheckAllCollisions()
 						static_cast<const CapsuleCollider&>(m_objects[j]->GetCollider())
 					);
 
+					//片方のnormalを反転しておく
 					auto res2 = res;
 					res2.normal *= -1.0f;
-
+					//当たってたらOnCollisionを呼ぶ
 					if (res.isHit)
 					{
 						m_objects[i]->OnCollision(*m_objects[j],res);
@@ -100,11 +103,13 @@ void CollisionManager::CheckAllCollisions()
 
 void CollisionManager::RemoveObject(ICollider* collider)
 {
+	//指定されたオブジェクトを削除
 	m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), collider),m_objects.end());
 }
 
 bool CollisionManager::CanCollide(ICollider& obj1, ICollider& obj2)
 {
+	//当たらない
 	if ((obj1.GetCollisionLayer() & obj2.GetCollisionMask()) == 0)
 	{
 		return false;
@@ -114,6 +119,7 @@ bool CollisionManager::CanCollide(ICollider& obj1, ICollider& obj2)
 		return false;
 	}
 
+	//それ以外は当たる
 	return true;
 }
 
@@ -122,22 +128,23 @@ CollisionResult CollisionManager::CheckSphereSphere(const SphereCollider& a, con
 	SphereInfo infoA = a.GetSphereInfo();
 	SphereInfo infoB = b.GetSphereInfo();
 
+	//距離
 	Vector3 vec = infoA.pos - infoB.pos;
-
+	//半径の合計
 	float radiusSum = infoA.radius + infoB.radius;
-
+	//距離が半径の合計よりも小さかったら当たってる
 	if (vec.Length() < radiusSum)
 	{
-
+		//法線
 		Vector3 normal = vec.Normalized();
-				
+		//近すぎたら適当なベクトル
 		if(vec.Length() <= 0.01f)
 		{
 			normal = { 1.0f,0.0f,0.0f };
 		}
-
+		//押し戻し量
 		float penetartion = radiusSum - vec.Length();
-
+		//リザルト設定
 		CollisionResult result = { true,normal,penetartion };
 
 		return result;
