@@ -36,9 +36,11 @@ public:
 protected:
 	//速度
 	Vector3 m_velocity = {};
-	//コライダー
-	std::unique_ptr<Collider> m_collider;
-	//レイ
+	//壁との当たり判定用コライダー
+	std::unique_ptr<Collider> m_stageCollider;
+	//キャラクターとの当たり判定用コライダー
+	std::unique_ptr<Collider> m_bodyCollider;
+	//地面判定用レイ
 	std::vector<std::unique_ptr<Ray>> m_ray;
 	//地面にいるかどうか
 	bool m_isGround = false;

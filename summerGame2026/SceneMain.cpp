@@ -15,12 +15,14 @@
 
 namespace
 {
+	//カメラ設定
 	constexpr Vector3 kCameraPosition = { 0.0f, 300.0f, -700.0f };
 	constexpr Vector3 kCameraTarget = { 0.0f, 0.0f, 0.0f };
 	constexpr float kFov = DX_PI_F / 3.0f;
 	constexpr float kCameraNear = 50.0f;
 	constexpr float kCameraFar = 3000.0f;
 
+	//敵のスポーン位置(仮)
 	constexpr Vector3 kCrabSpawn1 = { 0.0f, -200.0f, 0.0f };
 	constexpr Vector3 kCrabSpawn2 = { 100.0f, -200.0f, 0.0f };
 	constexpr Vector3 kCrabSpawn3 = { 0.0f, -200.0f, 100.0f };
@@ -118,14 +120,12 @@ void SceneMain::Update()
 	//ライトの方向を適用(仮)
 	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
 
-#ifdef _DEBUG
 	//敵生成
 	if (input.GetInstance().IsTriggered("SELECT"))
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 0.0f,-200.0f,100.0f }));
 	}
-#endif // _DEBUG
 }
 
 void SceneMain::Draw()

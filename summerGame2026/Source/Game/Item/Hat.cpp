@@ -30,8 +30,8 @@ Hat::Hat(int modelHandle, int stageModelHandle, ICaptureTarget* target) :
 	m_modelHandle = MV1DuplicateModel(modelHandle);
 	m_stageModelHandle = stageModelHandle;
 
-	m_collider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
-	m_collider->SetIsActive(false);
+	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
+	m_stageCollider->SetIsActive(false);
 	m_state = HatState::have;
 }
 
@@ -55,13 +55,13 @@ void Hat::Update()
 	{
 	case HatState::have:
 		m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
-		m_collider->SetIsActive(false);
+		m_stageCollider->SetIsActive(false);
 		break;
 	case HatState::go:
 		m_direction.Normalize();
 		m_velocity = m_direction * kGoSpeed;
 
-		m_collider->Update(m_transform.position + m_velocity);
+		m_stageCollider->Update(m_transform.position + m_velocity);
 
 		ResolveWallVelocity(m_stageModelHandle);
 
@@ -93,7 +93,7 @@ void Hat::Update()
 		m_direction.Normalize();
 		m_velocity = m_direction * kBackSpeed;
 
-		m_collider->Update(m_transform.position + m_velocity);
+		m_stageCollider->Update(m_transform.position + m_velocity);
 
 		ResolveWallVelocity(m_stageModelHandle);
 
@@ -111,8 +111,7 @@ void Hat::Draw()
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
-	m_collider->Draw();
-	DrawFormatString(16,232,0xffffff,L"hatState : %d",m_state);
+	m_stageCollider->Draw();
 #endif // _DEBUG
 
 }
@@ -122,7 +121,7 @@ void Hat::Throw(const Vector3& dir)
 	if (m_state == HatState::have)
 	{
 		m_direction = dir.Normalized();
-		m_collider->SetIsActive(true);
+		m_stageCollider->SetIsActive(true);
 		m_state = HatState::go;
 		m_count = 0;
 	}
@@ -130,7 +129,7 @@ void Hat::Throw(const Vector3& dir)
 
 const Collider& Hat::GetCollider() const
 {
-	return *m_collider;
+	return *m_stageCollider;
 }
 
 const Ray& Hat::GetRay() const
@@ -171,8 +170,8 @@ void Hat::SetTarget(ICaptureTarget* target)
 	m_target = target->GetHatAndCameraTarget();
 	m_state = HatState::have;
 	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
-	m_collider->Update(m_transform.position);
-	m_collider->SetIsActive(false);
+	m_stageCollider->Update(m_transform.position);
+	m_stageCollider->SetIsActive(false);
 }
 
 ICaptureTarget* Hat::GetCaptureTarget()

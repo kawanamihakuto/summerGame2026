@@ -84,6 +84,8 @@ private:
 
 	int m_HeadFrameIndex;
 
+	float m_capsuleColliderHeight;
+
 	std::shared_ptr<AnimationController>m_animationController;
 
 	CaptureManager& m_captureManager;

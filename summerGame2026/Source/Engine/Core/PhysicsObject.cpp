@@ -9,7 +9,7 @@ namespace
 void PhysicsObject::ResolveWallVelocity(int stageModelHandle)
 {
 	//DxLibの関数でモデルとの当たり判定をする
-	auto hits = m_collider->CheckWallCollision(stageModelHandle);
+	auto hits = m_stageCollider->CheckWallCollision(stageModelHandle);
 
 	for (const auto& hit : hits)
 	{

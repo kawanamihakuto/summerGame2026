@@ -44,7 +44,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	m_stageModelHandle = stageModel;
 
-	m_collider = std::make_unique<CapsuleCollider>(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
+	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
 
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
@@ -106,7 +106,7 @@ void Player::Update()
 			}
 		}
 
-		m_collider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+		m_stageCollider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 
 		ResolveWallVelocity(m_stageModelHandle);
 
@@ -140,20 +140,18 @@ void Player::Draw()
 #ifdef _DEBUG
 	if (m_isActive)
 	{
-		m_collider->Draw();
+		m_stageCollider->Draw();
 		for (int i = 0; i < kGroundRayNum; i++)
 		{
 			m_ray[i]->Draw();
 		}
 	}
-
-	DrawFormatString(16,96,0xffffff,L"isGround : %d",m_isGround);
 #endif // _DEBUG
 }
 
 const Collider& Player::GetCollider() const
 {
-	return *m_collider;
+	return *m_stageCollider;
 }
 
 const Ray& Player::GetRay() const

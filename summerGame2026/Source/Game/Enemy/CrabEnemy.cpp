@@ -6,12 +6,15 @@
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Capture/CaptureManager.h"
 #include"Engine/Collision/CollisionManager.h"
+#include"Engine/Collision/CapsuleCollider.h"
 namespace
 {
-	//球コライダーオフセット
-	constexpr Vector3 kSphereOffset = { 0.0f,50.0f,0.0f };
-	//球の当たり判定の半径
-	constexpr float kRadius = 40.0f;
+	constexpr float kCapsuleHeightOffset = 40.0f;
+	constexpr float kCapsuleRadius = 40.0f;
+	constexpr float kCapsuleHeight = 0.0f;
+
+	constexpr Vector3 kSphereHeightOffset = {0.0f,40.0f ,0.0f};
+	constexpr float kSphereRadius = 40.0f;
 
 	//通常スピード
 	constexpr float kSpeed = 2.0f;
@@ -55,7 +58,8 @@ namespace
 
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
 	Character(camera),
-	m_captureManager(captureManager)
+	m_captureManager(captureManager),
+	m_capsuleColliderHeight(kCapsuleHeight)
 {
 	//自分のモデル複製
 	m_modelHandle = MV1DuplicateModel(enemyModel);
@@ -63,8 +67,11 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	m_stageModelHandle = stageModel;
 	//ステート
 	m_state = State::ai;
-	//球のコライダー生成
-	m_collider = std::make_unique<SphereCollider>(m_transform.position, kRadius);
+	//ステージ用コライダー生成
+	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
+//	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f, kCapsuleHeightOffset, 0.0f }, kCapsuleRadius, kCapsuleHeight);
+	//キャラクター用コライダー生成
+	m_bodyCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
 	//レイ生成
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
@@ -163,41 +170,47 @@ void CrabEnemy::Update()
 				m_animationController->Play(CrabEnemyAnim::idle);
 			}
 		}
-
+		//速度決める
 		UpdateMove();
-
+		//回転
 		UpdateRotate(kModelRotationOffset);
-
+		//重力
 		Gravity();
-
+		//コライダー系の更新
 		ColliderUpdate();
 		break;
 
 	case State::tower:
-		m_collider->Update(m_transform.position + kSphereOffset + m_velocity);
-
+		//コライダーを動かす
+		m_stageCollider->Update(m_transform.position + Vector3{0.0f, kCapsuleHeightOffset, 0.0f} + m_velocity);
+		m_bodyCollider->Update(m_transform.position + kSphereHeightOffset+ m_velocity);
+		//レイを動かす
 		for (auto& ray : m_ray)
 		{
 			ray->Update(m_transform.GetPosition() + m_velocity);
 		}
 		break;
 	}
-
+	//空中にいるときに動く
 	if (!m_isGround)
 	{
 		m_transform.Translate(m_velocity);
 	}
-
+	//一番下なら
 	if (m_lower == nullptr)
 	{
+		//上のやつがいたら
 		if (m_upper)
 		{
+			//上のやつらをついてこさせる
 			m_upper->FollowTower(this);
 		}
 	}
 
+	//奈落に落ちたとき用
 	ResetEnemyPos({ 0.0f,0.0f,0.0f });
 
+	//モデルに適用させるよ
 	MV1SetPosition(m_modelHandle, m_transform.GetPosition());
 	MV1SetRotationMatrix(m_modelHandle, m_transform.GetRotationMatrix().ChangeDxMat());
 	m_animationController->Update();
@@ -205,10 +218,13 @@ void CrabEnemy::Update()
 
 void CrabEnemy::Draw()
 {
+	//モデル描画
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
-	m_collider->Draw();
+	//コライダーとか描画
+	m_stageCollider->Draw();
+	m_bodyCollider->Draw();
 	for (auto& ray : m_ray)
 	{
 		ray->Draw();
@@ -234,7 +250,7 @@ void CrabEnemy::SetLower(CrabEnemy* lower)
 CrabEnemy* CrabEnemy::GetTop()
 {
 	CrabEnemy* current = this;
-
+	//一番上のやつまで回す
 	while (current->m_upper)
 	{
 		current = current->m_upper;
@@ -246,7 +262,7 @@ CrabEnemy* CrabEnemy::GetTop()
 CrabEnemy* CrabEnemy::GetBottom()
 {
 	CrabEnemy* current = this;
-
+	//一番下のやつまで回す
 	while (current->m_lower)
 	{
 		current = current->m_lower;
@@ -259,7 +275,7 @@ void CrabEnemy::FollowTower(CrabEnemy* lower)
 {
 	m_transform.SetPosition(lower->GetTransform().GetPosition() + kTowerHeight);
 	m_transform.SetRotate(lower->GetTransform().GetRotation());
-
+	//一番上のやつまで回す
 	if (m_upper)
 	{
 		m_upper->FollowTower(this);
@@ -276,7 +292,8 @@ void CrabEnemy::ResetEnemyPos(const Vector3& pos)
 
 void CrabEnemy::ColliderUpdate()
 {
-	m_collider->Update(m_transform.position + kSphereOffset + m_velocity);
+	m_stageCollider->Update(m_transform.position + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+	m_bodyCollider->Update(m_transform.position + kSphereHeightOffset +m_velocity);
 
 	ResolveWallVelocity(m_stageModelHandle);
 
@@ -290,7 +307,7 @@ void CrabEnemy::ColliderUpdate()
 
 const Collider& CrabEnemy::GetCollider() const
 {
-	return *m_collider;
+	return *m_bodyCollider;
 }
 
 const Ray& CrabEnemy::GetRay() const
@@ -328,12 +345,14 @@ CollisionLayer CrabEnemy::GetCollisionMask() const
 
 void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 {
+	//プレイヤーに踏まれるよ
 	if (other.GetCollisionLayer() == CollisionLayers::kPlayer)
 	{
 		if (auto obj = dynamic_cast<PhysicsObject*>(&other))
 		{
 			if (result.normal.y > 0.5f && obj->GetVelocity().y < 0.0f)
 			{
+				//上のやつとか下のやつをつなげるよ
 				if (m_lower)
 				{
 					if (m_upper)
@@ -350,6 +369,8 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 			}
 		}
 	}
+
+	//敵同士の押し戻し
 	if (m_state == State::ai)
 	{
 		if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
@@ -360,7 +381,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 				{
 					Vector3 push = result.normal * result.penetration;
 
-					auto hits = m_collider->CheckWallCollision(m_stageModelHandle);
+					auto hits = m_stageCollider->CheckWallCollision(m_stageModelHandle);
 
 					for (const auto& hit : hits)
 					{
@@ -381,6 +402,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 		}
 	}
 
+	//重なる処理
 	if (other.GetCollisionLayer() == CollisionLayers::kControllEnemy)
 	{
 		if (auto obj = dynamic_cast<PhysicsObject*>(&other))
@@ -415,6 +437,7 @@ void CrabEnemy::Move(const Vector2& input)
 
 void CrabEnemy::Jump()
 {
+	//地面にいたらジャンプするよ
 	if (m_isGround)
 	{
 		m_velocity.y = kJumpPower;
