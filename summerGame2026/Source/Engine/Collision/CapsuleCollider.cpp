@@ -8,16 +8,16 @@ CapsuleCollider::CapsuleCollider(const Vector3& pos, float radius, float height)
 	Vector3 position = pos;
 	m_info.radius = radius;
 	m_info.height = height;
-	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
-	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
+	m_info.start = position + Vector3(0.0f, m_info.height / 2.0f, 0.0f);
+	m_info.end = position - Vector3(0.0f, m_info.height / 2.0f, 0.0f);
 }
 
 void CapsuleCollider::Update(const Vector3& pos)
 {
 	//位置を更新
 	Vector3 position = pos;
-	m_info.start = position + Vector3(0.0f, m_info.radius, 0.0f);
-	m_info.end = position + Vector3(0.0f, m_info.height - m_info.radius, 0.0f);
+	m_info.start = position + Vector3(0.0f, m_info.height / 2.0f, 0.0f);
+	m_info.end = position - Vector3(0.0f, m_info.height / 2.0f, 0.0f);
 }
 
 void CapsuleCollider::Draw()

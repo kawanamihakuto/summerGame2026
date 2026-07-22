@@ -12,9 +12,9 @@ namespace
 
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
-	constexpr float kCapsuleHeightOffset = 10.0f;
+	constexpr float kCapsuleHeightOffset = 75.0f;
 	constexpr float kCapsuleRadius = 30.0f;
-	constexpr float kCapsuleHeight = 130.0f;
+	constexpr float kCapsuleHeight = 75.0f;
 
 	constexpr int kGroundRayNum = 4;
 	constexpr float kGroundRayHeightOffset = 135.0f;

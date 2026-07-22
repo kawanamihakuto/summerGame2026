@@ -43,6 +43,8 @@ public:
 	CrabEnemy* GetBottom();
 	//上のやつをついていかせる
 	void FollowTower(CrabEnemy* lower);
+	//タワーの敵の数
+	void CheckTowerNum();
 
 	//落下時地上に戻る
 	void ResetEnemyPos(const Vector3& pos);
@@ -81,6 +83,8 @@ public:
 private:
 	int m_modelHandle;
 	int m_stageModelHandle;
+
+	int m_towerNum;
 
 	int m_HeadFrameIndex;
 

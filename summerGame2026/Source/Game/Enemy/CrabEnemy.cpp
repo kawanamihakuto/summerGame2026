@@ -59,7 +59,8 @@ namespace
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
 	Character(camera),
 	m_captureManager(captureManager),
-	m_capsuleColliderHeight(kCapsuleHeight)
+	m_capsuleColliderHeight(kCapsuleHeight),
+	m_towerNum(1)
 {
 	//自分のモデル複製
 	m_modelHandle = MV1DuplicateModel(enemyModel);
@@ -68,8 +69,8 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	//ステート
 	m_state = State::ai;
 	//ステージ用コライダー生成
-	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
-//	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f, kCapsuleHeightOffset, 0.0f }, kCapsuleRadius, kCapsuleHeight);
+//	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
+	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f, kCapsuleHeightOffset, 0.0f }, kCapsuleRadius, kCapsuleHeight);
 	//キャラクター用コライダー生成
 	m_bodyCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
 	//レイ生成
@@ -207,6 +208,9 @@ void CrabEnemy::Update()
 		}
 	}
 
+	m_towerNum = 1;
+	CheckTowerNum();
+
 	//奈落に落ちたとき用
 	ResetEnemyPos({ 0.0f,0.0f,0.0f });
 
@@ -279,6 +283,26 @@ void CrabEnemy::FollowTower(CrabEnemy* lower)
 	if (m_upper)
 	{
 		m_upper->FollowTower(this);
+	}
+}
+
+void CrabEnemy::CheckTowerNum()
+{
+	if (m_lower == nullptr)
+	{
+		if (m_upper)
+		{
+			m_towerNum++;
+			m_upper->CheckTowerNum();
+		}
+	}
+	else
+	{
+		if (m_upper)
+		{
+			m_towerNum++;
+			m_upper->CheckTowerNum();
+		}
 	}
 }
 
