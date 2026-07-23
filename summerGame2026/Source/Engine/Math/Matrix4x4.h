@@ -26,7 +26,7 @@ public:
 		float m20, float m21, float m22, float m23,
 		float m30, float m31, float m32, float m33);
 
-	Matrix4x4(const MATRIX& mat);
+	explicit Matrix4x4(const MATRIX& mat);
 
 	//----------------------
 	//行列を生成する関数たち

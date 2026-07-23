@@ -517,7 +517,7 @@ CameraAnchor CrabEnemy::GetCameraAnchor() const
 
 Matrix4x4 CrabEnemy::GetHatMatrix() const
 {
-	Matrix4x4 mat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_HeadFrameIndex);
+	Matrix4x4 mat = Matrix4x4(MV1GetFrameLocalWorldMatrix(m_modelHandle, m_HeadFrameIndex));
 	return mat;
 }
 

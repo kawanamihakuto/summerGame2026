@@ -248,7 +248,7 @@ Vector3 Player::GetPosition() const
 
 Matrix4x4 Player::GetHatMatrix() const
 {
-	Matrix4x4 mat = MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headFrameIndex);
+	Matrix4x4 mat = Matrix4x4(MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headFrameIndex));
 
 	Matrix4x4 offsetMat = Matrix4x4::Translate({ 0.0f,-10.0f,-10.0f });
 
