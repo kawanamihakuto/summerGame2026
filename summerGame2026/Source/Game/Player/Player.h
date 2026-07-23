@@ -70,7 +70,7 @@ public:
 	void ResetPlayerPos(const Vector3& pos);
 
 	Vector3 GetLastMoveDirection() { return { m_lastMoveInput.x,0.0f,m_lastMoveInput.z }; }
-
+	//キャプチャー解除時のアクション
 	void CaptureReleaseAction(const Vector3& pos);
 private:
 	int m_modelHandle;

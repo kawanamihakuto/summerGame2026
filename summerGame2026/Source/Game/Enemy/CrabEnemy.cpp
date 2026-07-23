@@ -7,13 +7,20 @@
 #include"Engine/Capture/CaptureManager.h"
 #include"Engine/Collision/CollisionManager.h"
 #include"Engine/Collision/CapsuleCollider.h"
+#include"Engine/Collision/Ray.h"
 namespace
 {
-	constexpr float kCapsuleHeightOffset = 40.0f;
-	constexpr float kCapsuleRadius = 40.0f;
-	constexpr float kCapsuleHeight = 0.0f;
+	//高さ
+	constexpr float kHeight = 70.0f;
 
-	constexpr Vector3 kSphereHeightOffset = {0.0f,40.0f ,0.0f};
+	//カプセルの高さオフセット
+	constexpr float kCapsuleHeightOffset = 15.0f;
+	//カプセル半径
+	constexpr float kCapsuleRadius = 40.0f;
+
+	//球高さオフセット
+	constexpr Vector3 kSphereHeightOffset = { 0.0f,40.0f ,0.0f };
+	//球半径
 	constexpr float kSphereRadius = 40.0f;
 
 	//通常スピード
@@ -36,30 +43,29 @@ namespace
 	//地面判定用のレイの数
 	constexpr int kGroundRayNum = 4;
 	//レイの高さオフセット
-	constexpr float kGroundRayHeightOffset = 85.0f;
-	//レイの中心からの横オフセット
+	constexpr float kGroundRayHeightOffset = 5.0f;
+	//レイの中心からの横オフセット幅
 	constexpr float kGroundRayWidthOffset = 15.0f;
 	//レイの長さ
 	constexpr float kGroundRayLength = 90.0f;
 	//レイの飛ばす方向
 	Vector3 kGroundRayDirection = { 0.0f,-1.0f,0.0f };
-	//オフセットの合成
-	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
+	//横オフセットたち
+	constexpr Vector3 kGroundRayWidthOffsets[kGroundRayNum] =
 	{
-		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},
-		{0.0f,kGroundRayHeightOffset,-kGroundRayWidthOffset},
-		{kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
-		{-kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
+		{0.0f                  , 0.0f , kGroundRayWidthOffset  },
+		{0.0f                  , 0.0f , -kGroundRayWidthOffset },
+		{kGroundRayWidthOffset , 0.0f , 0.0f                   },
+		{-kGroundRayWidthOffset, 0.0f , 0.0f                   },
 	};
 
-	//帽子をかぶせたいフレーム
+	//帽子をかぶせたいフレーム名
 	constexpr const wchar_t* kHeadFrameName = L"Head3";
 }
 
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
 	Character(camera),
 	m_captureManager(captureManager),
-	m_capsuleColliderHeight(kCapsuleHeight),
 	m_towerNum(1)
 {
 	//自分のモデル複製
@@ -69,15 +75,14 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	//ステート
 	m_state = State::ai;
 	//ステージ用コライダー生成
-//	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
-	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f, kCapsuleHeightOffset, 0.0f }, kCapsuleRadius, kCapsuleHeight);
+	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f}, kCapsuleRadius, 0.0f);
 	//キャラクター用コライダー生成
 	m_bodyCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
 	//レイ生成
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i] = std::make_unique<Ray>(m_transform.position, kGroundRayDirection, kGroundRayLength, kGroundRayOffsets[i]);
+		m_ray[i] = std::make_unique<Ray>(m_transform.position, kGroundRayDirection, kGroundRayLength, kGroundRayWidthOffsets[i], kHeight +kGroundRayHeightOffset);
 	}
 	//頭のフレームのインデックス
 	m_HeadFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
@@ -113,6 +118,18 @@ void CrabEnemy::End()
 
 void CrabEnemy::Update()
 {
+	m_towerNum = 1;
+	CheckTowerNum();
+	if (auto capsule = dynamic_cast<CapsuleCollider*>(m_stageCollider.get()))
+	{
+		capsule->SetHeight(kHeight * (m_towerNum - 1));
+	}
+
+	for (int i = 0; i < kGroundRayNum; i++)
+	{
+		m_ray[i]->SetOffSetAndLength(kGroundRayWidthOffsets[i],(kHeight * m_towerNum) + kGroundRayHeightOffset, (kHeight * m_towerNum) + kGroundRayHeightOffset);
+	}
+
 	Vector3 vec;
 	Vector3 dir;
 	switch (m_state)
@@ -183,13 +200,15 @@ void CrabEnemy::Update()
 
 	case State::tower:
 		//コライダーを動かす
-		m_stageCollider->Update(m_transform.position + Vector3{0.0f, kCapsuleHeightOffset, 0.0f} + m_velocity);
-		m_bodyCollider->Update(m_transform.position + kSphereHeightOffset+ m_velocity);
+		m_stageCollider->Update(m_transform.position + Vector3{ 0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f } + m_velocity);
+		m_bodyCollider->Update(m_transform.position + kSphereHeightOffset + m_velocity);
 		//レイを動かす
 		for (auto& ray : m_ray)
 		{
 			ray->Update(m_transform.GetPosition() + m_velocity);
 		}
+
+		m_animationController->Play(CrabEnemyAnim::idle);
 		break;
 	}
 	//空中にいるときに動く
@@ -208,9 +227,6 @@ void CrabEnemy::Update()
 		}
 	}
 
-	m_towerNum = 1;
-	CheckTowerNum();
-
 	//奈落に落ちたとき用
 	ResetEnemyPos({ 0.0f,0.0f,0.0f });
 
@@ -227,12 +243,17 @@ void CrabEnemy::Draw()
 
 #ifdef _DEBUG
 	//コライダーとか描画
-	m_stageCollider->Draw();
-	m_bodyCollider->Draw();
-	for (auto& ray : m_ray)
+	if (m_state != State::tower)
 	{
-		ray->Draw();
+		m_stageCollider->Draw();
+
+		for (auto& ray : m_ray)
+		{
+			ray->Draw();
+		}
 	}
+//	m_bodyCollider->Draw();
+
 #endif // _DEBUG
 }
 
@@ -296,11 +317,12 @@ void CrabEnemy::CheckTowerNum()
 			m_upper->CheckTowerNum();
 		}
 	}
-	else
+	
+	if(m_lower)
 	{
 		if (m_upper)
 		{
-			m_towerNum++;
+			GetBottom()->m_towerNum++;
 			m_upper->CheckTowerNum();
 		}
 	}
@@ -316,8 +338,8 @@ void CrabEnemy::ResetEnemyPos(const Vector3& pos)
 
 void CrabEnemy::ColliderUpdate()
 {
-	m_stageCollider->Update(m_transform.position + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
-	m_bodyCollider->Update(m_transform.position + kSphereHeightOffset +m_velocity);
+	m_stageCollider->Update(m_transform.position + (Vector3{ 0.0f,kHeight / 2.0f,0.0f } * m_towerNum) + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+	m_bodyCollider->Update(m_transform.position + kSphereHeightOffset + m_velocity);
 
 	ResolveWallVelocity(m_stageModelHandle);
 
@@ -387,6 +409,14 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 					else
 					{
 						m_lower->m_upper = nullptr;
+					}
+				}
+				else
+				{
+					if (m_upper)
+					{
+						m_upper->m_lower = nullptr;
+						m_upper->ChangeState(State::ai);
 					}
 				}
 				Destroy();

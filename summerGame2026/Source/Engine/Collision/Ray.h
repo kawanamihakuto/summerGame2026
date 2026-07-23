@@ -25,7 +25,7 @@ struct HitInfo
 class Ray
 {
 public:
-	Ray(const Vector3& pos, const Vector3& dir, float length, const Vector3& offset);
+	Ray(const Vector3& pos, const Vector3& dir, float length, const Vector3& widthOffset,float heightOffset);
 	/// <summary>
 	/// 更新
 	/// </summary>
@@ -46,6 +46,11 @@ public:
 	/// <param name="modelHandle"></param>
 	/// <returns></returns>
 	HitInfo CheckModelCollision(int modelHandle);
+	/// <summary>
+	/// 高さをセットする
+	/// </summary>
+	/// <param name="height"></param>
+	void SetOffSetAndLength(const Vector3& widthOffset,float heightOffset,float length);
 
 private:
 	RayInfo m_info;

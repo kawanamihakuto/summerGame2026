@@ -1,11 +1,11 @@
 #include "Ray.h"
 #include"Engine/Core/Precompiled.h"
-Ray::Ray(const Vector3& pos, const Vector3& dir, float length,const Vector3& offset)
+Ray::Ray(const Vector3& pos, const Vector3& dir, float length,const Vector3& widthOffset, float heightOffset)
 {
 	Vector3 position = pos;
 
-	m_info.offset = offset;
-	m_info.start = position + offset;
+	m_info.offset = widthOffset + Vector3{0.0f,heightOffset,0.0f};
+	m_info.start = position + m_info.offset;
 	m_info.direction = dir.Normalized();
 	m_info.length = length;
 
@@ -45,4 +45,10 @@ HitInfo Ray::CheckModelCollision(int modelHandle)
 	info.hitPosition = result.HitPosition;
 
 	return info;
+}
+
+void Ray::SetOffSetAndLength(const Vector3& widthOffset, float heightOffset, float length)
+{
+	m_info.offset = widthOffset + Vector3{ 0.0f,heightOffset ,0.0f };
+	m_info.length = length;
 }

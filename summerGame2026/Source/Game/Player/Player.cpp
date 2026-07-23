@@ -7,30 +7,39 @@
 #include"Engine/Collision/CapsuleCollider.h"
 namespace
 {
+	//スピード
 	constexpr float kSpeed = 5.0f;
+	//マックススピード
 	constexpr float kMaxSpeed = 6.0f;
 
+	//モデルの回転オフセット
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
 
-	constexpr float kCapsuleHeightOffset = 75.0f;
+	//カプセル高さオフセット
+	constexpr float kCapsuleHeightOffset = 80.0f;
+	//カプセル半径
 	constexpr float kCapsuleRadius = 30.0f;
-	constexpr float kCapsuleHeight = 75.0f;
-
+	//カプセル高さ
+	constexpr float kCapsuleHeight = 70.0f;
+	//レイの数
 	constexpr int kGroundRayNum = 4;
+	//レイ高さオフセット
 	constexpr float kGroundRayHeightOffset = 135.0f;
+	//レイ長さ
 	constexpr float kGroundRayLength = 140.0f;
+	//レイ横幅オフセット
 	constexpr float kGroundRayWidthOffset = 15.0f;
-	
-	constexpr Vector3 kGroundRayOffsets[kGroundRayNum] =
+	//レイ横オフセットたち
+	constexpr Vector3 kGroundRayWidthOffsets[kGroundRayNum] =
 	{
-		{0.0f,kGroundRayHeightOffset,kGroundRayWidthOffset},
-		{0.0f,kGroundRayHeightOffset,-kGroundRayWidthOffset},
-		{kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
-		{-kGroundRayWidthOffset,kGroundRayHeightOffset,0.0f},
+		{0.0f                  ,0.0f, kGroundRayWidthOffset  },
+		{0.0f                  ,0.0f, -kGroundRayWidthOffset },
+		{kGroundRayWidthOffset ,0.0f, 0.0f                   },
+		{-kGroundRayWidthOffset,0.0f, 0.0f                   },
 	};
-
+	//ジャンプ力
 	constexpr float kJumpPower = 20.0f;
-
+	//帽子をかぶせたいフレーム名
 	constexpr const wchar_t* kHeadFrameName = L"mixamorig:HeadTop_End";
 }
 
@@ -41,18 +50,31 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_groundPlayerPos({}),
 	m_isNextJump(false)
 {
+	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
+	//ステージとの当たり判定用
 	m_stageModelHandle = stageModel;
-
+	//ステージとの当たり判定用コライダー生成
 	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f }, kCapsuleRadius, kCapsuleHeight);
 
+	//ステージとの当たり判定用レイ生成
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayOffsets[i]);
+		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayWidthOffsets[i], kGroundRayHeightOffset);
 	}
 
+	//帽子をかぶせたいフレームインデックス
 	m_headFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
+
+	//アニメーションコントローラー
+	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
+	//アニメーション追加
+	m_animationController->AddAnimation(PlayerAnim::idle);
+	m_animationController->AddAnimation(PlayerAnim::run);
+	m_animationController->AddAnimation(PlayerAnim::jump);
+	//アニメーション再生
+	m_animationController->Play(PlayerAnim::idle);
 }
 
 Player::~Player()
@@ -62,13 +84,7 @@ Player::~Player()
 
 void Player::Init()
 {
-	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
-
-	m_animationController->AddAnimation(PlayerAnim::idle);
-	m_animationController->AddAnimation(PlayerAnim::run);
-	m_animationController->AddAnimation(PlayerAnim::jump);
-
-	m_animationController->Play(PlayerAnim::idle);
+	
 }
 
 void Player::End()
@@ -77,69 +93,89 @@ void Player::End()
 
 void Player::Update()
 {
+	//アクティブだったら
 	if (m_isActive)
 	{
+		//ネクストジャンプフラグが立ってたら
 		if (m_isNextJump)
 		{
+			//ジャンプ
 			Jump();
 		}
 
+		//速度を決める
 		UpdateMove();
+		//回転
 		UpdateRotate(kModelRotationOffset);
-
+		//重力
 		Gravity();
 
 		Vector3 dir = { m_velocity.x, 0.0f, m_velocity.z };
+		//移動してたら
 		if (dir.Length() > 0.0f)
 		{
+			//地面にいたら
 			if (m_isGround)
 			{
+				//走るアニメーション再生
 				m_animationController->Play(PlayerAnim::run);
 			}
 		}
 
+		//移動してなかったら
 		if (dir.Length() == 0)
 		{
+			//地面にいたら
 			if (m_isGround)
 			{
+				//待機アニメーション再生
 				m_animationController->Play(PlayerAnim::idle);
 			}
 		}
-
+		//ステージとの当たり判定コライダー更新
 		m_stageCollider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
-
+		//ステージ壁との押し戻し
 		ResolveWallVelocity(m_stageModelHandle);
-
+		//ステージとの当たり判定レイ更新
 		for (auto& ray : m_ray)
 		{
 			ray->Update(m_transform.GetPosition() + m_velocity);
 		}
-
+		//ステージ地面との押し戻し
 		GroundCollision(m_stageModelHandle);
 
+		//地面にいないとき
 		if (!m_isGround)
 		{
+			//位置更新
 			m_transform.Translate(m_velocity);
 		}
 
+		//奈落に落ちたとき用
 		ResetPlayerPos({ 0.0f,0.0f,0.0f });
 
+		//モデル更新
 		UpdateModel();
 
+		//アニメーション更新
 		m_animationController->Update();
 	}
 }
 
 void Player::Draw()
 {
+	//アクティブだったら
 	if (m_isActive)
 	{
+		//モデル描画
 		MV1DrawModel(m_modelHandle);
 	}
 
 #ifdef _DEBUG
+	//アクティブだったら
 	if (m_isActive)
 	{
+		//当たり判定系描画
 		m_stageCollider->Draw();
 		for (int i = 0; i < kGroundRayNum; i++)
 		{
@@ -161,7 +197,7 @@ const Ray& Player::GetRay() const
 
 CameraAnchor Player::GetCameraAnchor() const
 {
-	return CameraAnchor{m_transform};
+	return CameraAnchor{ m_transform };
 }
 
 CollisionLayer Player::GetCollisionLayer() const
@@ -176,14 +212,17 @@ CollisionLayer Player::GetCollisionMask() const
 
 void Player::OnCollision(ICollider& other, CollisionResult& result)
 {
+	//敵と当たる
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
+		//踏んでいたら
 		if (result.normal.y < -0.5f && m_velocity.y < 0.0f)
 		{
+			//ジャンプフラグ立てる
 			m_isNextJump = true;
 		}
 #ifdef _DEBUG
-		DrawFormatString(16,300,0xffffff,L"敵にヒット");
+		DrawFormatString(16, 300, 0xffffff, L"敵にヒット");
 #endif // _DEBUG
 	}
 }
@@ -199,7 +238,7 @@ Matrix4x4 Player::GetHatMatrix() const
 
 	Matrix4x4 offsetMat = Matrix4x4::Translate({ 0.0f,-10.0f,-10.0f });
 
-	mat*= offsetMat;
+	mat *= offsetMat;
 
 	return mat;
 }
@@ -215,7 +254,7 @@ ICaptureTarget* Player::GetHatAndCameraTarget()
 }
 
 void Player::Move(const Vector2& input)
-{	
+{
 	auto& camera = m_cameraManager.GetTransfrom();
 	//移動ベクトル生成
 	m_moveInput = Vector3::Zero();
@@ -234,11 +273,15 @@ void Player::Move(const Vector2& input)
 
 void Player::Jump()
 {
+	//地面にいるかネクストジャンプフラグが立ってたら
 	if (m_isGround || m_isNextJump)
 	{
+		//ジャンプ
 		m_velocity.y = kJumpPower;
+		//フラグ
 		m_isGround = false;
 		m_isNextJump = false;
+		//ジャンプアニメーション再生
 		m_animationController->Play(PlayerAnim::jump, false);
 	}
 }
@@ -280,6 +323,7 @@ void Player::ResetPlayerPos(const Vector3& pos)
 
 void Player::CaptureReleaseAction(const Vector3& pos)
 {
+	//ランダムに飛んでいく
 	m_transform.SetPosition(pos);
 	m_velocity.x = GetRand(2) - 1.0f;
 	m_velocity.x *= 6.0f;
