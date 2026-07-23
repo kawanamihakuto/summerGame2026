@@ -11,8 +11,8 @@ namespace CrabEnemyAnim
 	const std::wstring jump = L"MonsterArmature|Jump";
 };
 
-//ステート
-enum class State
+//制御ステート
+enum class ControllState
 {
 	ai,
 	controll,
@@ -31,7 +31,7 @@ public:
 	void Update()override;
 	void Draw()override;
 
-	void ChangeState(State nextState);
+	void ChangeState(ControllState nextState);
 
 	//上に乗っている奴を保存
 	void SetUpper(CrabEnemy* upper);
@@ -92,7 +92,7 @@ private:
 
 	CaptureManager& m_captureManager;
 
-	State m_state;
+	ControllState m_state;
 
 	CrabEnemy* m_upper = nullptr;
 	CrabEnemy* m_lower = nullptr;

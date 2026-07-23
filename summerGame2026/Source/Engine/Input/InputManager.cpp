@@ -119,13 +119,6 @@ Vector2 InputManager::GetLeftStick() const
 	{
 		return { 0.0f,0.0f };
 	}
-	//正規化
-	if (len > 1.0f)
-	{
-		len = 1.0f;
-	}
-	stick.x /= len;
-	stick.y /= len;
 
 	return stick;
 }

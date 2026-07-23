@@ -7,16 +7,19 @@
 #include"Engine/Collision/CollisionManager.h"
 namespace
 {
-	constexpr float kGoSpeed = 14.0f;
-	constexpr float kBackSpeed = 25.0f;
-	constexpr float kLength = 200.0f;
+	//飛んでいくスピード
+	constexpr float kGoSpeed = 18.0f;
+	//戻ってくるスピード
+	constexpr float kBackSpeed = 30.0f;
+	//飛んでいくフレーム数
+	constexpr int kGoFrame = 30;
+	//待機状態フレーム数
+	constexpr int kWaitFrame = 70;
 
-	constexpr float kSphereRadius = 40.0f;
-
+	//当たり判定の半径
+	constexpr float kSphereRadius = 60.0f;
+	//モデルスケール
 	constexpr Vector3 kModelScale = { 60.0f,60.0f,60.0f };
-
-	constexpr int kGoFrame = 35;
-	constexpr int kWaitFrame = 65;
 }
 
 Hat::Hat(int modelHandle, int stageModelHandle, ICaptureTarget* target) :
@@ -27,11 +30,13 @@ Hat::Hat(int modelHandle, int stageModelHandle, ICaptureTarget* target) :
 	m_direction({}),
 	m_CaptureFlag(false)
 {
+	//モデル複製
 	m_modelHandle = MV1DuplicateModel(modelHandle);
+	//ステージとの当たり判定用モデル
 	m_stageModelHandle = stageModelHandle;
-
+	//ステージとの当たり判定用コライダー生成
 	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
-	m_stageCollider->SetIsActive(false);
+	//最初は帽子かぶってる状態
 	m_state = HatState::have;
 }
 
@@ -42,6 +47,7 @@ Hat::~Hat()
 
 void Hat::Init()
 {
+	//ポジション設定
 	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
 }
 
@@ -53,54 +59,62 @@ void Hat::Update()
 {
 	switch (m_state)
 	{
+		//持ってるとき
 	case HatState::have:
 		m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
 		m_stageCollider->SetIsActive(false);
 		break;
+		//飛んで行ってるとき
 	case HatState::go:
+		//方向正規化
 		m_direction.Normalize();
+		//速度計算
 		m_velocity = m_direction * kGoSpeed;
-
+		//コライダー更新
 		m_stageCollider->Update(m_transform.position + m_velocity);
-
+		//壁との押し戻し
 		ResolveWallVelocity(m_stageModelHandle);
-
+		//位置計算
 		m_transform.Translate(m_velocity);
-
+		//飛んでいくフレームカウント
 		if (m_count++ >= kGoFrame)
 		{
 			m_state = HatState::wait;
 			m_count = 0;
 		}
 		break;
+		//待機状態
 	case HatState::wait:
-
+		//待機状態フレームカウント
 		if (m_count++ >= kWaitFrame)
 		{
 			m_state = HatState::back;
 			m_count = 0;
 		}
 		break;
+		//戻ってくる状態
 	case HatState::back:
-		
+		//ターゲットの位置に向かう
 		m_direction = m_target->GetHatMatrix().GetTranslation() - m_transform.position;
+		//近づいたらかぶる状態にする
 		if (m_direction.Length() <kBackSpeed)
 		{
 			m_state = HatState::have;
 			m_count = 0;
 			break;
 		}
+		//方向正規化
 		m_direction.Normalize();
+		//速度計算
 		m_velocity = m_direction * kBackSpeed;
-
+		//コライダー更新
 		m_stageCollider->Update(m_transform.position + m_velocity);
-
-		ResolveWallVelocity(m_stageModelHandle);
-
+		//位置計算
 		m_transform.Translate(m_velocity);
 		break;
 	}
 	
+	//モデル制御
 	MV1SetPosition(m_modelHandle,m_transform.position);
 	MV1SetRotationMatrix(m_modelHandle, m_transform.rotation.ToMatrix().ChangeDxMat());
 	MV1SetScale(m_modelHandle, kModelScale);
@@ -108,6 +122,7 @@ void Hat::Update()
 
 void Hat::Draw()
 {
+	//モデル描画
 	MV1DrawModel(m_modelHandle);
 
 #ifdef _DEBUG
@@ -118,6 +133,7 @@ void Hat::Draw()
 
 void Hat::Throw(const Vector3& dir)
 {
+	//帽子を持っていたら投げれる
 	if (m_state == HatState::have)
 	{
 		m_direction = dir.Normalized();
@@ -154,10 +170,12 @@ void Hat::OnCollision(ICollider& other,CollisionResult& result)
 		return;
 	}
 
+	//敵と当たったら
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
 		if (auto cast = dynamic_cast<ICaptureTarget*>(&other))
 		{
+			//キャプチャーするよ
 			SetTarget(cast);
 			m_state = HatState::have;
 			m_CaptureFlag = true;

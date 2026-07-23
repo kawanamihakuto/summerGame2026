@@ -10,6 +10,7 @@
 namespace PlayerAnim
 {
 	const std::wstring idle = L"Armature|Idle";
+	const std::wstring walk = L"Armature|Walk";
 	const std::wstring run = L"Armature|Run";
 	const std::wstring jump = L"Armature|Jump";
 };
@@ -84,5 +85,7 @@ private:
 	Vector3 m_groundPlayerPos;
 
 	bool m_isNextJump;
+
+	bool m_isRun;
 };
 

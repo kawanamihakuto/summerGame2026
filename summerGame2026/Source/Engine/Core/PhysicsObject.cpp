@@ -43,18 +43,21 @@ void PhysicsObject::GroundCollision(int stageModelHandle)
 			//当たってたら
 			if (info.isHit)
 			{
-				//一番低いのを保存
-				if (groundHeight > info.hitPosition.y)
+				if (info.normal.y < 0.0f)
 				{
-					groundHeight = info.hitPosition.y;
-				}
+					//一番低いのを保存
+					if (groundHeight > info.hitPosition.y)
+					{
+						groundHeight = info.hitPosition.y;
+					}
 
-				if (groundHeight < 10000.0f)
-				{
-					//修正後の位置をだす
-					Vector3 offset = ray->GetRayInfo().offset;
-					result = { info.hitPosition.x - offset.x,groundHeight - (ray->GetRayInfo().start.y - ray->GetRayInfo().end.y),info.hitPosition.z - offset.z};
-					m_velocity.y = 0.0f;
+					if (groundHeight < 10000.0f)
+					{
+						//修正後の位置をだす
+						Vector3 offset = ray->GetRayInfo().offset;
+						result = { info.hitPosition.x - offset.x,groundHeight - (ray->GetRayInfo().start.y - ray->GetRayInfo().end.y),info.hitPosition.z - offset.z };
+						m_velocity.y = 0.0f;
+					}
 				}
 			}
 		}
@@ -77,20 +80,23 @@ void PhysicsObject::GroundCollision(int stageModelHandle)
 			//当たってたら
 			if (info.isHit)
 			{
-				//一番高いのを保存
-				if (groundHeight < info.hitPosition.y)
+				if (info.normal.y > 0.0f)
 				{
-					groundHeight = info.hitPosition.y;
-				}
+					//一番高いのを保存
+					if (groundHeight < info.hitPosition.y)
+					{
+						groundHeight = info.hitPosition.y;
+					}
 
-				if (groundHeight > -10000.0f)
-				{
-					//修正後の位置をだす
-					Vector3 offset = ray->GetRayInfo().offset;
-					result = { info.hitPosition.x - offset.x,groundHeight,info.hitPosition.z - offset.z };
-					m_velocity.y = 0.0f;
-					//地面にいるよ
-					m_isGround = true;
+					if (groundHeight > -10000.0f)
+					{
+						//修正後の位置をだす
+						Vector3 offset = ray->GetRayInfo().offset;
+						result = { info.hitPosition.x - offset.x,groundHeight,info.hitPosition.z - offset.z };
+						m_velocity.y = 0.0f;
+						//地面にいるよ
+						m_isGround = true;
+					}
 				}
 			}
 		}

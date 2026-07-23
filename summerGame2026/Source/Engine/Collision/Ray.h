@@ -20,6 +20,7 @@ struct HitInfo
 {
 	bool isHit = false;
 	Vector3 hitPosition = {};
+	Vector3 normal = {};
 };
 
 class Ray

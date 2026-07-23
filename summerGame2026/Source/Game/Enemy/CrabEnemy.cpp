@@ -73,7 +73,7 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	//ステージモデル
 	m_stageModelHandle = stageModel;
 	//ステート
-	m_state = State::ai;
+	m_state = ControllState::ai;
 	//ステージ用コライダー生成
 	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f}, kCapsuleRadius, 0.0f);
 	//キャラクター用コライダー生成
@@ -134,7 +134,7 @@ void CrabEnemy::Update()
 	Vector3 dir;
 	switch (m_state)
 	{
-	case State::ai:
+	case ControllState::ai:
 		//ターゲットにへのベクトル
 		vec = m_captureManager.GetTarget()->GetHatMatrix().GetTranslation() - m_transform.position;
 		//Y成分なくすよ
@@ -165,7 +165,7 @@ void CrabEnemy::Update()
 		ColliderUpdate();
 		break;
 
-	case State::controll:
+	case ControllState::controll:
 		//入力取得
 		dir = m_moveInput;
 		//入力があったら
@@ -198,7 +198,7 @@ void CrabEnemy::Update()
 		ColliderUpdate();
 		break;
 
-	case State::tower:
+	case ControllState::tower:
 		//コライダーを動かす
 		m_stageCollider->Update(m_transform.position + Vector3{ 0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f } + m_velocity);
 		m_bodyCollider->Update(m_transform.position + kSphereHeightOffset + m_velocity);
@@ -243,7 +243,7 @@ void CrabEnemy::Draw()
 
 #ifdef _DEBUG
 	//コライダーとか描画
-	if (m_state != State::tower)
+	if (m_state != ControllState::tower)
 	{
 		m_stageCollider->Draw();
 
@@ -257,7 +257,7 @@ void CrabEnemy::Draw()
 #endif // _DEBUG
 }
 
-void CrabEnemy::ChangeState(State nextState)
+void CrabEnemy::ChangeState(ControllState nextState)
 {
 	m_state = nextState;
 }
@@ -363,15 +363,15 @@ const Ray& CrabEnemy::GetRay() const
 
 CollisionLayer CrabEnemy::GetCollisionLayer() const
 {
-	if (m_state == State::controll)
+	if (m_state == ControllState::controll)
 	{
 		return CollisionLayers::kControllEnemy;
 	}
-	else if (m_state == State::ai)
+	else if (m_state == ControllState::ai)
 	{
 		return CollisionLayers::kEnemy;
 	}
-	else if (m_state == State::tower)
+	else if (m_state == ControllState::tower)
 	{
 		return CollisionLayers::kEnemy;
 	}
@@ -416,7 +416,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 					if (m_upper)
 					{
 						m_upper->m_lower = nullptr;
-						m_upper->ChangeState(State::ai);
+						m_upper->ChangeState(ControllState::ai);
 					}
 				}
 				Destroy();
@@ -425,13 +425,13 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 	}
 
 	//敵同士の押し戻し
-	if (m_state == State::ai)
+	if (m_state == ControllState::ai)
 	{
 		if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 		{
 			if (auto crab = dynamic_cast<CrabEnemy*>(&other))
 			{
-				if (crab->m_state != State::tower)
+				if (crab->m_state != ControllState::tower)
 				{
 					Vector3 push = result.normal * result.penetration;
 
@@ -468,8 +468,8 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 					SetUpper(crab);
 					crab->SetLower(this);
 
-					m_state = State::controll;
-					crab->ChangeState(State::tower);
+					m_state = ControllState::controll;
+					crab->ChangeState(ControllState::tower);
 				}
 			}
 		}
@@ -502,12 +502,12 @@ void CrabEnemy::Jump()
 
 void CrabEnemy::Controll()
 {
-	m_state = State::controll;
+	m_state = ControllState::controll;
 }
 
 void CrabEnemy::ExitControll()
 {
-	m_state = State::ai;
+	m_state = ControllState::ai;
 }
 
 CameraAnchor CrabEnemy::GetCameraAnchor() const

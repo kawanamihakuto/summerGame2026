@@ -43,6 +43,7 @@ HitInfo Ray::CheckModelCollision(int modelHandle)
 	HitInfo info;
 	info.isHit = result.HitFlag;
 	info.hitPosition = result.HitPosition;
+	info.normal = result.Normal;
 
 	return info;
 }

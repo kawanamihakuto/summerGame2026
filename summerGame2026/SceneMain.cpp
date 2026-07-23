@@ -20,7 +20,7 @@ namespace
 	constexpr Vector3 kCameraTarget = { 0.0f, 0.0f, 0.0f };
 	constexpr float kFov = DX_PI_F / 3.0f;
 	constexpr float kCameraNear = 50.0f;
-	constexpr float kCameraFar = 3000.0f;
+	constexpr float kCameraFar = 6000.0f;
 
 	//敵のスポーン位置(仮)
 	constexpr Vector3 kCrabSpawn1 = { 0.0f, -200.0f, 0.0f };

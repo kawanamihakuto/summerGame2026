@@ -8,9 +8,8 @@
 namespace
 {
 	//スピード
-	constexpr float kSpeed = 5.0f;
-	//マックススピード
-	constexpr float kMaxSpeed = 6.0f;
+	constexpr float kWalkSpeed = 4.0f;
+	constexpr float kRunSpeed = 12.0f;
 
 	//モデルの回転オフセット
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
@@ -48,7 +47,8 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_groundPlayerPos({}),
-	m_isNextJump(false)
+	m_isNextJump(false),
+	m_isRun(false)
 {
 	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
@@ -71,6 +71,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 	//アニメーション追加
 	m_animationController->AddAnimation(PlayerAnim::idle);
+	m_animationController->AddAnimation(PlayerAnim::walk);
 	m_animationController->AddAnimation(PlayerAnim::run);
 	m_animationController->AddAnimation(PlayerAnim::jump);
 	//アニメーション再生
@@ -117,8 +118,16 @@ void Player::Update()
 			//地面にいたら
 			if (m_isGround)
 			{
-				//走るアニメーション再生
-				m_animationController->Play(PlayerAnim::run);
+				if (m_isRun)
+				{
+					//走るアニメーション再生
+					m_animationController->Play(PlayerAnim::run);
+				}
+				else
+				{
+					//歩きアニメーション再生
+					m_animationController->Play(PlayerAnim::walk);
+				}
 			}
 		}
 
@@ -182,6 +191,11 @@ void Player::Draw()
 			m_ray[i]->Draw();
 		}
 	}
+	
+	auto& input = InputManager::GetInstance();
+	auto temp = input.GetLeftStick();
+	DrawFormatString(16,160,0xff0000,L"input.x : %f ",temp.x);
+	DrawFormatString(16,176,0xff0000,L"input.y : %f ",temp.y);
 #endif // _DEBUG
 }
 
@@ -261,8 +275,20 @@ void Player::Move(const Vector2& input)
 	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * input.x;
 	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
 	m_moveInput.Normalize();
-	m_moveInput.x *= kSpeed;
-	m_moveInput.z *= kSpeed;
+
+	if (fabsf(input.x) > 0.7f||fabsf(input.y) > 0.7f)
+	{
+		m_moveInput.x *= kRunSpeed;
+		m_moveInput.z *= kRunSpeed;
+		m_isRun = true;
+	}
+	else
+	{
+		m_moveInput.x *= kWalkSpeed;
+		m_moveInput.z *= kWalkSpeed;
+		m_isRun = false;
+	}
+	
 	m_moveInput.y = 0.0f;
 
 	if (m_moveInput.Length() > 0.0f)

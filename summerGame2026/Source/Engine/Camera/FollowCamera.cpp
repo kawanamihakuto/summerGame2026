@@ -6,7 +6,7 @@
 namespace
 {
 	//カメラの後方オフセット
-	constexpr Vector3 kOffset = { 0.0f,100.0f,-600.0f };
+	constexpr Vector3 kOffset = { 0.0f,100.0f,-1000.0f };
 	constexpr Vector3 kCameraHeightOffset = { 0.0f,200.0f,0.0f };
 	constexpr float kRotateSpeed = 0.03f;
 }
