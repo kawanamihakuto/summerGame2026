@@ -10,17 +10,22 @@ void PhysicsObject::ResolveWallVelocity(int stageModelHandle)
 {
 	//DxLibの関数でモデルとの当たり判定をする
 	auto hits = m_stageCollider->CheckWallCollision(stageModelHandle);
-
+	
 	for (const auto& hit : hits)
 	{
 		Vector3 vel = { m_velocity.x,0.0f,m_velocity.z };
+		Vector3 wallNormal = hit.normal;
+		wallNormal.y = 0.0f;
 
-		float dot = vel.Dot(hit.normal);
+		float dot = vel.Dot(wallNormal);
 
 		if (dot < 0.0f)
 		{
 			//速度を修正
-			m_velocity -= hit.normal * dot;
+			vel -= wallNormal * dot;
+
+			m_velocity.x = vel.x;
+			m_velocity.z = vel.z;
 		}
 	}
 }

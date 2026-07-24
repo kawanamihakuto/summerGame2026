@@ -10,6 +10,7 @@ namespace
 	//スピード
 	constexpr float kWalkSpeed = 4.0f;
 	constexpr float kRunSpeed = 12.0f;
+	constexpr float kAirMoveSpeedRate = 0.8f;
 
 	//モデルの回転オフセット
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
@@ -38,8 +39,17 @@ namespace
 	};
 	//ジャンプ力
 	constexpr float kJumpPower = 20.0f;
+
 	//帽子をかぶせたいフレーム名
 	constexpr const wchar_t* kHeadFrameName = L"mixamorig:HeadTop_End";
+	//帽子をかぶせたい位置のフレームからのオフセット
+	constexpr Vector3 kHeadFrameOffsetMat = { 0.0f,-10.0f,-10.f };
+
+	//走る状態になるスティックの倒し割合
+	constexpr float kRunStickRate = 0.7f;
+
+	//踏みつけ判定の法線しきい値
+	constexpr float kStompNormalThreshold = -0.5f;
 }
 
 Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
@@ -60,7 +70,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{ 0.0f,-1.0f,0.0f }, kGroundRayLength, kGroundRayWidthOffsets[i], kGroundRayHeightOffset);
+		m_ray[i] = std::make_unique<Ray>(m_transform.position, Vector3{0.0f,-1.0f,0.0f}, kGroundRayLength, kGroundRayWidthOffsets[i], kGroundRayHeightOffset);
 	}
 
 	//帽子をかぶせたいフレームインデックス
@@ -195,6 +205,10 @@ void Player::Draw()
 	auto temp = input.GetLeftStick();
 	DrawFormatString(16,160,0xff0000,L"input.x : %f ",temp.x);
 	DrawFormatString(16,176,0xff0000,L"input.y : %f ",temp.y);
+
+	DrawFormatString(16, 192, 0xff0000, L"velocity.x : %f ", m_velocity.x);
+	DrawFormatString(16, 208, 0xff0000, L"velocity.y : %f ", m_velocity.y);
+	DrawFormatString(16, 224, 0xff0000, L"velocity.z : %f ", m_velocity.z);
 #endif // _DEBUG
 }
 
@@ -229,7 +243,7 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 	if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
 	{
 		//踏んでいたら
-		if (result.normal.y < -0.5f && m_velocity.y < 0.0f)
+		if (result.normal.y < kStompNormalThreshold && m_velocity.y < 0.0f)
 		{
 			//ジャンプフラグ立てる
 			m_isNextJump = true;
@@ -244,7 +258,7 @@ Matrix4x4 Player::GetHatMatrix() const
 {
 	Matrix4x4 mat = Matrix4x4(MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headFrameIndex));
 
-	Matrix4x4 offsetMat = Matrix4x4::Translate({ 0.0f,-10.0f,-10.0f });
+	Matrix4x4 offsetMat = Matrix4x4::Translate(kHeadFrameOffsetMat);
 
 	mat *= offsetMat;
 
@@ -275,7 +289,7 @@ void Player::Move(const Vector2& input)
 	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
 	m_moveInput.Normalize();
 
-	if (fabsf(input.x) > 0.7f||fabsf(input.y) > 0.7f)
+	if (fabsf(input.x) > kRunStickRate ||fabsf(input.y) > kRunStickRate)
 	{
 		m_moveInput.x *= kRunSpeed;
 		m_moveInput.z *= kRunSpeed;
@@ -287,7 +301,13 @@ void Player::Move(const Vector2& input)
 		m_moveInput.z *= kWalkSpeed;
 		m_isRun = false;
 	}
-	
+
+	if (!m_isGround)
+	{
+		m_moveInput.x *= kAirMoveSpeedRate;
+		m_moveInput.z *= kAirMoveSpeedRate;
+	}
+
 	m_moveInput.y = 0.0f;
 
 	if (m_moveInput.Length() > 0.0f)

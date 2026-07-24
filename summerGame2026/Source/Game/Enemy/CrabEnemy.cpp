@@ -470,11 +470,18 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 			{
 				if (auto crab = dynamic_cast<CrabEnemy*>(obj))
 				{
-					SetUpper(crab);
-					crab->SetLower(this);
+					if (m_upper == nullptr)
+					{
+						if (crab->m_lower == nullptr)
+						{
+							SetUpper(crab);
+							crab->SetLower(this);
 
-					m_state = ControllState::controll;
-					crab->ChangeState(ControllState::tower);
+							ChangeState(ControllState::tower);
+							GetBottom()->ChangeState(ControllState::controll);
+							crab->ChangeState(ControllState::tower);
+						}
+					}
 				}
 			}
 		}

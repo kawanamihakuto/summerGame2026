@@ -42,6 +42,11 @@ struct Vector3
 	/// </summary>
 	/// <returns></returns>
 	static Vector3 Up();
+	/// <summary>
+	/// {0 , -1 , 0}
+	/// </summary>
+	/// <returns></returns>
+	static Vector3 Under();
 
 	/// <summary>
 	/// 内積した結果を返す
