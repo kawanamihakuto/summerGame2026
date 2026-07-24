@@ -37,7 +37,5 @@ private:
 	std::shared_ptr<CaptureManager> m_captureManager;
 	//スカイボックス
 	std::shared_ptr<SkyBox>m_skyBox;
-
-	bool m_isEnemyGenerate;
 };
 

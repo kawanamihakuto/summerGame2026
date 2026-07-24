@@ -29,8 +29,7 @@ namespace
 }
 
 SceneMain::SceneMain() :
-	m_frameCount(0),
-	m_isEnemyGenerate(false)
+	m_frameCount(0)
 {
 }
 
@@ -77,10 +76,6 @@ void SceneMain::Init()
 		m_gameObjectManager->Find<Hat>(),
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
-	//敵の生成
-//	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{0.0f,-200.0f,0.0f}));
-//	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 100.0f,-200.0f,0.0f }));
-//	m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 0.0f,-200.0f,100.0f }));
 	//ゲームオブジェクト全体を初期化
 	m_gameObjectManager->Init();
 	//プレイヤーコントローラー生成
@@ -121,20 +116,8 @@ void SceneMain::Update()
 	//ライトの方向を適用(仮)
 	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
 
-
-	if (InputManager::GetInstance().IsTriggered("SELECT"))
-	{
-		if (m_isEnemyGenerate)
-		{
-			m_isEnemyGenerate = false;
-		}
-		else
-		{
-			m_isEnemyGenerate = true;
-		}
-	}
 	//敵生成
-	if (m_frameCount % 120 == 0 && m_isEnemyGenerate)
+	if (InputManager::GetInstance().IsPressed("SELECT") && m_frameCount % 20 == 0)
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
