@@ -79,6 +79,7 @@ public:
 	Matrix4x4 GetHatMatrix()const override;
 	ICaptureTarget* GetControllTarget()override;
 	ICaptureTarget* GetHatAndCameraTarget()override;
+	GameObject* GetGameObject()override;
 
 private:
 	int m_modelHandle;

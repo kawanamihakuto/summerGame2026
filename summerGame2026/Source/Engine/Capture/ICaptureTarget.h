@@ -2,6 +2,7 @@
 #include"Engine/Input/IControllable.h"
 #include"Engine/Camera/ICameraTarget.h"
 
+class GameObject;
 /// <summary>
 /// キャプチャーされるオブジェクトの抽象基底クラス(IControllableとICameraTargetを継承している)
 /// </summary>
@@ -15,5 +16,7 @@ public:
 	virtual ICaptureTarget* GetControllTarget()abstract;
 	//帽子とフォローカメラに渡すオブジェクト
 	virtual ICaptureTarget* GetHatAndCameraTarget()abstract;
+	//GameObject型で渡す
+	virtual GameObject* GetGameObject()abstract;
 };
 

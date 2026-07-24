@@ -34,3 +34,8 @@ ICaptureTarget* CaptureManager::GetTarget()
 	//現在のターゲットだよ
 	return m_currentTarget;
 }
+
+GameObject* CaptureManager::GetTargetObject()
+{
+	return m_currentTarget->GetGameObject();
+}

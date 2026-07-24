@@ -3,7 +3,6 @@
 #include"Engine/Collision/ICollider.h"
 #include"Engine/Collision/Ray.h"
 #include"Engine/Camera/ICameraTarget.h"
-#include"Engine/AI/ITarget.h"
 #include"Engine/Input/IControllable.h"
 #include"Engine/Capture/ICaptureTarget.h"
 
@@ -17,7 +16,7 @@ namespace PlayerAnim
 
 class CameraManager;
 class AnimationController;
-class Player : public Character, public ICollider, public ITarget ,public ICaptureTarget
+class Player : public Character, public ICollider,public ICaptureTarget
 {
 public:
 	Player(int playerModel, int stageModel,CameraManager& cameraManager);
@@ -42,11 +41,6 @@ public:
 	//-----------------------------
 	CameraAnchor GetCameraAnchor() const override;
 
-	//-----------------------------
-	//ITargetの関数
-	//-----------------------------
-	Vector3 GetPosition()const override;
-
 	//----------------------------
 	//IControllableの関数
 	//----------------------------
@@ -61,15 +55,13 @@ public:
 	Matrix4x4 GetHatMatrix()const override;
 	ICaptureTarget* GetControllTarget()override;
 	ICaptureTarget* GetHatAndCameraTarget()override;
-
-	Transform* GetTransform();
-	Vector3 GetGroundPlayerPos()const;
+	GameObject* GetGameObject()override;
 	
+	//モデル更新まとめ
 	void UpdateModel();
-
 	//落下時地上に戻る
 	void ResetPlayerPos(const Vector3& pos);
-
+	//最後の入力を取る
 	Vector3 GetLastMoveDirection() { return { m_lastMoveInput.x,0.0f,m_lastMoveInput.z }; }
 	//キャプチャー解除時のアクション
 	void CaptureReleaseAction(const Vector3& pos);
@@ -81,8 +73,6 @@ private:
 	int m_headFrameIndex;
 
 	std::shared_ptr<AnimationController>m_animationController;
-
-	Vector3 m_groundPlayerPos;
 
 	bool m_isNextJump;
 

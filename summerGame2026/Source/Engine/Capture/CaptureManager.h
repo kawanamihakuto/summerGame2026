@@ -24,6 +24,8 @@ public:
 	void Release();
 	//現在のターゲット取得
 	ICaptureTarget* GetTarget();
+	//現在のターゲット(GameObject)取得
+	GameObject* GetTargetObject();
 private:
 	Player* m_player;
 	Hat* m_hat;

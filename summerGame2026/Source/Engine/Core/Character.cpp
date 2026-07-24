@@ -8,8 +8,7 @@ namespace
 {
 	//回転のラープ値
 	constexpr float kRotateLerpTime = 0.3f;
-	constexpr float kGroundVelocityLerpTime = 0.15f;
-	constexpr float kairVelocityLerpTime = 0.3f;
+	constexpr float kVelocityLerpTime = 0.15f;
 }
 
 Character::Character(CameraManager& cameraManager) :
@@ -37,11 +36,11 @@ void Character::UpdateMove()
 {
 	if (m_isGround)
 	{
-		m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, kGroundVelocityLerpTime);
-		m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, kGroundVelocityLerpTime);
+		m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, kVelocityLerpTime);
+		m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, kVelocityLerpTime);
 
 		Vector3 vec = { m_velocity.x,0.0f,m_velocity.z };
-		if (vec.Length() < kGroundVelocityLerpTime)
+		if (vec.Length() < kVelocityLerpTime)
 		{
 			m_velocity.x = 0.0f;
 			m_velocity.z = 0.0f;
@@ -51,10 +50,10 @@ void Character::UpdateMove()
 	{
 		if (m_moveInput.Length() > 0.0f)
 		{
-			m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, kairVelocityLerpTime);
-			m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, kairVelocityLerpTime);
+			m_velocity.x = std::lerp(m_velocity.x, m_moveInput.x, kVelocityLerpTime);
+			m_velocity.z = std::lerp(m_velocity.z, m_moveInput.z, kVelocityLerpTime);
 
-			if (m_velocity.Length() < kairVelocityLerpTime)
+			if (m_velocity.Length() < kVelocityLerpTime)
 			{
 				m_velocity.x = 0.0f;
 				m_velocity.z = 0.0f;

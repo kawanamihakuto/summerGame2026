@@ -46,7 +46,6 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	Character(cameraManager),
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
-	m_groundPlayerPos({}),
 	m_isNextJump(false),
 	m_isRun(false)
 {
@@ -241,11 +240,6 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 	}
 }
 
-Vector3 Player::GetPosition() const
-{
-	return m_transform.position;
-}
-
 Matrix4x4 Player::GetHatMatrix() const
 {
 	Matrix4x4 mat = Matrix4x4(MV1GetFrameLocalWorldMatrix(m_modelHandle, m_headFrameIndex));
@@ -263,6 +257,11 @@ ICaptureTarget* Player::GetControllTarget()
 }
 
 ICaptureTarget* Player::GetHatAndCameraTarget()
+{
+	return this;
+}
+
+GameObject* Player::GetGameObject()
 {
 	return this;
 }
@@ -322,16 +321,6 @@ void Player::ExitControll()
 	m_isActive = false;
 }
 
-Transform* Player::GetTransform()
-{
-	return &m_transform;
-}
-
-Vector3 Player::GetGroundPlayerPos() const
-{
-	return m_groundPlayerPos;
-}
-
 void Player::UpdateModel()
 {
 	Matrix4x4 worldMat = m_transform.GetWorldMatrix();
@@ -351,10 +340,8 @@ void Player::CaptureReleaseAction(const Vector3& pos)
 {
 	//ランダムに飛んでいく
 	m_transform.SetPosition(pos);
-	m_velocity.x = GetRand(2) - 1.0f;
-	m_velocity.x *= 6.0f;
-	m_velocity.z = GetRand(2) - 1.0f;
-	m_velocity.z *= 6.0f;
+	m_velocity.x = 0.0f;
+	m_velocity.z = 0.0f;
 	m_velocity.y = kJumpPower;
 	m_isGround = false;
 	m_animationController->Play(PlayerAnim::jump, false);

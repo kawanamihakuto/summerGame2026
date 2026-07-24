@@ -75,14 +75,14 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	//ステート
 	m_state = ControllState::ai;
 	//ステージ用コライダー生成
-	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f}, kCapsuleRadius, 0.0f);
+	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f }, kCapsuleRadius, 0.0f);
 	//キャラクター用コライダー生成
 	m_bodyCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
 	//レイ生成
 	m_ray.resize(kGroundRayNum);
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i] = std::make_unique<Ray>(m_transform.position, kGroundRayDirection, kGroundRayLength, kGroundRayWidthOffsets[i], kHeight +kGroundRayHeightOffset);
+		m_ray[i] = std::make_unique<Ray>(m_transform.position, kGroundRayDirection, kGroundRayLength, kGroundRayWidthOffsets[i], kHeight + kGroundRayHeightOffset);
 	}
 	//頭のフレームのインデックス
 	m_HeadFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
@@ -119,15 +119,18 @@ void CrabEnemy::End()
 void CrabEnemy::Update()
 {
 	m_towerNum = 1;
+	//重なってる数を数える
 	CheckTowerNum();
 	if (auto capsule = dynamic_cast<CapsuleCollider*>(m_stageCollider.get()))
 	{
+		//カプセルの高さを調整
 		capsule->SetHeight(kHeight * (m_towerNum - 1));
 	}
 
 	for (int i = 0; i < kGroundRayNum; i++)
 	{
-		m_ray[i]->SetOffSetAndLength(kGroundRayWidthOffsets[i],(kHeight * m_towerNum) + kGroundRayHeightOffset, (kHeight * m_towerNum) + kGroundRayHeightOffset);
+		//レイの高さを調整
+		m_ray[i]->SetOffSetAndLength(kGroundRayWidthOffsets[i], (kHeight * m_towerNum) + kGroundRayHeightOffset, (kHeight * m_towerNum) + kGroundRayHeightOffset);
 	}
 
 	Vector3 vec;
@@ -136,8 +139,9 @@ void CrabEnemy::Update()
 	{
 	case ControllState::ai:
 		//ターゲットにへのベクトル
-		vec = m_captureManager.GetTarget()->GetHatMatrix().GetTranslation() - m_transform.position;
-		//Y成分なくすよ
+		vec = m_captureManager.GetTarget()->GetGameObject()->GetTransform().GetPosition() - m_transform.position;
+
+		//Y成分消しとく
 		vec.y = 0.0f;
 		//近すぎない、もしくは索敵範囲内だったら
 		if (vec.Length() > 1.0f && vec.Length() < kChaseLength)
@@ -154,6 +158,7 @@ void CrabEnemy::Update()
 			//待機アニメーション
 			m_animationController->Play(CrabEnemyAnim::idle);
 		}
+
 		//速度設定
 		m_velocity.x = vec.x * kSpeed;
 		m_velocity.z = vec.z * kSpeed;
@@ -252,7 +257,7 @@ void CrabEnemy::Draw()
 			ray->Draw();
 		}
 	}
-//	m_bodyCollider->Draw();
+	//	m_bodyCollider->Draw();
 
 #endif // _DEBUG
 }
@@ -317,8 +322,8 @@ void CrabEnemy::CheckTowerNum()
 			m_upper->CheckTowerNum();
 		}
 	}
-	
-	if(m_lower)
+
+	if (m_lower)
 	{
 		if (m_upper)
 		{
@@ -527,6 +532,11 @@ ICaptureTarget* CrabEnemy::GetControllTarget()
 }
 
 ICaptureTarget* CrabEnemy::GetHatAndCameraTarget()
+{
+	return GetTop();
+}
+
+GameObject* CrabEnemy::GetGameObject()
 {
 	return GetTop();
 }

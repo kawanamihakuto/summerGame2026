@@ -64,7 +64,7 @@ void FollowCamera::Update()
 	m_transform.SetPosition(m_pos + offset);
 	//ターゲットのポジション
 	m_targetPos.x = std::lerp(m_targetPos.x, m_target->GetCameraAnchor().transform.GetPosition().x, 0.06f);
-	m_targetPos.y = std::lerp(m_targetPos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.06f);
+	m_targetPos.y = std::lerp(m_targetPos.y, m_target->GetCameraAnchor().transform.GetPosition().y, 0.03f);
 	m_targetPos.z = std::lerp(m_targetPos.z, m_target->GetCameraAnchor().transform.GetPosition().z, 0.06f);
 }
 

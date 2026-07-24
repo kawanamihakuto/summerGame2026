@@ -146,7 +146,6 @@
     <ClCompile Include="Source\Game\Item\Hat.cpp" />
     <ClCompile Include="Source\Engine\Input\IControllable.cpp" />
     <ClCompile Include="Source\Engine\Input\PlayerController.cpp" />
-    <ClCompile Include="Source\Engine\AI\ITarget.cpp" />
     <ClCompile Include="Source\Engine\Core\Character.cpp" />
     <ClCompile Include="Source\Engine\Camera\ICameraTarget.cpp" />
     <ClCompile Include="Source\Game\Enemy\CrabEnemy.cpp" />
@@ -186,7 +185,6 @@
     <ClInclude Include="Source\Game\Item\Hat.h" />
     <ClInclude Include="Source\Engine\Input\IControllable.h" />
     <ClInclude Include="Source\Engine\Input\PlayerController.h" />
-    <ClInclude Include="Source\Engine\AI\ITarget.h" />
     <ClInclude Include="Source\Engine\Core\Character.h" />
     <ClInclude Include="Source\Engine\Camera\ICameraTarget.h" />
     <ClInclude Include="Source\Game\Enemy\CrabEnemy.h" />
