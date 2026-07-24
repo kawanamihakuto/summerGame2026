@@ -99,6 +99,10 @@ CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, Capt
 	m_animationController->Play(CrabEnemyAnim::idle);
 	//拡大縮小
 	MV1SetScale(m_modelHandle, kScale);
+	//モデル更新
+	ModelUpdate();
+	//当たり判定更新
+	ColliderUpdate();
 }
 
 CrabEnemy::~CrabEnemy()
@@ -235,9 +239,7 @@ void CrabEnemy::Update()
 	//奈落に落ちたとき用
 	ResetEnemyPos({ 0.0f,0.0f,0.0f });
 
-	//モデルに適用させるよ
-	MV1SetPosition(m_modelHandle, m_transform.GetPosition());
-	MV1SetRotationMatrix(m_modelHandle, m_transform.GetRotationMatrix().ChangeDxMat());
+	ModelUpdate();
 	m_animationController->Update();
 }
 
@@ -354,6 +356,13 @@ void CrabEnemy::ColliderUpdate()
 	}
 
 	GroundCollision(m_stageModelHandle);
+}
+
+void CrabEnemy::ModelUpdate()
+{
+	//モデルに適用させるよ
+	MV1SetPosition(m_modelHandle, m_transform.GetPosition());
+	MV1SetRotationMatrix(m_modelHandle, m_transform.GetRotationMatrix().ChangeDxMat());
 }
 
 const Collider& CrabEnemy::GetCollider() const
