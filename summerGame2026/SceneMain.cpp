@@ -134,7 +134,7 @@ void SceneMain::Update()
 		}
 	}
 	//“G¶¬
-	if (m_frameCount % 180 == 0 && m_isEnemyGenerate)
+	if (m_frameCount % 120 == 0 && m_isEnemyGenerate)
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
