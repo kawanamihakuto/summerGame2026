@@ -14,6 +14,7 @@ namespace PlayerAnim
 	const std::wstring jump = L"Armature|Jump";
 };
 
+class PlayerStateBase;
 class CameraManager;
 class AnimationController;
 class Player : public Character, public ICollider,public ICaptureTarget
@@ -27,6 +28,10 @@ public:
 	void Update()override;
 	void Draw()override;
 
+	//ステートの遷移
+	void ChangeState(std::unique_ptr<PlayerStateBase> newState);
+	//ジャンプ時のまとめ
+	void StartJamp();
 	//-----------------------------
 	// IColliderの関数
 	//-----------------------------
@@ -66,6 +71,8 @@ public:
 	//キャプチャー解除時のアクション
 	void CaptureReleaseAction(const Vector3& pos);
 private:
+	std::unique_ptr<PlayerStateBase>m_state;
+
 	int m_modelHandle;
 
 	int m_stageModelHandle;

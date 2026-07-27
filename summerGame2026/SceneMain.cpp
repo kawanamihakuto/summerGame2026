@@ -128,13 +128,17 @@ void SceneMain::Draw()
 {
 	//スカイボックス描画
 	m_skyBox->Draw();
-	//ゲームオブジェクト描画
-	m_gameObjectManager->Draw();
 	//ステージ描画
 	m_stage->Draw();
+	//ゲームオブジェクト描画
+	m_gameObjectManager->Draw();
+	
 
 #ifdef _DEBUG
-	DrawFormatString(0, 16, GetColor(255, 255, 255), L"FRAME:%d", m_frameCount);
+	DrawFormatString(0, 16,0x0000ff, L"FRAME:%d", m_frameCount);
+	int fps = GetFPS();
+	DrawFormatString(0, 32, 0x0000ff, L"FPS:%d", fps);
+
 #endif // _DEBUG
 }
 

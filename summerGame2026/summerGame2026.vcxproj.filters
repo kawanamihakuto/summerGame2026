@@ -84,10 +84,10 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Player\PlayerStateBase.cpp">
+    <ClCompile Include="Source\Game\Player\State\PlayerStateBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\Player\PlayerIdleState.cpp">
+    <ClCompile Include="Source\Game\Player\State\PlayerIdleState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Collision\SphereCollider.cpp">
@@ -124,6 +124,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Graphics\SkyBox.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Player\State\PlayerJumpState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -200,10 +203,10 @@
     <ClInclude Include="Source\Engine\Core\StateBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Player\PlayerStateBase.h">
+    <ClInclude Include="Source\Game\Player\State\PlayerStateBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Player\PlayerIdleState.h">
+    <ClInclude Include="Source\Game\Player\State\PlayerIdleState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Collision\SphereCollider.h">
@@ -243,6 +246,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Graphics\SkyBox.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Player\State\PlayerJumpState.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

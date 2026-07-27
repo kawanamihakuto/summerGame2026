@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Player\State\PlayerJumpState.cpp" />
     <ClCompile Include="Source\Game\Graphics\SkyBox.cpp" />
     <ClCompile Include="Source\Engine\Capture\CaptureManager.cpp" />
     <ClCompile Include="Source\Engine\Capture\ICaptureTarget.cpp" />
@@ -150,8 +151,8 @@
     <ClCompile Include="Source\Engine\Camera\ICameraTarget.cpp" />
     <ClCompile Include="Source\Game\Enemy\CrabEnemy.cpp" />
     <ClCompile Include="Source\Engine\Collision\ICollider.cpp" />
-    <ClCompile Include="Source\Game\Player\PlayerIdleState.cpp" />
-    <ClCompile Include="Source\Game\Player\PlayerStateBase.cpp" />
+    <ClCompile Include="Source\Game\Player\State\PlayerIdleState.cpp" />
+    <ClCompile Include="Source\Game\Player\State\PlayerStateBase.cpp" />
     <ClCompile Include="Source\Engine\Collision\Ray.cpp" />
     <ClCompile Include="Source\Engine\Core\ResourceManager.cpp" />
     <ClCompile Include="Source\Engine\Collision\CollisionManager.cpp" />
@@ -178,6 +179,7 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Player\State\PlayerJumpState.h" />
     <ClInclude Include="Source\Game\Graphics\SkyBox.h" />
     <ClInclude Include="Source\Engine\Capture\CaptureManager.h" />
     <ClInclude Include="Source\Engine\Capture\ICaptureTarget.h" />
@@ -190,8 +192,8 @@
     <ClInclude Include="Source\Game\Enemy\CrabEnemy.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionLayer.h" />
     <ClInclude Include="Source\Engine\Collision\ICollider.h" />
-    <ClInclude Include="Source\Game\Player\PlayerIdleState.h" />
-    <ClInclude Include="Source\Game\Player\PlayerStateBase.h" />
+    <ClInclude Include="Source\Game\Player\State\PlayerIdleState.h" />
+    <ClInclude Include="Source\Game\Player\State\PlayerStateBase.h" />
     <ClInclude Include="Source\Engine\Collision\Ray.h" />
     <ClInclude Include="Source\Engine\Core\ResourceManager.h" />
     <ClInclude Include="Source\Engine\Collision\CollisionManager.h" />

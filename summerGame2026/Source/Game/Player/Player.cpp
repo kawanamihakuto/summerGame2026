@@ -5,12 +5,18 @@
 #include"Engine/Animation/AnimationController.h"
 #include"Engine/Collision/CollisionManager.h"
 #include"Engine/Collision/CapsuleCollider.h"
+#include"State/PlayerStateBase.h"
+#include"State/PlayerIdleState.h"
+#include"State/PlayerJumpState.h"
 namespace
 {
 	//スピード
 	constexpr float kWalkSpeed = 4.0f;
 	constexpr float kRunSpeed = 12.0f;
 	constexpr float kAirMoveSpeedRate = 0.8f;
+
+	//HP
+	constexpr int kHp = 3;
 
 	//モデルの回転オフセット
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
@@ -76,6 +82,9 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	//帽子をかぶせたいフレームインデックス
 	m_headFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
 
+	//HP初期化
+	m_hp = kHp;
+
 	//アニメーションコントローラー
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);
 	//アニメーション追加
@@ -83,8 +92,9 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_animationController->AddAnimation(PlayerAnim::walk);
 	m_animationController->AddAnimation(PlayerAnim::run);
 	m_animationController->AddAnimation(PlayerAnim::jump);
-	//アニメーション再生
-	m_animationController->Play(PlayerAnim::idle);
+
+	//ステート初期化
+	m_state = std::make_unique<PlayerIdleState>(*this, *m_animationController);
 }
 
 Player::~Player()
@@ -146,8 +156,7 @@ void Player::Update()
 			//地面にいたら
 			if (m_isGround)
 			{
-				//待機アニメーション再生
-				m_animationController->Play(PlayerAnim::idle);
+				ChangeState(std::make_unique<PlayerIdleState>(*this, *m_animationController));
 			}
 		}
 		//ステージとの当たり判定コライダー更新
@@ -209,7 +218,30 @@ void Player::Draw()
 	DrawFormatString(16, 192, 0xff0000, L"velocity.x : %f ", m_velocity.x);
 	DrawFormatString(16, 208, 0xff0000, L"velocity.y : %f ", m_velocity.y);
 	DrawFormatString(16, 224, 0xff0000, L"velocity.z : %f ", m_velocity.z);
+
+	DrawFormatString(16, 240, 0xff0000, L"HP : %d", m_hp);
 #endif // _DEBUG
+}
+
+void Player::ChangeState(std::unique_ptr<PlayerStateBase> newState)
+{
+	if (m_state != newState)
+	{
+		m_state->Exit(); 
+		
+		m_state = std::move(newState);
+
+		m_state->Enter();
+	}
+}
+
+void Player::StartJamp()
+{
+	//ジャンプ
+	m_velocity.y = kJumpPower;
+	//フラグ
+	m_isGround = false;
+	m_isNextJump = false;
 }
 
 const Collider& Player::GetCollider() const
@@ -247,6 +279,10 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 		{
 			//ジャンプフラグ立てる
 			m_isNextJump = true;
+		}
+		else
+		{
+			m_hp--;
 		}
 #ifdef _DEBUG
 		DrawFormatString(16, 300, 0xffffff, L"敵にヒット");
@@ -321,13 +357,8 @@ void Player::Jump()
 	//地面にいるかネクストジャンプフラグが立ってたら
 	if (m_isGround || m_isNextJump)
 	{
-		//ジャンプ
-		m_velocity.y = kJumpPower;
-		//フラグ
-		m_isGround = false;
-		m_isNextJump = false;
-		//ジャンプアニメーション再生
-		m_animationController->Play(PlayerAnim::jump, false);
+		//ステート
+		ChangeState(std::make_unique<PlayerJumpState>(*this,*m_animationController));
 	}
 }
 

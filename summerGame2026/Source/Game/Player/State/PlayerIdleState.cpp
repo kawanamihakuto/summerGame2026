@@ -1,8 +1,8 @@
 #include "PlayerIdleState.h"
-#include"Player.h"
+
 void PlayerIdleState::Enter()
 {
-	
+	m_animationController.Play(PlayerAnim::idle);
 }
 
 void PlayerIdleState::Update()
