@@ -9,6 +9,7 @@ void PlayerJumpState::Enter()
 
 void PlayerJumpState::Update()
 {
+	
 }
 
 void PlayerJumpState::Exit()

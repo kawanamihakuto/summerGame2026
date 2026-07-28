@@ -101,6 +101,11 @@ bool InputManager::IsTriggered(const char* name) const
 	return m_inputData.at(name) && !m_lastInputData.at(name);
 }
 
+bool InputManager::IsReleased(const char* name) const
+{
+	return !m_inputData.at(name) && m_lastInputData.at(name);
+}
+
 Vector2 InputManager::GetLeftStick() const
 {
 	float x = m_stick.ThumbLX / 32767.0f;

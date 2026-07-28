@@ -68,6 +68,7 @@ public:
 	//------------------------------
 	void Move(const Vector2& input)override;
 	void Jump()override;
+	void JumpEnd()override;
 	void Controll()override;
 	void ExitControll()override;
 

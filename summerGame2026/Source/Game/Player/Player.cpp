@@ -45,6 +45,8 @@ namespace
 	};
 	//ジャンプ力
 	constexpr float kJumpPower = 20.0f;
+	//ジャンプ終了時のvelocityを減らす割合
+	constexpr float kJumpEndRate = 0.5f;
 
 	//帽子をかぶせたいフレーム名
 	constexpr const wchar_t* kHeadFrameName = L"mixamorig:HeadTop_End";
@@ -237,11 +239,11 @@ void Player::ChangeState(std::unique_ptr<PlayerStateBase> newState)
 
 void Player::StartJamp()
 {
-	//ジャンプ
-	m_velocity.y = kJumpPower;
 	//フラグ
 	m_isGround = false;
 	m_isNextJump = false;
+
+	m_velocity.y = kJumpPower;
 }
 
 const Collider& Player::GetCollider() const
@@ -359,6 +361,14 @@ void Player::Jump()
 	{
 		//ステート
 		ChangeState(std::make_unique<PlayerJumpState>(*this,*m_animationController));
+	}
+}
+
+void Player::JumpEnd()
+{
+	if (m_velocity.y > 0.0f)
+	{
+		m_velocity.y *= kJumpEndRate;
 	}
 }
 

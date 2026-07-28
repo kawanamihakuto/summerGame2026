@@ -12,6 +12,9 @@ public:
 	virtual void Move(const Vector2& input) abstract;
 	//ジャンプ
 	virtual void Jump()abstract;
+	//上昇を切る
+	virtual void JumpEnd()abstract;
+
 	//操作対象になったときに呼ばれる
 	virtual void Controll()abstract;
 	//操作対象から外れたときに呼ばれる

@@ -54,6 +54,12 @@ public:
 	/// <returns>今押された:true / 押されていないor押しっぱなし:false</returns>
 	bool IsTriggered(const char* name)const;
 	/// <summary>
+	/// 特定のボタンが今離されたか
+	/// </summary>
+	/// <param name="name">イベント名</param>
+	/// <returns>今離された:true / 押されていないor押しっぱなし:false</returns>
+	bool IsReleased(const char* name)const;
+	/// <summary>
 	/// 左スティックの入力を取得する関数
 	/// </summary>
 	/// <returns>入力の方向ベクトル</returns>

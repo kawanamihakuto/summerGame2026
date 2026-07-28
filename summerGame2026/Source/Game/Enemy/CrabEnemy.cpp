@@ -31,6 +31,8 @@ namespace
 	constexpr float kMaxSpeed = 3.0f;
 	//ジャンプ力
 	constexpr float kJumpPower = 16.0f;
+	//ジャンプ終了時のvelocityを減らす割合
+	constexpr float kJumpEndRate = 0.5f;
 	//追いかける距離
 	constexpr float kChaseLength = 500.0f;
 
@@ -518,6 +520,14 @@ void CrabEnemy::Jump()
 		m_velocity.y = kJumpPower;
 		m_isGround = false;
 		m_animationController->Play(CrabEnemyAnim::jump, false);
+	}
+}
+
+void CrabEnemy::JumpEnd()
+{
+	if (m_velocity.y > 0.0f)
+	{
+		m_velocity *= kJumpEndRate;
 	}
 }
 

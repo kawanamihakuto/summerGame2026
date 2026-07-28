@@ -28,11 +28,17 @@ void PlayerController::Update()
 	{
 		m_target->Move(move);
 	}
-	//ジャンプ
+	//ジャンプ開始
 	if (input.IsTriggered("A"))
 	{
 		m_target->Jump();
 	}
+	//ジャンプボタンを離したら上昇を切る
+	if (input.IsReleased("A"))
+	{
+		m_target->JumpEnd();
+	}
+
 	//帽子を投げる
 	if (input.IsTriggered("X"))
 	{
