@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Player\State\PlayerStunnedState.cpp" />
+    <ClCompile Include="Source\Game\Player\State\PlayerMoveState.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerJumpState.cpp" />
     <ClCompile Include="Source\Game\Graphics\SkyBox.cpp" />
     <ClCompile Include="Source\Engine\Capture\CaptureManager.cpp" />
@@ -179,6 +181,9 @@
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Player\State\PlayerStunnedState.h" />
+    <ClInclude Include="Source\Game\Player\State\PlayerMoveState.h" />
+    <ClInclude Include="Source\Engine\Input\InputInfo.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerJumpState.h" />
     <ClInclude Include="Source\Game\Graphics\SkyBox.h" />
     <ClInclude Include="Source\Engine\Capture\CaptureManager.h" />

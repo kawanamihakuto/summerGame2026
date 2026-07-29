@@ -19,7 +19,11 @@ public:
 	/// </summary>
 	/// <param name="name">アニメーション名</param>
 	void AddAnimation(const std::wstring& name);
-
+	/// <summary>
+	/// ループしないアニメーションが終わったかどうか
+	/// </summary>
+	/// <returns></returns>
+	bool IsEnd() { return m_isEnd; }
 private:
 	//モデルハンドル
 	int m_modelHandle;

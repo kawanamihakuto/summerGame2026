@@ -1,6 +1,5 @@
 ﻿#include "Player.h"
 #include"Engine/Core/PreCompiled.h"
-#include"Engine/Input/InputManager.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Animation/AnimationController.h"
 #include"Engine/Collision/CollisionManager.h"
@@ -8,6 +7,7 @@
 #include"State/PlayerStateBase.h"
 #include"State/PlayerIdleState.h"
 #include"State/PlayerJumpState.h"
+#include"State/PlayerStunnedState.h"
 namespace
 {
 	//スピード
@@ -58,6 +58,9 @@ namespace
 
 	//踏みつけ判定の法線しきい値
 	constexpr float kStompNormalThreshold = -0.5f;
+
+	//無敵時間(フレーム)
+	constexpr float kInvincibleFrame = 60.0f * 3.0f;
 }
 
 Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
@@ -65,7 +68,9 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_isNextJump(false),
-	m_isRun(false)
+	m_isRun(false),
+	m_isInvincible(false),
+	m_InvincibleFrameCount(0)
 {
 	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
@@ -94,6 +99,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_animationController->AddAnimation(PlayerAnim::walk);
 	m_animationController->AddAnimation(PlayerAnim::run);
 	m_animationController->AddAnimation(PlayerAnim::jump);
+	m_animationController->AddAnimation(PlayerAnim::stunned);
 
 	//ステート初期化
 	m_state = std::make_unique<PlayerIdleState>(*this, *m_animationController);
@@ -125,6 +131,9 @@ void Player::Update()
 			Jump();
 		}
 
+		//ステートの更新
+		m_state->Update();
+
 		//速度を決める
 		UpdateMove();
 		//回転
@@ -132,35 +141,6 @@ void Player::Update()
 		//重力
 		Gravity();
 
-		Vector3 dir = { m_velocity.x, 0.0f, m_velocity.z };
-		//移動してたら
-		if (dir.Length() > 0.0f)
-		{
-			//地面にいたら
-			if (m_isGround)
-			{
-				if (m_isRun)
-				{
-					//走るアニメーション再生
-					m_animationController->Play(PlayerAnim::run);
-				}
-				else
-				{
-					//歩きアニメーション再生
-					m_animationController->Play(PlayerAnim::walk);
-				}
-			}
-		}
-
-		//移動してなかったら
-		if (dir.Length() == 0)
-		{
-			//地面にいたら
-			if (m_isGround)
-			{
-				ChangeState(std::make_unique<PlayerIdleState>(*this, *m_animationController));
-			}
-		}
 		//ステージとの当たり判定コライダー更新
 		m_stageCollider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 		//ステージ壁との押し戻し
@@ -188,6 +168,15 @@ void Player::Update()
 
 		//アニメーション更新
 		m_animationController->Update();
+
+		if (m_isInvincible)
+		{
+			if (m_InvincibleFrameCount++ > kInvincibleFrame)
+			{
+				m_isInvincible = false;
+				m_InvincibleFrameCount = 0;
+			}
+		}
 	}
 }
 
@@ -196,8 +185,14 @@ void Player::Draw()
 	//アクティブだったら
 	if (m_isActive)
 	{
+		if (m_isInvincible && m_InvincibleFrameCount % 10 < 5)
+		{
+			MV1SetOpacityRate(m_modelHandle, 0.2f);
+		}
 		//モデル描画
 		MV1DrawModel(m_modelHandle);
+		
+		MV1SetOpacityRate(m_modelHandle, 1.0f);
 	}
 
 #ifdef _DEBUG
@@ -246,6 +241,14 @@ void Player::StartJamp()
 	m_velocity.y = kJumpPower;
 }
 
+void Player::StopMove()
+{
+	m_moveInput.x = 0.0f;
+	m_moveInput.z = 0.0f;
+	m_velocity.x = 0.0f;
+	m_velocity.z = 0.0f;
+}
+
 const Collider& Player::GetCollider() const
 {
 	return *m_stageCollider;
@@ -284,11 +287,13 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 		}
 		else
 		{
-			m_hp--;
+			if (!m_isInvincible)
+			{
+				m_hp--;
+				m_isInvincible = true;
+				ChangeState(std::make_unique<PlayerStunnedState>(*this, *m_animationController));
+			}
 		}
-#ifdef _DEBUG
-		DrawFormatString(16, 300, 0xffffff, L"敵にヒット");
-#endif // _DEBUG
 	}
 }
 
@@ -318,16 +323,16 @@ GameObject* Player::GetGameObject()
 	return this;
 }
 
-void Player::Move(const Vector2& input)
+void Player::Move()
 {
 	auto& camera = m_cameraManager.GetTransfrom();
 	//移動ベクトル生成
 	m_moveInput = Vector3::Zero();
-	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * input.x;
-	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
+	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * m_input.move.x;
+	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * m_input.move.y;
 	m_moveInput.Normalize();
 
-	if (fabsf(input.x) > kRunStickRate ||fabsf(input.y) > kRunStickRate)
+	if (fabsf(m_input.move.x) > kRunStickRate ||fabsf(m_input.move.y) > kRunStickRate)
 	{
 		m_moveInput.x *= kRunSpeed;
 		m_moveInput.z *= kRunSpeed;

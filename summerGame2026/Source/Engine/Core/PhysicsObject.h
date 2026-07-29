@@ -33,6 +33,12 @@ public:
 	/// <returns></returns>
 	Vector3 GetVelocity() const { return m_velocity; }
 
+	/// <summary>
+	/// 地面にいるかどうか
+	/// </summary>
+	/// <returns></returns>
+	bool IsGround() { return m_isGround; }
+
 protected:
 	//速度
 	Vector3 m_velocity = {};

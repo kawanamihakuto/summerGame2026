@@ -3,6 +3,7 @@
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
 #include"Engine/Capture/CaptureManager.h"
+#include"InputInfo.h"
 PlayerController::PlayerController(Hat* hat, Player* player, CaptureManager& captureManager):
 	m_hat(hat),
 	m_player(player),
@@ -20,24 +21,16 @@ void PlayerController::Update()
 {
 	//入力取得
 	auto& input = InputManager::GetInstance();
-	Vector2 move = input.GetLeftStick();
 	//操作対象のオブジェクトをターゲットにする
 	m_target = m_target->GetControllTarget();
-	//移動
-	if (m_target)
-	{
-		m_target->Move(move);
-	}
-	//ジャンプ開始
-	if (input.IsTriggered("A"))
-	{
-		m_target->Jump();
-	}
-	//ジャンプボタンを離したら上昇を切る
-	if (input.IsReleased("A"))
-	{
-		m_target->JumpEnd();
-	}
+
+	//ターゲットに入力を渡す
+	InputInfo inputInfo;
+	inputInfo.move = input.GetLeftStick();
+	inputInfo.isJumpDown = input.IsTriggered("A");
+	inputInfo.isJumpUp = input.IsReleased("A");
+	m_target->SetInputInfo(inputInfo);
+
 
 	//帽子を投げる
 	if (input.IsTriggered("X"))

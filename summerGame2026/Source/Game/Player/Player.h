@@ -12,6 +12,7 @@ namespace PlayerAnim
 	const std::wstring walk = L"Armature|Walk";
 	const std::wstring run = L"Armature|Run";
 	const std::wstring jump = L"Armature|Jump";
+	const std::wstring stunned = L"Armature|Stunned";
 };
 
 class PlayerStateBase;
@@ -32,6 +33,10 @@ public:
 	void ChangeState(std::unique_ptr<PlayerStateBase> newState);
 	//ジャンプ時のまとめ
 	void StartJamp();
+	//走っているかどうか
+	bool IsRun() { return m_isRun; }
+	//x,z成分の動きを止める
+	void StopMove();
 	//-----------------------------
 	// IColliderの関数
 	//-----------------------------
@@ -49,7 +54,7 @@ public:
 	//----------------------------
 	//IControllableの関数
 	//----------------------------
-	void Move(const Vector2& input)override;
+	void Move()override;
 	void Jump()override;
 	void JumpEnd()override;
 	void Controll()override;
@@ -85,5 +90,9 @@ private:
 	bool m_isNextJump;
 
 	bool m_isRun;
+
+	bool m_isInvincible;
+
+	int m_InvincibleFrameCount;
 };
 

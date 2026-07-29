@@ -66,7 +66,7 @@ public:
 	//------------------------------
 	// IControllableの関数
 	//------------------------------
-	void Move(const Vector2& input)override;
+	void Move()override;
 	void Jump()override;
 	void JumpEnd()override;
 	void Controll()override;

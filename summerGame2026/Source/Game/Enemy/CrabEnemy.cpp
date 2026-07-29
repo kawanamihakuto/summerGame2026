@@ -499,13 +499,13 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 	}
 }
 
-void CrabEnemy::Move(const Vector2& input)
+void CrabEnemy::Move()
 {
 	auto& camera = m_cameraManager.GetTransfrom();
 	//移動ベクトル生成
 	m_moveInput = Vector3::Zero();
-	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * input.x;
-	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * input.y;
+	m_moveInput += Vector3{ camera.Right().x,0.0f,camera.Right().z } * m_input.move.x;
+	m_moveInput += Vector3{ camera.Forward().x,0.0f,camera.Forward().z } * m_input.move.y;
 	m_moveInput.Normalize();
 	m_moveInput.x *= kCapturedSpeed;
 	m_moveInput.z *= kCapturedSpeed;
