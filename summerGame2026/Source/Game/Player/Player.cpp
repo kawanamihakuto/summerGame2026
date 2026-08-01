@@ -206,17 +206,6 @@ void Player::Draw()
 			m_ray[i]->Draw();
 		}
 	}
-	
-	auto& input = InputManager::GetInstance();
-	auto temp = input.GetLeftStick();
-	DrawFormatString(16,160,0xff0000,L"input.x : %f ",temp.x);
-	DrawFormatString(16,176,0xff0000,L"input.y : %f ",temp.y);
-
-	DrawFormatString(16, 192, 0xff0000, L"velocity.x : %f ", m_velocity.x);
-	DrawFormatString(16, 208, 0xff0000, L"velocity.y : %f ", m_velocity.y);
-	DrawFormatString(16, 224, 0xff0000, L"velocity.z : %f ", m_velocity.z);
-
-	DrawFormatString(16, 240, 0xff0000, L"HP : %d", m_hp);
 #endif // _DEBUG
 }
 
