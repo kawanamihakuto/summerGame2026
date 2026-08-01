@@ -14,6 +14,8 @@ public:
 	void UpdateMove();
 	void UpdateRotate(Quaternion rotationOffset);
 
+	Vector3 GetMoveInput() const { return m_moveInput; }
+
 protected:
 	Vector3 m_moveInput{};
 	Vector3 m_lastMoveInput{};

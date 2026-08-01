@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Scene\SceneBase.cpp" />
+    <ClCompile Include="Source\Game\Scene\SceneController.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerStunnedState.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerMoveState.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerJumpState.cpp" />
@@ -179,8 +181,11 @@
     <ClCompile Include="Source\Engine\Collision\SphereCollider.cpp" />
     <ClCompile Include="Source\Game\Stage\Stage.cpp" />
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
+    <ClCompile Include="Source\Game\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Scene\SceneBase.h" />
+    <ClInclude Include="Source\Game\Scene\SceneController.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerStunnedState.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerMoveState.h" />
     <ClInclude Include="Source\Engine\Input\InputInfo.h" />
@@ -224,6 +229,7 @@
     <ClInclude Include="Source\Engine\Collision\SphereCollider.h" />
     <ClInclude Include="Source\Game\Stage\Stage.h" />
     <ClInclude Include="Source\Engine\Core\StateBase.h" />
+    <ClInclude Include="Source\Game\Scene\TitleScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

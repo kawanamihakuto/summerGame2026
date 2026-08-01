@@ -19,9 +19,10 @@ void PlayerMoveState::Update()
 		m_animationController.Play(PlayerAnim::walk);
 	}
 
-	if (m_player.GetVelocity().Length() == 0.0f)
+	if (m_player.GetMoveInput().Length() == 0.0f)
 	{
 		m_player.ChangeState(std::make_unique<PlayerIdleState>(m_player, m_animationController));
+		return;
 	}
 
 	if (m_player.GetInputInfo().isJumpDown)

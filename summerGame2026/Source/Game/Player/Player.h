@@ -37,6 +37,7 @@ public:
 	bool IsRun() { return m_isRun; }
 	//x,z成分の動きを止める
 	void StopMove();
+
 	//-----------------------------
 	// IColliderの関数
 	//-----------------------------
