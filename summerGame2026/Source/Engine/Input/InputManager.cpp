@@ -153,7 +153,7 @@ Vector2 InputManager::GetRightStick() const
 }
 
 bool InputManager::AnyPressButtonInput() const
-{
+{	
 	for (const auto& input : m_inputData)
 	{
 		if (input.first == "A" || input.first == "B" ||

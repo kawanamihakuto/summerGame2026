@@ -1,7 +1,6 @@
 ﻿#include "FollowCamera.h"
 #include"Engine/Input/InputManager.h"
 #include"Engine/Core/Precompiled.h"
-#include"Engine/Core/GameObjectManager.h"
 #include"Game/Player/Player.h"
 namespace
 {
@@ -19,6 +18,8 @@ FollowCamera::FollowCamera(ICaptureTarget* target):
 	m_targetPos({})
 {
 	SetTarget(target);
+	Update();
+	Apply();
 }
 
 void FollowCamera::Init()
@@ -75,6 +76,9 @@ void FollowCamera::Apply()
 		m_transform.position,
 		m_targetPos+kCameraHeightOffset
 	);
+
+	//ライトの方向を適用(仮)
+	SetLightDirection(m_transform.Forward());
 }
 
 void FollowCamera::SetTarget(ICaptureTarget* target)

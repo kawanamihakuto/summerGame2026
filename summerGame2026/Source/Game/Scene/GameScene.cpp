@@ -1,86 +1,94 @@
-#include "SceneMain.h"
-#include"Engine/Core/Precompiled.h"
-#include"Engine/Core/GameObjectManager.h"
+#include "GameScene.h"
+#include"SceneController.h"
+#include"Engine/Core/Application.h"
+#include"ClearScene.h"
+#include"Engine/Math/Vector3.h"
 #include"Engine/Core/ResourceManager.h"
-#include"Engine/Input/InputManager.h"
+#include"Engine/Core/GameObjectManager.h"
 #include"Engine/Input/PlayerController.h"
+#include"Engine/Input/InputManager.h"
 #include"Engine/Capture/CaptureManager.h"
 #include"Engine/Camera/CameraManager.h"
 #include"Engine/Camera/FollowCamera.h"
 #include"Game/Stage/Stage.h"
 #include"Game/Player/Player.h"
-#include"Game/Enemy/CrabEnemy.h"
 #include"Game/Item/Hat.h"
 #include"Game/Graphics/SkyBox.h"
+#include"Game/Enemy/CrabEnemy.h"
+#include"ClearScene.h"
 
 namespace
 {
-	//ƒJƒƒ‰İ’è
-	constexpr Vector3 kCameraPosition = { 0.0f, 300.0f, -700.0f };
+	//ãƒ•ã‚§ãƒ¼ãƒ‰ã«ã‹ã‹ã‚‹æ™‚é–“
+	constexpr int kFadeInterval = 60;
+
+	//ã‚«ãƒ¡ãƒ©è¨­å®š
+	constexpr Vector3 kCameraPosition = { 0.0f, 300.0f, -1000.0f };
 	constexpr Vector3 kCameraTarget = { 0.0f, 0.0f, 0.0f };
 	constexpr float kFov = DX_PI_F / 3.0f;
 	constexpr float kCameraNear = 50.0f;
 	constexpr float kCameraFar = 6000.0f;
 
-	//“G‚ÌƒXƒ|[ƒ“ˆÊ’u(‰¼)
+	//æ•µã®ã‚¹ãƒãƒ¼ãƒ³ä½ç½®(ä»®)
 	constexpr Vector3 kCrabSpawn1 = { 0.0f, -200.0f, 0.0f };
 	constexpr Vector3 kCrabSpawn2 = { 100.0f, -200.0f, 0.0f };
 	constexpr Vector3 kCrabSpawn3 = { 0.0f, -200.0f, 100.0f };
+
 }
 
-SceneMain::SceneMain() :
+GameScene::GameScene(SceneController& controller) :
+	SceneBase(controller),
 	m_frameCount(0)
 {
-}
+	//ãƒ•ã‚§ãƒ¼ãƒ‰ã‚¤ãƒ³
+	m_update = &GameScene::FadeInUpdate;
+	//ãƒ•ã‚§ãƒ¼ãƒ‰ç”¨æç”»
+	m_draw = &GameScene::FadeDraw;
+	//ãƒ•ã‚§ãƒ¼ãƒ‰ç”¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã‚«ã‚¦ãƒ³ã‚¿ãƒ¼åˆæœŸåŒ–
+	m_fadeFrame = kFadeInterval;
 
-SceneMain::~SceneMain()
-{
-}
-
-void SceneMain::Init()
-{
-	// Zƒoƒbƒtƒ@‚Ìİ’è
-	SetUseZBuffer3D(true);	
+	// Zãƒãƒƒãƒ•ã‚¡ã®è¨­å®š
+	SetUseZBuffer3D(true);
 	SetWriteZBuffer3D(true);
 
-	// ƒJƒƒ‰‚Ìİ’è
-	SetCameraPositionAndTarget_UpVecY(kCameraPosition, kCameraTarget);
+	// ã‚«ãƒ¡ãƒ©ã®è¨­å®š
+//	SetCameraPositionAndTarget_UpVecY(kCameraPosition, kCameraTarget);
 	SetupCamera_Perspective(kFov);
 	SetCameraNearFar(kCameraNear, kCameraFar);
 
-	//ƒŠƒ\[ƒX‚Ìƒ[ƒh
+	//ãƒªã‚½ãƒ¼ã‚¹ã®ãƒ­ãƒ¼ãƒ‰
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.LoadResources();
-	
-	//ƒRƒŠƒWƒ‡ƒ“ƒ}ƒl[ƒWƒƒ[¶¬
+
+	//ã‚³ãƒªã‚¸ãƒ§ãƒ³ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
 	m_collisionManager = std::make_shared<CollisionManager>();
-	//ƒJƒƒ‰ƒ}ƒl[ƒWƒƒ[¶¬
+	//ã‚«ãƒ¡ãƒ©ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
 	m_cameraManager = std::make_shared<CameraManager>();
-	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒ}ƒl[ƒWƒƒ[¶¬
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
-	//ƒvƒŒƒCƒ„[¶¬
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ç”Ÿæˆ
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
-	//–Xq¶¬
+	//å¸½å­ç”Ÿæˆ
 	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<Player>()));
-	//ƒtƒHƒ[ƒJƒƒ‰’Ç‰Á
+	//ãƒ•ã‚©ãƒ­ãƒ¼ã‚«ãƒ¡ãƒ©è¿½åŠ 
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
-	//Œ»İ‚ÌƒJƒƒ‰‚ğƒZƒbƒg
+	//ç¾åœ¨ã®ã‚«ãƒ¡ãƒ©ã‚’ã‚»ãƒƒãƒˆ
 	m_cameraManager->ChangeCamera(CameraName::follow);
-	//ƒXƒe[ƒW
+	//ã‚¹ãƒ†ãƒ¼ã‚¸
 	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
-	//ƒXƒe[ƒW‚Æ‚Ì“–‚½‚è”»’è‚ğ‚·‚é‚½‚ß‚ÌƒZƒbƒgƒAƒbƒv
+	//ã‚¹ãƒ†ãƒ¼ã‚¸ã¨ã®å½“ãŸã‚Šåˆ¤å®šã‚’ã™ã‚‹ãŸã‚ã®ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—
 	MV1SetupCollInfo(resouceManager.GetModel(ModelType::stage), -1, 8, 8, 8);
-	//ƒLƒƒƒvƒ`ƒƒ[ƒ}ƒl[ƒWƒƒ[¶¬
+	//ã‚­ãƒ£ãƒ—ãƒãƒ£ãƒ¼ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ç”Ÿæˆ
 	m_captureManager = std::make_shared<CaptureManager>(
 		m_gameObjectManager->Find<Player>(),
 		m_gameObjectManager->Find<Hat>(),
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
-	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg‘S‘Ì‚ğ‰Šú‰»
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆå…¨ä½“ã‚’åˆæœŸåŒ–
 	m_gameObjectManager->Init();
-	//ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[¶¬
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼ç”Ÿæˆ
 	m_playerController = std::make_shared<PlayerController>(m_gameObjectManager->Find<Hat>(), m_gameObjectManager->Find<Player>(), *m_captureManager);
-	//ƒXƒJƒCƒ{ƒbƒNƒX¶¬
+	//ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹ç”Ÿæˆ
 	m_skyBox = std::make_shared<SkyBox>(
 		resouceManager.GetGraph(GraphType::skyFront),
 		resouceManager.GetGraph(GraphType::skyRight),
@@ -89,68 +97,109 @@ void SceneMain::Init()
 		resouceManager.GetGraph(GraphType::skyUp),
 		resouceManager.GetGraph(GraphType::skyBottom)
 	);
-	//ƒJƒƒ‰ƒ|ƒWƒVƒ‡ƒ“‚ğƒZƒbƒg
+	//ã‚«ãƒ¡ãƒ©ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚’ã‚»ãƒƒãƒˆ
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 }
 
-void SceneMain::Update()
+GameScene::~GameScene()
 {
-	m_frameCount++;
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒªã‚¢
+	m_gameObjectManager->Clear();
+	//å½“ãŸã‚Šåˆ¤å®šã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚¯ãƒªã‚¢
+	m_collisionManager->ClearObjects();
+	//ãƒªã‚½ãƒ¼ã‚¹ã®è§£æ”¾
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.ReleaseResources();
+}
 
-	//“ü—Íæ“¾—p
+void GameScene::Update()
+{
+	(this->*m_update)();
+}
+
+void GameScene::Draw()
+{
+	(this->*m_draw)();
+}
+
+void GameScene::FadeInUpdate()
+{
+	if (--m_fadeFrame <= 0)
+	{
+		m_update = &GameScene::NormalUpdate;
+		m_draw = &GameScene::NormalDraw;
+		return;
+	}
+}
+
+void GameScene::NormalUpdate()
+{
+	//å…¥åŠ›å–å¾—ç”¨
 	auto& input = InputManager::GetInstance();
 	input.Update();
 
-	//ƒvƒŒƒCƒ„[ƒRƒ“ƒgƒ[ƒ‰[XV
+	//ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ©ãƒ¼æ›´æ–°
 	m_playerController->Update();
-	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgXV
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæ›´æ–°
 	m_gameObjectManager->Update();
-	//‘S‘Ì‚Ì“–‚½‚è”»’è
+	//å…¨ä½“ã®å½“ãŸã‚Šåˆ¤å®š
 	m_collisionManager->CheckAllCollisions();
-	//ƒJƒƒ‰XV
+	//ã‚«ãƒ¡ãƒ©æ›´æ–°
 	m_cameraManager->Update();
-	//DxLib‚É”½‰f
+	//DxLibã«åæ˜ 
 	m_cameraManager->Apply();
-	//ƒXƒJƒCƒ{ƒbƒNƒX‚ÉƒJƒƒ‰ƒ|ƒWƒVƒ‡ƒ“ƒZƒbƒg
+	//ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹ã«ã‚«ãƒ¡ãƒ©ãƒã‚¸ã‚·ãƒ§ãƒ³ã‚»ãƒƒãƒˆ
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
-	//ƒ‰ƒCƒg‚Ì•ûŒü‚ğ“K—p(‰¼)
-	SetLightDirection(m_cameraManager->GetTransfrom().Forward());
 
-	//“G¶¬
+	//æ•µç”Ÿæˆ
 	if (InputManager::GetInstance().IsPressed("SELECT") && m_frameCount % 20 == 0)
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
 	}
+
+	if (input.IsTriggered("START"))
+	{
+		m_update = &GameScene::FadeOutUpdate;
+		m_draw = &GameScene::FadeDraw;
+	}
 }
 
-void SceneMain::Draw()
+void GameScene::FadeOutUpdate()
 {
-	//ƒXƒJƒCƒ{ƒbƒNƒX•`‰æ
+	if (m_fadeFrame++ >= kFadeInterval)
+	{
+		//ã‚·ãƒ¼ãƒ³ã®åˆ‡ã‚Šæ›¿ãˆ
+		m_controller.ChangeScene(std::make_shared<ClearScene>(m_controller));
+		return;
+	}
+}
+
+void GameScene::NormalDraw()
+{
+	//ã‚¹ã‚«ã‚¤ãƒœãƒƒã‚¯ã‚¹æç”»
 	m_skyBox->Draw();
-	//ƒXƒe[ƒW•`‰æ
+	//ã‚¹ãƒ†ãƒ¼ã‚¸æç”»
 	m_stage->Draw();
-	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒg•`‰æ
+	//ã‚²ãƒ¼ãƒ ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»
 	m_gameObjectManager->Draw();
-	
 
 #ifdef _DEBUG
-	DrawFormatString(0, 16,0x0000ff, L"FRAME:%d", m_frameCount);
+	DrawFormatString(0, 16, 0x0000ff, L"FRAME:%d", m_frameCount);
 	int fps = GetFPS();
 	DrawFormatString(0, 32, 0x0000ff, L"FPS:%d", fps);
 
 #endif // _DEBUG
 }
 
-void SceneMain::End()
+void GameScene::FadeDraw()
 {
-	//ƒQ[ƒ€ƒIƒuƒWƒFƒNƒgƒNƒŠƒA
-	m_gameObjectManager->Clear();
-	//“–‚½‚è”»’èƒIƒuƒWƒFƒNƒgƒNƒŠƒA
-	m_collisionManager->ClearObjects();
-	//ƒŠƒ\[ƒX‚Ì‰ğ•ú
-	auto& resouceManager = ResourceManager::GetInstance();
-	resouceManager.ReleaseResources();
+	NormalDraw();
+
+	auto& wsize = Application::GetInstance().GetWindowSize();
+	//ãƒ•ã‚§ãƒ¼ãƒ‰å‡¦ç†
+	float rate = static_cast<float>(m_fadeFrame) / static_cast<float>(kFadeInterval);
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));
+	DrawBox(0, 0, wsize.w, wsize.h, 0x000000, true);
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(255 * rate));
 }
-
-

@@ -2,7 +2,9 @@
 #include<DxLib.h>
 #include<memory>
 #include"Config.h"
-#include"../SceneMain.h"
+#include"Game/Scene/SceneController.h"
+#include"Game/Scene/TitleScene.h"
+#include"Game/Scene/GameScene.h"
 Application::Application() :
 	m_windowSize(Config::kWindowWidth, Config::kWindowHeight)
 {
@@ -60,8 +62,9 @@ void Application::Run()
 	SetWriteZBuffer3D(true);	// 描画する物体はZバッファにも距離を書き込む
 
 	//シーンの作成
-	std::shared_ptr<SceneMain>pScene = std::make_shared<SceneMain>();
-	pScene->Init();
+	SceneController SceneController;
+	SceneController.ChangeScene(std::make_shared<TitleScene>(SceneController));
+//	SceneController.ChangeScene(std::make_shared<GameScene>(SceneController));
 
 	while (ProcessMessage() != -1)
 	{
@@ -73,9 +76,8 @@ void Application::Run()
 
 		//ここにゲームの処理を書く
 
-		pScene->Update();
-
-		pScene->Draw();
+		SceneController.Update();
+		SceneController.Draw();
 
 		//------------------------
 		ScreenFlip();
@@ -86,7 +88,7 @@ void Application::Run()
 		//escキーを押したらゲームを強制終了	
 		if (CheckHitKey(KEY_INPUT_ESCAPE))
 		{
-			pScene->End();
+			SceneController.PopScene();
 			break;
 		}
 

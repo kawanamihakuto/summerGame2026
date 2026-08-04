@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Scene\ClearScene.cpp" />
+    <ClCompile Include="Source\Game\Scene\GameScene.cpp" />
     <ClCompile Include="Source\Game\Scene\SceneBase.cpp" />
     <ClCompile Include="Source\Game\Scene\SceneController.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerStunnedState.cpp" />
@@ -174,7 +176,6 @@
     <ClCompile Include="Source\Engine\Math\Matrix4x4.cpp" />
     <ClCompile Include="Source\Engine\Core\Application.cpp" />
     <ClCompile Include="Source\Engine\Core\main.cpp" />
-    <ClCompile Include="SceneMain.cpp" />
     <ClCompile Include="Source\Engine\Math\Vector2.cpp" />
     <ClCompile Include="Source\Engine\Math\Vector3.cpp" />
     <ClCompile Include="Source\Engine\Math\Transform.cpp" />
@@ -184,6 +185,8 @@
     <ClCompile Include="Source\Game\Scene\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Scene\ClearScene.h" />
+    <ClInclude Include="Source\Game\Scene\GameScene.h" />
     <ClInclude Include="Source\Game\Scene\SceneBase.h" />
     <ClInclude Include="Source\Game\Scene\SceneController.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerStunnedState.h" />
@@ -222,7 +225,6 @@
     <ClInclude Include="Source\Engine\Core\Precompiled.h" />
     <ClInclude Include="Source\Engine\Core\Config.h" />
     <ClInclude Include="Source\Engine\Core\Application.h" />
-    <ClInclude Include="SceneMain.h" />
     <ClInclude Include="Source\Engine\Math\Vector2.h" />
     <ClInclude Include="Source\Engine\Math\Vector3.h" />
     <ClInclude Include="Source\Engine\Math\Transform.h" />
