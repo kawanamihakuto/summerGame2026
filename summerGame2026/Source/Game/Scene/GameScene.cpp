@@ -134,6 +134,8 @@ void GameScene::FadeInUpdate()
 
 void GameScene::NormalUpdate()
 {
+	m_frameCount++;
+
 	//入力取得用
 	auto& input = InputManager::GetInstance();
 	input.Update();
@@ -152,7 +154,7 @@ void GameScene::NormalUpdate()
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 
 	//敵生成
-	if (InputManager::GetInstance().IsPressed("SELECT") && m_frameCount % 20 == 0)
+	if (input.IsPressed("SELECT") && m_frameCount % 20 == 0)
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
