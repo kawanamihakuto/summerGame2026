@@ -114,6 +114,21 @@ void AnimationController::Play(const std::wstring& name, bool loop, float blendT
 		return;
 	}
 
+	//// ブレンド中
+	//if (m_prevAnimNo >= 0)
+	//{
+	//	// currentだけ差し替える
+	//	MV1DetachAnim(m_modelHandle, m_currentAttachNo);
+	//	m_currentAnimNo = newAnim;
+	//	m_currentTime = 0.0f;
+	//	m_isLoop = loop;
+
+	//	m_currentAttachNo = MV1AttachAnim(m_modelHandle, m_currentAttachNo);
+	//	m_blendTime = blendTime;
+	//	m_blendTimer = 0.0f;
+	//	return;
+	//}
+
 	//現在のアニメーションを前のアニメーションとして保存
 	MV1DetachAnim(m_modelHandle, m_prevAttachNo);
 	m_prevAnimNo = m_currentAnimNo;

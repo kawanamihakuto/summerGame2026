@@ -178,6 +178,7 @@ void CrabEnemy::Update()
 
 	case ControllState::controll:
 		//入力取得
+		Move();
 		dir = m_moveInput;
 		//入力があったら
 		if (dir.Length() > 0.0f)
@@ -199,6 +200,17 @@ void CrabEnemy::Update()
 				m_animationController->Play(CrabEnemyAnim::idle);
 			}
 		}
+
+		if (m_input.isJumpDown)
+		{
+			Jump();
+		}
+
+		if (m_input.isJumpUp)
+		{
+			JumpEnd();
+		}
+
 		//速度決める
 		UpdateMove();
 		//回転

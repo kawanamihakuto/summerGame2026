@@ -2,7 +2,7 @@
 #include"PlayerIdleState.h"
 void PlayerMoveState::Enter()
 {
-	
+
 }
 
 void PlayerMoveState::Update()
