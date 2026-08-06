@@ -53,8 +53,8 @@ void ResourceManager::LoadResources()
     m_hatModelHandle = MV1LoadModel(kHatModelPath);
     m_modelHandleTable[ModelType::hat] = { m_hatModelHandle };
     //スター
-    m_starModelHadle = MV1LoadModel(kStarModelPath);
-    m_modelHandleTable[ModelType::star] = { m_starModelHadle };
+ //   m_starModelHadle = MV1LoadModel(kStarModelPath);
+  //  m_modelHandleTable[ModelType::star] = { m_starModelHadle };
     //スカイボックス(前)
     m_skyBoxGraphHandles[0] = LoadGraph(kSkyFrontPath);
     m_graphHandleTable[GraphType::skyFront] = { m_skyBoxGraphHandles[0] };
