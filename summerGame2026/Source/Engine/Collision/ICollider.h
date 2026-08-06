@@ -10,7 +10,7 @@ public:
 	virtual ~ICollider() = default;
 
 	virtual const Collider& GetCollider()const abstract;
-	virtual const Ray& GetRay()const abstract;
+//	virtual const Ray& GetRay()const abstract;
 
 	/// <summary>
 	/// 自身のコリジョンレイヤーを返す

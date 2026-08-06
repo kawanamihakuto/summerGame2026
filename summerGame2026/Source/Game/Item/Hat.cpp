@@ -148,10 +148,10 @@ const Collider& Hat::GetCollider() const
 	return *m_stageCollider;
 }
 
-const Ray& Hat::GetRay() const
-{
-	return *m_ray[0];
-}
+//const Ray& Hat::GetRay() const
+//{
+//	return *m_ray[0];
+//}
 
 CollisionLayer Hat::GetCollisionLayer() const
 {

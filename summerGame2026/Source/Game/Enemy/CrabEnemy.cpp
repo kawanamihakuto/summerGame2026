@@ -384,10 +384,10 @@ const Collider& CrabEnemy::GetCollider() const
 	return *m_bodyCollider;
 }
 
-const Ray& CrabEnemy::GetRay() const
-{
-	return *m_ray[0];
-}
+//const Ray& CrabEnemy::GetRay() const
+//{
+//	return *m_ray[0];
+//}
 
 CollisionLayer CrabEnemy::GetCollisionLayer() const
 {

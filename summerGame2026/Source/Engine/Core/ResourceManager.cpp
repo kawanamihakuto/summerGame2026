@@ -6,6 +6,7 @@ namespace
     constexpr const wchar_t* kStageModelPath = L"data/model/stage/stage.mv1";
     constexpr const wchar_t* kCrabEnemyModelPath = L"data/model/enemy/Crab.mv1";
     constexpr const wchar_t* kHatModelPath = L"data/model/hat/hat.mv1";
+    constexpr const wchar_t* kStarModelPath = L"data/model/item/Star.mv1";
 
     constexpr const wchar_t* kSkyFrontPath = L"data/graph/skybox/sky_front.png";
     constexpr const wchar_t* kSkyRightPath = L"data/graph/skybox/sky_right.png";
@@ -21,6 +22,7 @@ ResourceManager::ResourceManager():
     m_stageModelHandle(-1),
 	m_crabEnemyModelHandle(-1),
     m_hatModelHandle(-1),
+    m_starModelHadle(-1),
     m_skyBoxGraphHandles({})
 {
 }
@@ -50,7 +52,9 @@ void ResourceManager::LoadResources()
     //帽子
     m_hatModelHandle = MV1LoadModel(kHatModelPath);
     m_modelHandleTable[ModelType::hat] = { m_hatModelHandle };
-
+    //スター
+    m_starModelHadle = MV1LoadModel(kStarModelPath);
+    m_modelHandleTable[ModelType::star] = { m_starModelHadle };
     //スカイボックス(前)
     m_skyBoxGraphHandles[0] = LoadGraph(kSkyFrontPath);
     m_graphHandleTable[GraphType::skyFront] = { m_skyBoxGraphHandles[0] };

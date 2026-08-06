@@ -183,6 +183,7 @@
     <ClCompile Include="Source\Game\Stage\Stage.cpp" />
     <ClCompile Include="Source\Engine\Core\StateBase.cpp" />
     <ClCompile Include="Source\Game\Scene\TitleScene.cpp" />
+    <ClCompile Include="Source\Game\Item\Star.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Game\Scene\ClearScene.h" />
@@ -232,6 +233,7 @@
     <ClInclude Include="Source\Game\Stage\Stage.h" />
     <ClInclude Include="Source\Engine\Core\StateBase.h" />
     <ClInclude Include="Source\Game\Scene\TitleScene.h" />
+    <ClInclude Include="Source\Game\Item\Star.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

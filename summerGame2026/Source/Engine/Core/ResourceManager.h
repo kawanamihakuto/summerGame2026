@@ -9,7 +9,8 @@ enum class ModelType
 	player,
 	stage,
 	crabEnemy,
-	hat
+	hat,
+	star
 };
 /// <summary>
 /// グラフィックの種類
@@ -61,7 +62,8 @@ private:
 	int m_crabEnemyModelHandle;
 	//帽子モデル
 	int m_hatModelHandle;
-
+	//スターモデル
+	int m_starModelHadle;
 	//スカイボックスグラフィック
 	int m_skyBoxGraphHandles[6];
 };

@@ -42,7 +42,7 @@ public:
 	// IColliderの関数
 	//-----------------------------
 	const Collider& GetCollider()const override;
-	const Ray& GetRay()const override;
+//	const Ray& GetRay()const override;
 	CollisionLayer GetCollisionLayer()const override;
 	CollisionLayer GetCollisionMask()const override;
 	void OnCollision(ICollider& other,CollisionResult& result) override;

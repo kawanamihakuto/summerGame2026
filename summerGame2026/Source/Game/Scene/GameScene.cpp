@@ -15,7 +15,7 @@
 #include"Game/Item/Hat.h"
 #include"Game/Graphics/SkyBox.h"
 #include"Game/Enemy/CrabEnemy.h"
-#include"ClearScene.h"
+#include"Game/Item/Star.h"
 
 namespace
 {
@@ -29,11 +29,8 @@ namespace
 	constexpr float kCameraNear = 50.0f;
 	constexpr float kCameraFar = 6000.0f;
 
-	//敵のスポーン位置(仮)
-	constexpr Vector3 kCrabSpawn1 = { 0.0f, -200.0f, 0.0f };
-	constexpr Vector3 kCrabSpawn2 = { 100.0f, -200.0f, 0.0f };
-	constexpr Vector3 kCrabSpawn3 = { 0.0f, -200.0f, 100.0f };
-
+	
+	constexpr Vector3 kStarPos = { 0.0f, 300.0f, 100.0f };
 }
 
 GameScene::GameScene(SceneController& controller) :
@@ -70,6 +67,8 @@ GameScene::GameScene(SceneController& controller) :
 	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
 	//帽子生成
 	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<Player>()));
+	//スター生成
+	m_gameObjectManager->Add(std::make_unique<Star>(resouceManager.GetModel(ModelType::star), kStarPos));
 	//フォローカメラ追加
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	//現在のカメラをセット

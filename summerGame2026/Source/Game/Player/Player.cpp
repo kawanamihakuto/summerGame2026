@@ -243,10 +243,10 @@ const Collider& Player::GetCollider() const
 	return *m_stageCollider;
 }
 
-const Ray& Player::GetRay() const
-{
-	return *m_ray[0];
-}
+//const Ray& Player::GetRay() const
+//{
+//	return *m_ray[0];
+//}
 
 CameraAnchor Player::GetCameraAnchor() const
 {
