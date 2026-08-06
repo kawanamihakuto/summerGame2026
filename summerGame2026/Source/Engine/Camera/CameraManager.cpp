@@ -1,4 +1,4 @@
-#include "CameraManager.h"
+﻿#include "CameraManager.h"
 #include"FollowCamera.h"
 CameraManager::CameraManager()
 {
@@ -66,6 +66,8 @@ const Transform& CameraManager::GetTransfrom() const
 			return c->GetTransform();
 		}
 	}
+
+	return m_camrea.back()->GetTransform();
 }
 
 void CameraManager::ChangeCamera(CameraName name)

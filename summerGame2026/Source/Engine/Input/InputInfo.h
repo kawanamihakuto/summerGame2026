@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include"Engine/Math/Vector2.h"
 
 /// <summary>
@@ -7,7 +7,7 @@
 struct InputInfo
 {
 	//左スティックの入力値
-	Vector2 move;
+	Vector2 move = {};
 	
 	//ジャンプボタンが今押されたか
 	bool isJumpDown = false;

@@ -1,4 +1,4 @@
-#include "ClearScene.h"
+﻿#include "ClearScene.h"
 #include"SceneController.h"
 #include"TitleScene.h"
 #include"Engine/Core/Application.h"
@@ -72,7 +72,7 @@ void ClearScene::NormalDraw()
 {
 	auto& wsize = Application::GetInstance().GetWindowSize();
 
-	DrawFormatString(wsize.w / 2.0f, wsize.h / 2.0f, 0xffffff, L"ClearScene");
+	DrawFormatString(static_cast<int>(wsize.w / 2.0f),static_cast<int>(wsize.h / 2.0f), 0xffffff, L"ClearScene");
 }
 
 void ClearScene::FadeDraw()

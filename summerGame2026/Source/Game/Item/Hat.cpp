@@ -1,4 +1,4 @@
-#include "Hat.h"
+﻿#include "Hat.h"
 #include"Engine/Core/Precompiled.h"
 #include"Engine/Collision/SphereCollider.h"
 #include"Engine/Capture/ICaptureTarget.h"

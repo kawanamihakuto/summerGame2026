@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Engine/Core/Character.h"
 #include "Engine/Collision/ICollider.h"
 #include"Engine/Capture/ICaptureTarget.h"

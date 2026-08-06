@@ -359,7 +359,7 @@ void CrabEnemy::ResetEnemyPos(const Vector3& pos)
 
 void CrabEnemy::ColliderUpdate()
 {
-	m_stageCollider->Update(m_transform.position + (Vector3{ 0.0f,kHeight / 2.0f,0.0f } * m_towerNum) + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
+	m_stageCollider->Update(m_transform.position + (Vector3{ 0.0f,kHeight / 2.0f,0.0f } * static_cast<float>(m_towerNum)) + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
 	m_bodyCollider->Update(m_transform.position + kSphereHeightOffset + m_velocity);
 
 	ResolveWallVelocity(m_stageModelHandle);

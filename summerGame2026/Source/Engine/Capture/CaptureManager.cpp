@@ -1,4 +1,4 @@
-#include "CaptureManager.h"
+﻿#include "CaptureManager.h"
 #include"Engine/Camera/FollowCamera.h"
 
 CaptureManager::CaptureManager(Player* player, Hat* hat,CameraManager& camreaManager, ICaptureTarget* target):

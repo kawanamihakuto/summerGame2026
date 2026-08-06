@@ -1,4 +1,4 @@
-#include "TitleScene.h"
+﻿#include "TitleScene.h"
 #include"SceneController.h"
 #include"Engine/Input/InputManager.h"
 #include"Engine/Core/Application.h"
@@ -71,7 +71,7 @@ void TitleScene::NormalDraw()
 {
 	auto& wsize = Application::GetInstance().GetWindowSize();
 
-	DrawFormatString(wsize.w / 2.0f, wsize.h / 2.0f, 0xffffff, L"TITLESCENE");
+	DrawFormatString(static_cast<int>(wsize.w / 2.0f),static_cast<int>(wsize.h / 2.0f), 0xffffff, L"TITLESCENE");
 }
 
 void TitleScene::FadeDraw()

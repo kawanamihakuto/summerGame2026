@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include<cstdint>
 
 using CollisionLayer = uint32_t;

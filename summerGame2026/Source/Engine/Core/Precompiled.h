@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //なんか使う時とりあえずインクルードできる.h
 #include"DxLib.h"

@@ -1,4 +1,4 @@
-#include "GameScene.h"
+﻿#include "GameScene.h"
 #include"SceneController.h"
 #include"Engine/Core/Application.h"
 #include"ClearScene.h"
@@ -188,8 +188,8 @@ void GameScene::NormalDraw()
 
 #ifdef _DEBUG
 	DrawFormatString(0, 16, 0x0000ff, L"FRAME:%d", m_frameCount);
-	int fps = GetFPS();
-	DrawFormatString(0, 32, 0x0000ff, L"FPS:%d", fps);
+	float fps = GetFPS();
+	DrawFormatString(0, 32, 0x0000ff, L"FPS:%f", fps);
 
 #endif // _DEBUG
 }
