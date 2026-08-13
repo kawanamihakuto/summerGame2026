@@ -414,7 +414,8 @@ CollisionLayer CrabEnemy::GetCollisionMask() const
 	return CollisionLayers::kPlayer |
 		CollisionLayers::kHat |
 		CollisionLayers::kEnemy |
-		CollisionLayers::kControllEnemy;
+		CollisionLayers::kControllEnemy | 
+		CollisionLayers::kStar;
 }
 
 void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)

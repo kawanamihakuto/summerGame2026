@@ -68,7 +68,7 @@ GameScene::GameScene(SceneController& controller) :
 	//帽子生成
 	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<Player>()));
 	//スター生成
-//	m_gameObjectManager->Add(std::make_unique<Star>(resouceManager.GetModel(ModelType::star), kStarPos));
+	m_gameObjectManager->Add(std::make_unique<Star>(resouceManager.GetModel(ModelType::star), kStarPos));
 	//フォローカメラ追加
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	//現在のカメラをセット

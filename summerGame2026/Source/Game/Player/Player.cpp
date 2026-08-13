@@ -260,7 +260,8 @@ CollisionLayer Player::GetCollisionLayer() const
 
 CollisionLayer Player::GetCollisionMask() const
 {
-	return CollisionLayers::kEnemy;
+	return CollisionLayers::kEnemy | 
+		CollisionLayers::kStar;
 }
 
 void Player::OnCollision(ICollider& other, CollisionResult& result)

@@ -10,6 +10,8 @@ Star::Star(int modelHandle, const Vector3& pos)
 	m_modelHandle = MV1DuplicateModel(modelHandle);
 	m_transform.SetPosition(pos);
 	m_bodyCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
+	m_bodyCollider->Update(m_transform.position);
+	MV1SetPosition(m_modelHandle, m_transform.position);
 }
 
 Star::~Star()
@@ -29,7 +31,8 @@ void Star::End()
 
 void Star::Update()
 {
-	
+	m_bodyCollider->Update(m_transform.position);
+	MV1SetPosition(m_modelHandle,m_transform.position);
 }
 
 void Star::Draw()

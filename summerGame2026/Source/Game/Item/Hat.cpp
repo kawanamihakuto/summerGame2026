@@ -38,6 +38,12 @@ Hat::Hat(int modelHandle, int stageModelHandle, ICaptureTarget* target) :
 	m_stageCollider = std::make_unique<SphereCollider>(m_transform.position, kSphereRadius);
 	//最初は帽子かぶってる状態
 	m_state = HatState::have;
+	//ポジション設定
+	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
+	//モデル制御
+	MV1SetPosition(m_modelHandle, m_transform.position);
+	MV1SetRotationMatrix(m_modelHandle, m_transform.rotation.ToMatrix().ChangeDxMat());
+	MV1SetScale(m_modelHandle, kModelScale);
 }
 
 Hat::~Hat()
@@ -47,8 +53,7 @@ Hat::~Hat()
 
 void Hat::Init()
 {
-	//ポジション設定
-	m_transform = Transform::FromMatrix(m_target->GetHatMatrix());
+	
 }
 
 void Hat::End()
