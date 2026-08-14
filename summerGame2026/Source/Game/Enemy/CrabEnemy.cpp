@@ -63,6 +63,9 @@ namespace
 
 	//帽子をかぶせたいフレーム名
 	constexpr const wchar_t* kHeadFrameName = L"Head3";
+
+	//無敵時間(フレーム)
+	constexpr float kInvincibleFrame = 60.0f * 3.0f;
 }
 
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
@@ -255,12 +258,27 @@ void CrabEnemy::Update()
 
 	ModelUpdate();
 	m_animationController->Update();
+
+	if (m_isInvincible)
+	{
+		if (m_InvincibleFrameCount++ > kInvincibleFrame)
+		{
+			m_isInvincible = false;
+			m_InvincibleFrameCount = 0;
+		}
+	}
 }
 
 void CrabEnemy::Draw()
 {
+	if (m_isInvincible && m_InvincibleFrameCount % 10 < 5)
+	{
+		MV1SetOpacityRate(m_modelHandle, 0.2f);
+	}
 	//モデル描画
 	MV1DrawModel(m_modelHandle);
+
+	MV1SetOpacityRate(m_modelHandle, 1.0f);
 
 #ifdef _DEBUG
 	//コライダーとか描画
@@ -349,6 +367,25 @@ void CrabEnemy::CheckTowerNum()
 	}
 }
 
+void CrabEnemy::InvincibleTower()
+{
+	CrabEnemy* current = this;
+	//一番上のやつまで回す
+	while (current->m_upper)
+	{
+		current = current->m_upper;
+		current->m_isInvincible = true;
+	}
+
+	current = this;
+	//一番下のやつまで回す
+	while (current->m_lower)
+	{
+		current = current->m_lower;
+		current->m_isInvincible = true;
+	}
+}
+
 void CrabEnemy::ResetEnemyPos(const Vector3& pos)
 {
 	if (m_transform.GetPosition().y <= -10000.0f)
@@ -414,7 +451,7 @@ CollisionLayer CrabEnemy::GetCollisionMask() const
 	return CollisionLayers::kPlayer |
 		CollisionLayers::kHat |
 		CollisionLayers::kEnemy |
-		CollisionLayers::kControllEnemy | 
+		CollisionLayers::kControllEnemy |
 		CollisionLayers::kStar;
 }
 
@@ -510,6 +547,20 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 			}
 		}
 	}
+
+	if (m_state == ControllState::controll)
+	{
+		if (other.GetCollisionLayer() == CollisionLayers::kEnemy)
+		{
+			if (!m_isInvincible)
+			{
+				if (result.normal.y > -0.7f && m_velocity.y >= 0.0f)
+				{
+					SetCaptureRelease(true);
+				}
+			}
+		}
+	}
 }
 
 void CrabEnemy::Move()
@@ -547,11 +598,16 @@ void CrabEnemy::JumpEnd()
 void CrabEnemy::Controll()
 {
 	m_state = ControllState::controll;
+	
+	m_isInvincible = true;
+	InvincibleTower();
 }
 
 void CrabEnemy::ExitControll()
 {
 	m_state = ControllState::ai;
+	m_isInvincible = false;
+	m_InvincibleFrameCount = 0;
 }
 
 CameraAnchor CrabEnemy::GetCameraAnchor() const

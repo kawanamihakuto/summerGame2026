@@ -68,9 +68,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_isNextJump(false),
-	m_isRun(false),
-	m_isInvincible(false),
-	m_InvincibleFrameCount(0)
+	m_isRun(false)
 {
 	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
@@ -91,6 +89,9 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 
 	//HP初期化
 	m_hp = kHp;
+
+	m_isInvincible = false;
+	m_InvincibleFrameCount = 0;
 
 	//アニメーションコントローラー
 	m_animationController = std::make_shared<AnimationController>(m_modelHandle);

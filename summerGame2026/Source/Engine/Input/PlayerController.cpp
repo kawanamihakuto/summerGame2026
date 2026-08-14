@@ -43,11 +43,12 @@ void PlayerController::Update()
 		}
 	}
 	//キャプチャー解除
-	if (input.IsTriggered("Y"))
+	if (input.IsTriggered("Y") || m_target->IsCaptureReleaseRequest())
 	{
 		//プレイヤーがアクティブじゃないかどうか
 		if (!m_player->IsActive())
 		{
+			m_target->SetCaptureRelease(false);
 			//キャプチャー解除
 			m_captureManager.Release();
 			//操作対象をプレイヤーに戻す

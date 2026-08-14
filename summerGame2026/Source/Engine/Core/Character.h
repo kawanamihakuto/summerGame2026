@@ -21,4 +21,8 @@ protected:
 	Vector3 m_lastMoveInput{};
 	CameraManager& m_cameraManager;
 	int m_hp;
+
+	bool m_isInvincible;
+
+	int m_InvincibleFrameCount;
 };

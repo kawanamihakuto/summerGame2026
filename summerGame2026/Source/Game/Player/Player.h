@@ -91,9 +91,5 @@ private:
 	bool m_isNextJump;
 
 	bool m_isRun;
-
-	bool m_isInvincible;
-
-	int m_InvincibleFrameCount;
 };
 

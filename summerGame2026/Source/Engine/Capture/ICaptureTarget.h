@@ -18,5 +18,11 @@ public:
 	virtual ICaptureTarget* GetHatAndCameraTarget()abstract;
 	//GameObject型で渡す
 	virtual GameObject* GetGameObject()abstract;
+	//キャプチャー解除依頼があるか
+	bool IsCaptureReleaseRequest() { return m_isCaptureReleaseRequest; }
+	//キャプチャー解除依頼
+	void SetCaptureRelease(bool is) { m_isCaptureReleaseRequest = is; }
+private:
+	bool m_isCaptureReleaseRequest = false;
 };
 

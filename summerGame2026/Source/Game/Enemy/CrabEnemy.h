@@ -45,6 +45,8 @@ public:
 	void FollowTower(CrabEnemy* lower);
 	//タワーの敵の数
 	void CheckTowerNum();
+	//タワー全体を無敵化する
+	void InvincibleTower();
 
 	//落下時地上に戻る
 	void ResetEnemyPos(const Vector3& pos);
