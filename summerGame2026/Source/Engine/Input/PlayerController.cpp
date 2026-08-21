@@ -29,8 +29,8 @@ void PlayerController::Update()
 	inputInfo.move = input.GetLeftStick();
 	inputInfo.isJumpDown = input.IsTriggered("A");
 	inputInfo.isJumpUp = input.IsReleased("A");
+	inputInfo.isHipDropDown = input.IsTriggered("B");
 	m_target->SetInputInfo(inputInfo);
-
 
 	//帽子を投げる
 	if (input.IsTriggered("X"))

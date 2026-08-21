@@ -535,6 +535,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 					{
 						if (crab->m_lower == nullptr)
 						{
+							InvincibleTower();
 							SetUpper(crab);
 							crab->SetLower(this);
 

@@ -14,6 +14,7 @@ namespace
 	constexpr float kWalkSpeed = 4.0f;
 	constexpr float kRunSpeed = 12.0f;
 	constexpr float kAirMoveSpeedRate = 0.8f;
+	constexpr float kHipDropSpeed = 40.0f;
 
 	//HP
 	constexpr int kHp = 3;
@@ -68,7 +69,8 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
 	m_isNextJump(false),
-	m_isRun(false)
+	m_isRun(false),
+	m_isHipDrop(false)
 {
 	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
@@ -139,8 +141,12 @@ void Player::Update()
 		UpdateMove();
 		//回転
 		UpdateRotate(kModelRotationOffset);
-		//重力
-		Gravity();
+
+		if (!m_isHipDrop)
+		{
+			//重力
+			Gravity();
+		}
 
 		//ステージとの当たり判定コライダー更新
 		m_stageCollider->Update(m_transform.GetPosition() + Vector3{ 0.0f,kCapsuleHeightOffset,0.0f } + m_velocity);
@@ -231,12 +237,18 @@ void Player::StartJamp()
 	m_velocity.y = kJumpPower;
 }
 
-void Player::StopMove()
+void Player::StopHorizontalMove()
 {
 	m_moveInput.x = 0.0f;
 	m_moveInput.z = 0.0f;
 	m_velocity.x = 0.0f;
 	m_velocity.z = 0.0f;
+}
+
+void Player::StopMove()
+{
+	m_moveInput = Vector3::Zero();
+	m_velocity = Vector3::Zero();
 }
 
 const Collider& Player::GetCollider() const
@@ -273,8 +285,11 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 		//踏んでいたら
 		if (result.normal.y < kStompNormalThreshold && m_velocity.y < 0.0f)
 		{
-			//ジャンプフラグ立てる
-			m_isNextJump = true;
+			if (!m_isHipDrop)
+			{
+				//ジャンプフラグ立てる
+				m_isNextJump = true;
+			}
 		}
 		else
 		{
@@ -402,4 +417,9 @@ void Player::CaptureReleaseAction(const Vector3& pos)
 	m_velocity.y = kJumpPower;
 	m_isGround = false;
 	m_animationController->Play(PlayerAnim::jump, false);
+}
+
+void Player::HipDropMove()
+{
+	m_velocity.y = -kHipDropSpeed;
 }

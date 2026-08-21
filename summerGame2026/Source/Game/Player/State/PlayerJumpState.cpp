@@ -1,6 +1,8 @@
 #include "PlayerJumpState.h"
 #include"PlayerIdleState.h"
 #include"PlayerMoveState.h"
+#include"PlayerHipDropState.h"
+
 void PlayerJumpState::Enter()
 {
 	m_animationController.Play(PlayerAnim::jump,false);
@@ -15,6 +17,12 @@ void PlayerJumpState::Update()
 	if (m_player.GetInputInfo().isJumpUp)
 	{
 		m_player.JumpEnd();
+	}
+
+	if (m_player.GetInputInfo().isHipDropDown)
+	{
+		m_player.ChangeState(std::make_unique<PlayerHipDropState>(m_player, m_animationController));
+		return;
 	}
 
 	if (m_player.IsGround())

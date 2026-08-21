@@ -36,8 +36,9 @@ public:
 	//走っているかどうか
 	bool IsRun() { return m_isRun; }
 	//x,z成分の動きを止める
+	void StopHorizontalMove();
+	//動きを止める
 	void StopMove();
-
 	//-----------------------------
 	// IColliderの関数
 	//-----------------------------
@@ -77,6 +78,14 @@ public:
 	Vector3 GetLastMoveDirection() { return { m_lastMoveInput.x,0.0f,m_lastMoveInput.z }; }
 	//キャプチャー解除時のアクション
 	void CaptureReleaseAction(const Vector3& pos);
+	//HP取得
+	int GetHp() const { return m_hp; }
+	//ヒップドロップ開始
+	void StartHipDrop() { m_isHipDrop = true; }
+	//ヒップドロップ終了
+	void EndHipDrop() { m_isHipDrop = false; }
+	//ヒップドロップの動き
+	void HipDropMove();
 private:
 	std::unique_ptr<PlayerStateBase>m_state;
 
@@ -91,5 +100,7 @@ private:
 	bool m_isNextJump;
 
 	bool m_isRun;
+
+	bool m_isHipDrop;
 };
 

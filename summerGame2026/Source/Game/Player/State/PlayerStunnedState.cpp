@@ -4,13 +4,13 @@
 void PlayerStunnedState::Enter()
 {
 	m_animationController.Play(PlayerAnim::stunned, false);
-	m_player.StopMove();
+	m_player.StopHorizontalMove();
 }
 
 void PlayerStunnedState::Update()
 {
 	m_player.Move();
-	m_player.StopMove();
+	m_player.StopHorizontalMove();
 
 	if (m_animationController.IsEnd())
 	{

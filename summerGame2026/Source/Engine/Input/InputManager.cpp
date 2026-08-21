@@ -112,7 +112,6 @@ Vector2 InputManager::GetLeftStick() const
 	float y = m_stick.ThumbLY / 32767.0f;
 
 	Vector2 stick{ x,y };
-
 #ifdef _DEBUG
 	DrawFormatString(16, 64, 0xffffff, L"Input : LeftStick : %f,%f", x, y);
 	DrawFormatString(16, 80, 0xffffff, L"      : LeftStick : %f,%f", m_stick.ThumbLX, m_stick.ThumbLY);
