@@ -10,6 +10,7 @@ void PlayerHipDropState::Enter()
 {
 	m_player.StopMove();
 	m_player.StartHipDrop();
+	m_animationController.Play(PlayerAnim::HipDrop);
 }
 
 void PlayerHipDropState::Update()

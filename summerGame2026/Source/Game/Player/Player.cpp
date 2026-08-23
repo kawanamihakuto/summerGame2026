@@ -103,6 +103,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_animationController->AddAnimation(PlayerAnim::run);
 	m_animationController->AddAnimation(PlayerAnim::jump);
 	m_animationController->AddAnimation(PlayerAnim::stunned);
+	m_animationController->AddAnimation(PlayerAnim::HipDrop);
 
 	//ステート初期化
 	m_state = std::make_unique<PlayerIdleState>(*this, *m_animationController);

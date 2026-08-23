@@ -13,6 +13,7 @@ namespace PlayerAnim
 	const std::wstring run = L"Armature|Run";
 	const std::wstring jump = L"Armature|Jump";
 	const std::wstring stunned = L"Armature|Stunned";
+	const std::wstring HipDrop = L"Armature|HipDrop";
 };
 
 class PlayerStateBase;
