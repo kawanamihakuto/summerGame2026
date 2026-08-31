@@ -139,6 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Enemy\EnemySpawner.cpp" />
     <ClCompile Include="Source\Engine\Camera\LookAtCamera.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerHipDropState.cpp" />
     <ClCompile Include="Source\Game\Scene\ClearScene.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="Source\Game\Item\StarFactory.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Enemy\EnemySpawner.h" />
     <ClInclude Include="Source\Engine\Camera\LookAtCamera.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerHipDropState.h" />
     <ClInclude Include="Source\Game\Scene\ClearScene.h" />

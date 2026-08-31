@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include"Precompiled.h"
+#include"Engine/Math/Vector3.h"
 
 class CollisionManager;
 class GameObject;
@@ -30,6 +31,13 @@ public:
     /// オブジェクトすべての解放
     /// </summary>
     void Clear();
+    /// <summary>
+    /// ポジションから範囲内の敵の数を取得する
+    /// </summary>
+    /// <param name="pos"></param>
+    /// <param name="radius"></param>
+    /// <returns></returns>
+    int GetEnemyCountNear(const Vector3& pos, float radius);
 
     //特定の型を探す
     template<typename T>

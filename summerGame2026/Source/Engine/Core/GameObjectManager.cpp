@@ -3,6 +3,7 @@
 #include"Engine/Collision/CollisionManager.h"
 #include"PhysicsObject.h"
 #include"Engine/Collision/ICollider.h"
+#include"Game/Enemy/CrabEnemy.h"
 
 GameObjectManager::GameObjectManager(CollisionManager& collisionManager):
 	m_collisionManager(collisionManager)
@@ -77,4 +78,24 @@ void GameObjectManager::Clear()
 {
 	//解放
 	m_objects.clear();
+}
+
+int GameObjectManager::GetEnemyCountNear(const Vector3& pos, float radius)
+{
+	int count = 0;
+
+	for(const auto& obj : m_objects)
+	{
+		if (auto enemy = dynamic_cast<CrabEnemy*>(obj.get()))
+		{
+			Vector3 diff = enemy->GetTransform().GetPosition() - pos;
+
+			if (diff.Length() <= radius)
+			{
+				count++;
+			}
+		}
+	}
+
+	return count;
 }
