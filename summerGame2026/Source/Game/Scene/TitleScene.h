@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include "SceneBase.h"
+#include"Engine/Core/Precompiled.h"
+
 class TitleScene : public SceneBase
 {
 public:
@@ -29,5 +31,10 @@ private:
 
 	//フェード用のフレームカウンター
 	int m_frame;
-};
 
+	//カメラを管理する
+	std::shared_ptr<CameraManager> m_cameraManager;
+
+	//スカイボックス
+	std::shared_ptr<SkyBox>m_skyBox;
+};

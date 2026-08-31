@@ -159,7 +159,7 @@ void GameScene::NormalUpdate()
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
 	}
 
-	if (input.IsTriggered("START") || m_gameObjectManager->Find<Player>()->GetHp() <= 0)
+	if (input.IsTriggered("START"))
 	{
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;

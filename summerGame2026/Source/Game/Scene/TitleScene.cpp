@@ -3,6 +3,8 @@
 #include"Engine/Input/InputManager.h"
 #include"Engine/Core/Application.h"
 #include"GameScene.h"
+#include"Engine/Core/ResourceManager.h"
+
 namespace
 {
 	//フェードにかかる時間
@@ -18,10 +20,29 @@ TitleScene::TitleScene(SceneController& controller):
 	m_draw = &TitleScene::FadeDraw;
 	//フェード用のフレームカウンター初期化
 	m_frame = kFadeInterval;
+
+	//リソースのロード
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.LoadResources();
+
+	m_cameraManager = std::make_shared<CameraManager>();
+
+	//スカイボックス生成
+	m_skyBox = std::make_shared<SkyBox>(
+		resouceManager.GetGraph(GraphType::skyFront),
+		resouceManager.GetGraph(GraphType::skyRight),
+		resouceManager.GetGraph(GraphType::skyBack),
+		resouceManager.GetGraph(GraphType::skyLeft),
+		resouceManager.GetGraph(GraphType::skyUp),
+		resouceManager.GetGraph(GraphType::skyBottom)
+	);
 }
 
 TitleScene::~TitleScene()
 {
+	//リソースの解放
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.ReleaseResources();
 }
 
 void TitleScene::Update()
