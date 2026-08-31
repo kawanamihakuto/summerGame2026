@@ -2,6 +2,8 @@
 #include "SceneBase.h"
 #include"Engine/Core/Precompiled.h"
 
+class SkyBox;
+class CameraManager;
 class TitleScene : public SceneBase
 {
 public:

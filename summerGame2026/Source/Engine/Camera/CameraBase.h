@@ -5,6 +5,7 @@
 enum class CameraName
 {
 	follow,
+	lookat,
 };
 
 class CameraBase : public GameObject

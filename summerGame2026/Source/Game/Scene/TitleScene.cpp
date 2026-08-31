@@ -4,11 +4,16 @@
 #include"Engine/Core/Application.h"
 #include"GameScene.h"
 #include"Engine/Core/ResourceManager.h"
-
+#include"Game/Graphics/SkyBox.h"
+#include"Engine/Camera/CameraManager.h"
+#include"Engine/Camera/LookAtCamera.h"
 namespace
 {
 	//フェードにかかる時間
 	constexpr int kFadeInterval = 60;
+
+	constexpr Vector3 kCameraPosition = { 0.0f,500.0f,-500.0f };
+	constexpr Vector3 kCameraTargetPosition = { 0.0f,0.0f,0.0f };
 }
 
 TitleScene::TitleScene(SceneController& controller):
@@ -27,6 +32,10 @@ TitleScene::TitleScene(SceneController& controller):
 
 	m_cameraManager = std::make_shared<CameraManager>();
 
+	m_cameraManager->AddCamera(std::make_shared<LookAtCamera>(kCameraPosition, kCameraTargetPosition));
+
+	m_cameraManager->ChangeCamera(CameraName::lookat);
+
 	//スカイボックス生成
 	m_skyBox = std::make_shared<SkyBox>(
 		resouceManager.GetGraph(GraphType::skyFront),
@@ -36,13 +45,12 @@ TitleScene::TitleScene(SceneController& controller):
 		resouceManager.GetGraph(GraphType::skyUp),
 		resouceManager.GetGraph(GraphType::skyBottom)
 	);
+
+	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 }
 
 TitleScene::~TitleScene()
 {
-	//リソースの解放
-	auto& resouceManager = ResourceManager::GetInstance();
-	resouceManager.ReleaseResources();
 }
 
 void TitleScene::Update()
@@ -70,6 +78,8 @@ void TitleScene::NormalUpdate()
 	auto& input = InputManager::GetInstance();
 	input.Update();
 
+	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
+
 	if (input.AnyPressButtonInput())
 	{
 		m_update = &TitleScene::FadeOutUpdate;
@@ -91,6 +101,8 @@ void TitleScene::FadeOutUpdate()
 void TitleScene::NormalDraw()
 {
 	auto& wsize = Application::GetInstance().GetWindowSize();
+
+	m_skyBox->Draw();
 
 	DrawFormatString(static_cast<int>(wsize.w / 2.0f),static_cast<int>(wsize.h / 2.0f), 0xffffff, L"TITLESCENE");
 }

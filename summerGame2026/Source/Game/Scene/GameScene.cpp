@@ -55,7 +55,7 @@ GameScene::GameScene(SceneController& controller) :
 
 	//リソースのロード
 	auto& resouceManager = ResourceManager::GetInstance();
-	resouceManager.LoadResources();
+//	resouceManager.LoadResources();
 
 	//コリジョンマネージャー生成
 	m_collisionManager = std::make_shared<CollisionManager>();
