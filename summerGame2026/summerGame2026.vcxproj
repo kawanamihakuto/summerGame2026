@@ -139,6 +139,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Game\Scene\GameOverScene.cpp" />
+    <ClCompile Include="Source\Engine\Core\EffectManager.cpp" />
     <ClCompile Include="Source\Game\Enemy\EnemySpawner.cpp" />
     <ClCompile Include="Source\Engine\Camera\LookAtCamera.cpp" />
     <ClCompile Include="Source\Game\Player\State\PlayerHipDropState.cpp" />
@@ -188,8 +190,11 @@
     <ClCompile Include="Source\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Source\Game\Item\Star.cpp" />
     <ClCompile Include="Source\Game\Item\StarFactory.cpp" />
+    <ClCompile Include="Source\Game\Player\TitlePlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Scene\GameOverScene.h" />
+    <ClInclude Include="Source\Engine\Core\EffectManager.h" />
     <ClInclude Include="Source\Game\Enemy\EnemySpawner.h" />
     <ClInclude Include="Source\Engine\Camera\LookAtCamera.h" />
     <ClInclude Include="Source\Game\Player\State\PlayerHipDropState.h" />
@@ -242,6 +247,7 @@
     <ClInclude Include="Source\Game\Scene\TitleScene.h" />
     <ClInclude Include="Source\Game\Item\Star.h" />
     <ClInclude Include="Source\Game\Item\StarFactory.h" />
+    <ClInclude Include="Source\Game\Player\TitlePlayer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

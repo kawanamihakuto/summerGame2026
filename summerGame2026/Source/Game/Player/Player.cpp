@@ -8,6 +8,7 @@
 #include"State/PlayerIdleState.h"
 #include"State/PlayerJumpState.h"
 #include"State/PlayerStunnedState.h"
+
 namespace
 {
 	//スピード
@@ -103,7 +104,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_animationController->AddAnimation(PlayerAnim::run);
 	m_animationController->AddAnimation(PlayerAnim::jump);
 	m_animationController->AddAnimation(PlayerAnim::stunned);
-	m_animationController->AddAnimation(PlayerAnim::HipDrop);
+	m_animationController->AddAnimation(PlayerAnim::hipDrop);
 
 	m_animationController->Play(PlayerAnim::idle);
 
@@ -215,6 +216,8 @@ void Player::Draw()
 		{
 			m_ray[i]->Draw();
 		}
+
+		DrawFormatString(10, 50, 0x00ff00, L"Player Position: (%.2f, %.2f, %.2f)", m_transform.GetPosition().x, m_transform.GetPosition().y, m_transform.GetPosition().z);
 	}
 #endif // _DEBUG
 }

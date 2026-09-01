@@ -24,18 +24,22 @@ Application& Application::GetInstance()
 
 bool Application::Init()
 {
+#ifdef _DEBUG
 	//ウィンドウサイズ設定
 	SetGraphMode(m_windowSize.w, m_windowSize.h, Config::kColorBitNum);
-#ifdef _DEBUG
 	//ウィンドウ
 	ChangeWindowMode(true);
-#else
+#else 
 	//フルスクリーン
-	ChangeWindowMode(true);
+	ChangeWindowMode(false);
+	m_windowSize.w = 1920;
+	m_windowSize.h = 1080;
+	//ウィンドウサイズ設定
+	SetGraphMode(m_windowSize.w, m_windowSize.h, Config::kColorBitNum);
 #endif // _DEBUG
 
 	//ウィンドウのタイトル設定
-	SetMainWindowText(L"マリオオデッセイみたいなやつ");
+	SetMainWindowText(L"SUPER CHUCHU ODYSSEY");
 	//文字コードの設定
 	SetUseCharCodeFormat(DX_CHARCODEFORMAT_UTF8);
 

@@ -9,6 +9,7 @@ class CameraManager;
 class PlayerController;
 class CaptureManager;
 class SkyBox;
+class EnemySpawner;
 class GameScene : public SceneBase
 {
 public:
@@ -53,6 +54,8 @@ private:
 	std::shared_ptr<PlayerController> m_playerController;
 	//キャプチャー対象を保存し、通知する
 	std::shared_ptr<CaptureManager> m_captureManager;
+	//敵生成
+	std::vector<std::shared_ptr<EnemySpawner>> m_enemySpawners;
 	//スカイボックス
 	std::shared_ptr<SkyBox>m_skyBox;
 };

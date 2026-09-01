@@ -5,6 +5,7 @@
 #include"Engine/Math/Vector3.h"
 #include"Engine/Core/ResourceManager.h"
 #include"Engine/Core/GameObjectManager.h"
+#include"Engine/Core/EffectManager.h"
 #include"Engine/Input/PlayerController.h"
 #include"Engine/Input/InputManager.h"
 #include"Engine/Capture/CaptureManager.h"
@@ -16,7 +17,7 @@
 #include"Game/Graphics/SkyBox.h"
 #include"Game/Enemy/CrabEnemy.h"
 #include"Game/Item/Star.h"
-
+#include"Game/Enemy/EnemySpawner.h"
 namespace
 {
 	//フェードにかかる時間
@@ -29,8 +30,9 @@ namespace
 	constexpr float kCameraNear = 50.0f;
 	constexpr float kCameraFar = 6000.0f;
 
-	
-	constexpr Vector3 kStarPos = { 0.0f, 300.0f, 100.0f };
+	constexpr Vector3 kStarPos = { 0.0f, 50.0f, 100.0f };
+
+	constexpr Vector3 kSpawnpos = { 0.0f, -249.0f, 100.0f };
 }
 
 GameScene::GameScene(SceneController& controller) :
@@ -83,6 +85,10 @@ GameScene::GameScene(SceneController& controller) :
 		m_gameObjectManager->Find<Hat>(),
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
+	//敵生成
+	m_enemySpawners.push_back(std::make_shared<EnemySpawner>(*m_gameObjectManager, resouceManager.GetModel(ModelType::crabEnemy),
+		resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, kSpawnpos));
+
 	//ゲームオブジェクト全体を初期化
 	m_gameObjectManager->Init();
 	//プレイヤーコントローラー生成
@@ -98,6 +104,12 @@ GameScene::GameScene(SceneController& controller) :
 	);
 	//カメラポジションをセット
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
+
+	//エフェクトマネージャー初期化
+	EffectManager::Init();
+	//エフェクトのロード
+	EffectManager::Load("waitSpawn", ResourceManager::GetInstance().GetEffectPath(EffectType::waitSpawn));
+	EffectManager::Load("spawn", ResourceManager::GetInstance().GetEffectPath(EffectType::spawn));
 }
 
 GameScene::~GameScene()
@@ -106,6 +118,10 @@ GameScene::~GameScene()
 	m_gameObjectManager->Clear();
 	//当たり判定オブジェクトクリア
 	m_collisionManager->ClearObjects();
+
+	EffectManager::StopAll();
+	EffectManager::End();
+
 	//リソースの解放
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.ReleaseResources();
@@ -143,6 +159,13 @@ void GameScene::NormalUpdate()
 	m_playerController->Update();
 	//ゲームオブジェクト更新
 	m_gameObjectManager->Update();
+
+	//敵生成更新
+	for(auto& spawner : m_enemySpawners)
+	{
+		spawner->Update();
+	}
+
 	//全体の当たり判定
 	m_collisionManager->CheckAllCollisions();
 	//カメラ更新
@@ -158,6 +181,9 @@ void GameScene::NormalUpdate()
 		auto& resouceManager = ResourceManager::GetInstance();
 		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
 	}
+
+	//エフェクト更新
+	EffectManager::Update();
 
 	if (input.IsTriggered("START"))
 	{
@@ -184,6 +210,14 @@ void GameScene::NormalDraw()
 	m_stage->Draw();
 	//ゲームオブジェクト描画
 	m_gameObjectManager->Draw();
+	//敵生成描画
+	for(const auto& spawner : m_enemySpawners)
+	{
+		spawner->Draw();
+	}
+
+	//エフェクト描画
+	EffectManager::Draw();
 
 #ifdef _DEBUG
 	DrawFormatString(0, 16, 0x0000ff, L"FRAME:%d", m_frameCount);
