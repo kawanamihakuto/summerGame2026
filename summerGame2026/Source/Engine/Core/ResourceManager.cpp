@@ -4,6 +4,7 @@ namespace
 {
     constexpr const wchar_t* kPlayerModelPath = L"data/model/player/Player2.mv1";
     constexpr const wchar_t* kStageModelPath = L"data/model/stage/stage.mv1";
+    constexpr const wchar_t* kStageAppearanceModelPath = L"data/model/stage/stageAppearance.mv1";
     constexpr const wchar_t* kCrabEnemyModelPath = L"data/model/enemy/Crab.mv1";
     constexpr const wchar_t* kHatModelPath = L"data/model/hat/hat.mv1";
     constexpr const wchar_t* kStarModelPath = L"data/model/item/Star.mv1";
@@ -17,15 +18,17 @@ namespace
 
 	constexpr const wchar_t* kTitleGraphPath = L"data/graph/title/title.png";
 	constexpr const wchar_t* kPressAnyButtonGraphPath = L"data/graph/title/pressAnyButton.png";
-
+	constexpr const wchar_t* kClearGraphPath = L"data/graph/clear/clear.png";
+    
 	constexpr const wchar_t* kWaitSpawnEffectPath = L"data/effect/spawn.efk";
-	constexpr const wchar_t* kSpawnEffectPath = L"data/effect/spawn2.efk";
+    constexpr const wchar_t* kSpawnEffectPath = L"data/effect/spawn2.efk";
+    constexpr const wchar_t* kJumpEffectPath = L"data/effect/jump.efk";
 }
 
 
 ResourceManager::ResourceManager():
     m_playerModelHandle(-1),
-    m_stageModelHandle(-1),
+    m_stageColliderModelHandle(-1),
 	m_crabEnemyModelHandle(-1),
     m_hatModelHandle(-1),
     m_starModelHadle(-1),
@@ -49,10 +52,13 @@ void ResourceManager::LoadResources()
     //プレイヤー
     m_playerModelHandle = MV1LoadModel(kPlayerModelPath); 
     m_modelHandleTable[ModelType::player] = { m_playerModelHandle };
-    //ステージ
-    m_stageModelHandle = MV1LoadModel(kStageModelPath);
-    m_modelHandleTable[ModelType::stage] = { m_stageModelHandle };
-	//カニ敵
+    //ステージ当たり判定
+    m_stageColliderModelHandle = MV1LoadModel(kStageModelPath);
+    m_modelHandleTable[ModelType::stageCollider] = { m_stageColliderModelHandle };
+	//ステージ見た目
+    m_stageAppearanceModelHandle = MV1LoadModel(kStageAppearanceModelPath);
+    m_modelHandleTable[ModelType::stageAppearance] = { m_stageAppearanceModelHandle };
+    //カニ敵
 	m_crabEnemyModelHandle = MV1LoadModel(kCrabEnemyModelPath);
 	m_modelHandleTable[ModelType::crabEnemy] = { m_crabEnemyModelHandle };
     //帽子
@@ -85,10 +91,14 @@ void ResourceManager::LoadResources()
     m_graphHandleTable[GraphType::title] = { LoadGraph(kTitleGraphPath) };
 	//プレスエニーボタン
 	m_graphHandleTable[GraphType::pressAnyButton] = { LoadGraph(kPressAnyButtonGraphPath) };
+    //クリアグラフィック
+    m_graphHandleTable[GraphType::clear] = { LoadGraph(kClearGraphPath) };
 
 	//スポーンエフェクト
 	m_effectHandleTable[EffectType::waitSpawn] = { kWaitSpawnEffectPath };
 	m_effectHandleTable[EffectType::spawn] = { kSpawnEffectPath };
+    //ジャンプエフェクト
+	m_effectHandleTable[EffectType::jump] = { kJumpEffectPath };
 }
 
 void ResourceManager::ReleaseResources()

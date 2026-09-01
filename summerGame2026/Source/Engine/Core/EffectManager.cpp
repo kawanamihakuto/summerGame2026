@@ -54,7 +54,7 @@ void EffectManager::Load(const std::string& name, const wchar_t* path)
     }
 }
 
-int EffectManager::Play(const std::string& name, Vector3 pos, float yaw)
+int EffectManager::Play(const std::string& name, Vector3 pos, float yaw , float extend)
 {
     auto it = m_effects.find(name);
     if (it == m_effects.end())
@@ -68,7 +68,7 @@ int EffectManager::Play(const std::string& name, Vector3 pos, float yaw)
 
     SetPosPlayingEffekseer3DEffect(playHandle, pos.x, pos.y, pos.z);
     SetRotationPlayingEffekseer3DEffect(playHandle, 0.0f, yaw + DX_PI_F / 2, 0.0f);
-    SetScalePlayingEffekseer3DEffect(playHandle, 10.0f, 10.0f, 10.0f);
+    SetScalePlayingEffekseer3DEffect(playHandle,extend, extend, extend);
 
     return playHandle;
 }

@@ -8,6 +8,7 @@
 #include"Engine/Collision/CollisionManager.h"
 #include"Engine/Collision/CapsuleCollider.h"
 #include"Engine/Collision/Ray.h"
+#include"Engine/Core/EffectManager.h"
 namespace
 {
 	//高さ
@@ -66,6 +67,8 @@ namespace
 
 	//無敵時間(フレーム)
 	constexpr float kInvincibleFrame = 60.0f * 3.0f;
+	//ジャンプエフェクトの拡大率
+	constexpr float kJumpEffectExtend = 7.0f;
 }
 
 CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
@@ -369,6 +372,8 @@ void CrabEnemy::CheckTowerNum()
 
 void CrabEnemy::InvincibleTower()
 {
+	m_isInvincible = true;
+
 	CrabEnemy* current = this;
 	//一番上のやつまで回す
 	while (current->m_upper)
@@ -535,13 +540,13 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 					{
 						if (crab->m_lower == nullptr)
 						{
-							InvincibleTower();
 							SetUpper(crab);
 							crab->SetLower(this);
 
 							ChangeState(ControllState::tower);
 							GetBottom()->ChangeState(ControllState::controll);
 							crab->ChangeState(ControllState::tower);
+							InvincibleTower();
 						}
 					}
 				}
@@ -585,6 +590,7 @@ void CrabEnemy::Jump()
 		m_velocity.y = kJumpPower;
 		m_isGround = false;
 		m_animationController->Play(CrabEnemyAnim::jump, false);
+		EffectManager::Play("jump", m_transform.position, 0.0f,kJumpEffectExtend);
 	}
 }
 

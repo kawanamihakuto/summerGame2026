@@ -32,7 +32,6 @@ TitleScene::TitleScene(SceneController& controller):
 
 	//リソースのロード
 	auto& resouceManager = ResourceManager::GetInstance();
-	resouceManager.LoadResources();
 
 	m_cameraManager = std::make_shared<CameraManager>();
 
@@ -46,7 +45,7 @@ TitleScene::TitleScene(SceneController& controller):
 
 	m_gameObjectManager->Add(std::make_unique<TitlePlayer>(resouceManager.GetModel(ModelType::player)));
 
-	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<TitlePlayer>()));
+	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stageCollider), m_gameObjectManager->Find<TitlePlayer>()));
 
 	m_gameObjectManager->Init();
 

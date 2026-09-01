@@ -4,7 +4,7 @@
 #include"Config.h"
 #include"Game/Scene/SceneController.h"
 #include"Game/Scene/TitleScene.h"
-#include"Game/Scene/GameScene.h"
+#include"ResourceManager.h"
 Application::Application() :
 	m_windowSize(Config::kWindowWidth, Config::kWindowHeight)
 {
@@ -65,6 +65,10 @@ void Application::Run()
 	SetUseZBuffer3D(true);	// Zバッファを使います
 	SetWriteZBuffer3D(true);	// 描画する物体はZバッファにも距離を書き込む
 
+	//リソースのロード
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.LoadResources();
+
 	//シーンの作成
 	SceneController SceneController;
 	SceneController.ChangeScene(std::make_shared<TitleScene>(SceneController));
@@ -106,6 +110,9 @@ void Application::Run()
 
 void Application::Terminate()
 {
+	//リソースの解放
+	auto& resouceManager = ResourceManager::GetInstance();
+	resouceManager.ReleaseResources();
 	DxLib_End();
 }
 

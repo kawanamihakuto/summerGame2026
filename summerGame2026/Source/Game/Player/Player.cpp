@@ -8,7 +8,7 @@
 #include"State/PlayerIdleState.h"
 #include"State/PlayerJumpState.h"
 #include"State/PlayerStunnedState.h"
-
+#include"Engine/Core/EffectManager.h"
 namespace
 {
 	//スピード
@@ -241,6 +241,8 @@ void Player::StartJamp()
 	m_isNextJump = false;
 
 	m_velocity.y = kJumpPower;
+
+	EffectManager::Play("jump", m_transform.position, 0.0f);
 }
 
 void Player::StopHorizontalMove()

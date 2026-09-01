@@ -10,7 +10,7 @@ public:
 	static void Init();
 	static void End();
 	static void Load(const std::string& name, const wchar_t* path);
-	static int Play(const std::string& name, Vector3 pos, float yaw);
+	static int Play(const std::string& name, Vector3 pos, float yaw,float extend = 10.0f);
 
 	static void Update();
 	static void Draw();

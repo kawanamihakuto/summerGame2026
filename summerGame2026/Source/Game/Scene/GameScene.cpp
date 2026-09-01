@@ -30,9 +30,24 @@ namespace
 	constexpr float kCameraNear = 50.0f;
 	constexpr float kCameraFar = 6000.0f;
 
-	constexpr Vector3 kStarPos = { 0.0f, 50.0f, 100.0f };
+	constexpr int kStarNum = 5;
 
-	constexpr Vector3 kSpawnpos = { 0.0f, -249.0f, 100.0f };
+	constexpr Vector3 kStarPos[kStarNum] = {
+		{-1700, -350.0f, -200.0f } ,
+		{-500,-350,1540},
+		{2735,-150,3960},
+		{3308,1000,-1884},
+		{4967,300,970}
+	};
+
+	constexpr int kSpawnerNum = 4;
+
+	constexpr Vector3 kSpawnpos[kSpawnerNum] = {
+		{-2830, -1116, -230},
+		{462,-516,-277},
+		{5000,-1016,-416},
+		{2813,-516,-277}
+	};
 }
 
 GameScene::GameScene(SceneController& controller) :
@@ -57,28 +72,31 @@ GameScene::GameScene(SceneController& controller) :
 
 	//リソースのロード
 	auto& resouceManager = ResourceManager::GetInstance();
-//	resouceManager.LoadResources();
+	//	resouceManager.LoadResources();
 
-	//コリジョンマネージャー生成
+		//コリジョンマネージャー生成
 	m_collisionManager = std::make_shared<CollisionManager>();
 	//カメラマネージャー生成
 	m_cameraManager = std::make_shared<CameraManager>();
 	//ゲームオブジェクトマネージャー生成
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
 	//プレイヤー生成
-	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stage), *m_cameraManager));
+	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager));
 	//帽子生成
-	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stage), m_gameObjectManager->Find<Player>()));
+	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stageCollider), m_gameObjectManager->Find<Player>()));
 	//スター生成
-	m_gameObjectManager->Add(std::make_unique<Star>(resouceManager.GetModel(ModelType::star), kStarPos));
+	for (int i = 0; i < kStarNum; i++)
+	{
+		m_gameObjectManager->Add(std::make_unique<Star>(resouceManager.GetModel(ModelType::star), kStarPos[i]));
+	}
 	//フォローカメラ追加
 	m_cameraManager->AddCamera(std::make_shared<FollowCamera>(m_gameObjectManager->Find<Player>()));
 	//現在のカメラをセット
 	m_cameraManager->ChangeCamera(CameraName::follow);
 	//ステージ
-	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stage));
+	m_stage = std::make_shared<Stage>(resouceManager.GetModel(ModelType::stageCollider), resouceManager.GetModel(ModelType::stageAppearance));
 	//ステージとの当たり判定をするためのセットアップ
-	MV1SetupCollInfo(resouceManager.GetModel(ModelType::stage), -1, 8, 8, 8);
+	MV1SetupCollInfo(resouceManager.GetModel(ModelType::stageCollider), -1, 8, 8, 8);
 	//キャプチャーマネージャー生成
 	m_captureManager = std::make_shared<CaptureManager>(
 		m_gameObjectManager->Find<Player>(),
@@ -86,8 +104,11 @@ GameScene::GameScene(SceneController& controller) :
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
 	//敵生成
-	m_enemySpawners.push_back(std::make_shared<EnemySpawner>(*m_gameObjectManager, resouceManager.GetModel(ModelType::crabEnemy),
-		resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, kSpawnpos));
+	for (int i = 0; i < kSpawnerNum; i++)
+	{
+		m_enemySpawners.push_back(std::make_shared<EnemySpawner>(*m_gameObjectManager, resouceManager.GetModel(ModelType::crabEnemy),
+			resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager, *m_captureManager, kSpawnpos[i]));
+	}
 
 	//ゲームオブジェクト全体を初期化
 	m_gameObjectManager->Init();
@@ -110,6 +131,8 @@ GameScene::GameScene(SceneController& controller) :
 	//エフェクトのロード
 	EffectManager::Load("waitSpawn", ResourceManager::GetInstance().GetEffectPath(EffectType::waitSpawn));
 	EffectManager::Load("spawn", ResourceManager::GetInstance().GetEffectPath(EffectType::spawn));
+	EffectManager::Load("jump", ResourceManager::GetInstance().GetEffectPath(EffectType::jump));
+
 }
 
 GameScene::~GameScene()
@@ -121,10 +144,6 @@ GameScene::~GameScene()
 
 	EffectManager::StopAll();
 	EffectManager::End();
-
-	//リソースの解放
-	auto& resouceManager = ResourceManager::GetInstance();
-	resouceManager.ReleaseResources();
 }
 
 void GameScene::Update()
@@ -161,7 +180,7 @@ void GameScene::NormalUpdate()
 	m_gameObjectManager->Update();
 
 	//敵生成更新
-	for(auto& spawner : m_enemySpawners)
+	for (auto& spawner : m_enemySpawners)
 	{
 		spawner->Update();
 	}
@@ -179,17 +198,27 @@ void GameScene::NormalUpdate()
 	if (input.IsPressed("SELECT") && m_frameCount % 20 == 0)
 	{
 		auto& resouceManager = ResourceManager::GetInstance();
-		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stage), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
+		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
 	}
 
 	//エフェクト更新
 	EffectManager::Update();
 
+#ifdef _DEBUG
 	if (input.IsTriggered("START"))
 	{
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;
 	}
+#endif // _DEBUG
+
+	if (!m_gameObjectManager->Find<Star>())
+	{
+		m_update = &GameScene::FadeOutUpdate;
+		m_draw = &GameScene::FadeDraw;
+	}
+
+//	if(m_gameObjectManager->Find<Player>()
 }
 
 void GameScene::FadeOutUpdate()
@@ -211,7 +240,7 @@ void GameScene::NormalDraw()
 	//ゲームオブジェクト描画
 	m_gameObjectManager->Draw();
 	//敵生成描画
-	for(const auto& spawner : m_enemySpawners)
+	for (const auto& spawner : m_enemySpawners)
 	{
 		spawner->Draw();
 	}
@@ -235,6 +264,13 @@ void GameScene::FadeDraw()
 	//フェード処理
 	float rate = static_cast<float>(m_fadeFrame) / static_cast<float>(kFadeInterval);
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, static_cast<int>(255 * rate));
-	DrawBox(0, 0, wsize.w, wsize.h, 0x000000, true);
+	if (m_update == &GameScene::FadeInUpdate)
+	{
+		DrawBox(0, 0, wsize.w, wsize.h, 0x000000, true);
+	}
+	else if (m_update == &GameScene::FadeOutUpdate)
+	{
+		DrawBox(0, 0, wsize.w, wsize.h, 0xffffff, true);
+	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(255 * rate));
 }

@@ -1,10 +1,14 @@
 #include "Stage.h"
 #include<DxLib.h>
-
-Stage::Stage(int stageModel):
-	m_modelHandle(-1)
+#include"Engine/Math/Vector3.h"
+Stage::Stage(int stageColliderModel,int stageAppearanceModel):
+	m_colliderModelHandle(-1),
+	m_appearanceModelHandle(-1)
 {
-	m_modelHandle = stageModel;
+	m_colliderModelHandle = stageColliderModel;
+	MV1SetPosition(m_colliderModelHandle, Vector3::Zero());
+	m_appearanceModelHandle = stageAppearanceModel;
+	MV1SetPosition(m_appearanceModelHandle, Vector3::Zero());
 }
 
 Stage::~Stage()
@@ -13,5 +17,9 @@ Stage::~Stage()
 
 void Stage::Draw()
 {
-	MV1DrawModel(m_modelHandle);
+#ifdef _DEBUG
+	MV1DrawModel(m_colliderModelHandle);
+#else
+	MV1DrawModel(m_appearanceModelHandle);
+#endif // _DEBUG
 }

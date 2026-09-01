@@ -139,7 +139,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source\Game\Scene\GameOverScene.cpp" />
     <ClCompile Include="Source\Engine\Core\EffectManager.cpp" />
     <ClCompile Include="Source\Game\Enemy\EnemySpawner.cpp" />
     <ClCompile Include="Source\Engine\Camera\LookAtCamera.cpp" />
@@ -193,7 +192,6 @@
     <ClCompile Include="Source\Game\Player\TitlePlayer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Game\Scene\GameOverScene.h" />
     <ClInclude Include="Source\Engine\Core\EffectManager.h" />
     <ClInclude Include="Source\Game\Enemy\EnemySpawner.h" />
     <ClInclude Include="Source\Engine\Camera\LookAtCamera.h" />

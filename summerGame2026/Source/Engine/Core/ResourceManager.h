@@ -7,7 +7,8 @@
 enum class ModelType
 {
 	player,
-	stage,
+	stageCollider,
+	stageAppearance,
 	crabEnemy,
 	hat,
 	star
@@ -25,12 +26,14 @@ enum class GraphType
 	skyBottom,
 	title,
 	pressAnyButton,
+	clear
 };
 
 enum class EffectType
 {
 	waitSpawn,
 	spawn,
+	jump
 };
 
 class ResourceManager
@@ -68,8 +71,10 @@ private:
 
 	//プレイヤーモデル
 	int m_playerModelHandle;
-	//ステージモデル
-	int m_stageModelHandle;
+	//ステージ当たり判定モデル
+	int m_stageColliderModelHandle;
+	//ステージ見た目モデル
+	int m_stageAppearanceModelHandle;
 	//かにエネミーモデル
 	int m_crabEnemyModelHandle;
 	//帽子モデル

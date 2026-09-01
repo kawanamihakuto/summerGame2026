@@ -1,5 +1,11 @@
 ﻿#pragma once
 #include "SceneBase.h"
+#include"Engine/Core/Precompiled.h"
+
+class SkyBox;
+class CameraManager;
+class GameObjectManager;
+class CollisionManager;
 class ClearScene : public SceneBase
 {
 public:
@@ -29,5 +35,14 @@ private:
 
 	//フェード用のフレームカウンター
 	int m_frame;
+
+	//ゲームオブジェクトを管理する
+	std::shared_ptr<GameObjectManager> m_gameObjectManager;
+	//当たり判定をする
+	std::shared_ptr<CollisionManager> m_collisionManager;
+	//カメラを管理する
+	std::shared_ptr<CameraManager> m_cameraManager;
+	//スカイボックス
+	std::shared_ptr<SkyBox>m_skyBox;
 };
 

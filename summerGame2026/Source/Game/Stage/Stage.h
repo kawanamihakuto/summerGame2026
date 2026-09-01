@@ -2,10 +2,11 @@
 class Stage
 {
 public:
-	Stage(int stageModel);
+	Stage(int stageColliderModel,int stageAppearanceModel);
 	~Stage();
 	void Draw();
 private:
-	int m_modelHandle;
+	int m_colliderModelHandle;
+	int m_appearanceModelHandle;
 };
 
