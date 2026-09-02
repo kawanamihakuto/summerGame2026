@@ -117,7 +117,7 @@ void TitleScene::NormalUpdate()
 
 	if (input.IsTriggered("SELECT"))
 	{
-		
+		m_controller.SetGameEnd(true);
 	}
 }
 

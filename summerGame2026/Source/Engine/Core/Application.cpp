@@ -95,12 +95,16 @@ void Application::Run()
 		ScreenFlip();
 
 #ifdef _DEBUG
-
-#endif // DEBUG
 		//escキーを押したらゲームを強制終了	
 		if (CheckHitKey(KEY_INPUT_ESCAPE))
 		{
 			SceneController.PopScene();
+			break;
+		}
+#endif // DEBUG
+		
+		if (SceneController.IsGameEnd())
+		{
 			break;
 		}
 
