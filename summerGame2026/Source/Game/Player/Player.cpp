@@ -17,6 +17,8 @@ namespace
 	constexpr float kAirMoveSpeedRate = 0.8f;
 	constexpr float kHipDropSpeed = 40.0f;
 
+	constexpr Vector3 kStartPos = { -6000.0f,-1417.0f,-300.0f };
+
 	//HP
 	constexpr int kHp = 3;
 
@@ -73,6 +75,10 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_isRun(false),
 	m_isHipDrop(false)
 {
+	m_transform.SetPosition(kStartPos);
+
+	UpdateModel();
+
 	//モデル複製
 	m_modelHandle = MV1DuplicateModel(playerModel);
 	//ステージとの当たり判定用
@@ -303,9 +309,12 @@ void Player::OnCollision(ICollider& other, CollisionResult& result)
 		{
 			if (!m_isInvincible)
 			{
-				m_hp--;
-				m_isInvincible = true;
-				ChangeState(std::make_unique<PlayerStunnedState>(*this, *m_animationController));
+				if(!m_isHipDrop)
+				{
+					m_hp--;
+					m_isInvincible = true;
+					ChangeState(std::make_unique<PlayerStunnedState>(*this, *m_animationController));
+				}
 			}
 		}
 	}

@@ -4,8 +4,9 @@
 #include"PhysicsObject.h"
 #include"Engine/Collision/ICollider.h"
 #include"Game/Enemy/CrabEnemy.h"
+#include"Game/Item/Star.h"
 
-GameObjectManager::GameObjectManager(CollisionManager& collisionManager):
+GameObjectManager::GameObjectManager(CollisionManager& collisionManager) :
 	m_collisionManager(collisionManager)
 {
 }
@@ -19,7 +20,7 @@ void GameObjectManager::Add(std::unique_ptr<GameObject> object)
 
 	//追加したオブジェクトがIColliderを継承しているか確認
 	GameObject* obj = m_objects.back().get();
-	if(auto collider = dynamic_cast<ICollider*>(obj))
+	if (auto collider = dynamic_cast<ICollider*>(obj))
 	{
 		//コリジョンマネージャーに追加
 		m_collisionManager.AddObject(*collider);
@@ -84,7 +85,7 @@ int GameObjectManager::GetEnemyCountNear(const Vector3& pos, float radius)
 {
 	int count = 0;
 
-	for(const auto& obj : m_objects)
+	for (const auto& obj : m_objects)
 	{
 		if (auto enemy = dynamic_cast<CrabEnemy*>(obj.get()))
 		{
@@ -94,6 +95,21 @@ int GameObjectManager::GetEnemyCountNear(const Vector3& pos, float radius)
 			{
 				count++;
 			}
+		}
+	}
+
+	return count;
+}
+
+int GameObjectManager::GetStarCount()
+{
+	int count = 0;
+
+	for (const auto& obj : m_objects)
+	{
+		if (auto star = dynamic_cast<Star*>(obj.get()))
+		{
+			count++;
 		}
 	}
 

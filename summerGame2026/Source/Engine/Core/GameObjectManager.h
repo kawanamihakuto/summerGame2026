@@ -38,6 +38,11 @@ public:
     /// <param name="radius"></param>
     /// <returns></returns>
     int GetEnemyCountNear(const Vector3& pos, float radius);
+    /// <summary>
+	/// スターの数を取得する
+    /// </summary>
+    /// <returns></returns>
+    int GetStarCount();
 
     //特定の型を探す
     template<typename T>

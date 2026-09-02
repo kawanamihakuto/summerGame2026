@@ -28,7 +28,7 @@ namespace
 	constexpr Vector3 kCameraTarget = { 0.0f, 0.0f, 0.0f };
 	constexpr float kFov = DX_PI_F / 3.0f;
 	constexpr float kCameraNear = 50.0f;
-	constexpr float kCameraFar = 6000.0f;
+	constexpr float kCameraFar = 10000.0f;
 
 	constexpr int kStarNum = 5;
 
@@ -52,7 +52,8 @@ namespace
 
 GameScene::GameScene(SceneController& controller) :
 	SceneBase(controller),
-	m_frameCount(0)
+	m_frameCount(0),
+	m_isReset(false)
 {
 	//フェードイン
 	m_update = &GameScene::FadeInUpdate;
@@ -70,9 +71,7 @@ GameScene::GameScene(SceneController& controller) :
 	SetupCamera_Perspective(kFov);
 	SetCameraNearFar(kCameraNear, kCameraFar);
 
-	//リソースのロード
 	auto& resouceManager = ResourceManager::GetInstance();
-	//	resouceManager.LoadResources();
 
 		//コリジョンマネージャー生成
 	m_collisionManager = std::make_shared<CollisionManager>();
@@ -103,7 +102,7 @@ GameScene::GameScene(SceneController& controller) :
 		m_gameObjectManager->Find<Hat>(),
 		*m_cameraManager,
 		m_gameObjectManager->Find<Player>());
-	//敵生成
+	//敵スポナー生成
 	for (int i = 0; i < kSpawnerNum; i++)
 	{
 		m_enemySpawners.push_back(std::make_shared<EnemySpawner>(*m_gameObjectManager, resouceManager.GetModel(ModelType::crabEnemy),
@@ -132,7 +131,8 @@ GameScene::GameScene(SceneController& controller) :
 	EffectManager::Load("waitSpawn", ResourceManager::GetInstance().GetEffectPath(EffectType::waitSpawn));
 	EffectManager::Load("spawn", ResourceManager::GetInstance().GetEffectPath(EffectType::spawn));
 	EffectManager::Load("jump", ResourceManager::GetInstance().GetEffectPath(EffectType::jump));
-
+	EffectManager::Load("getStar", ResourceManager::GetInstance().GetEffectPath(EffectType::getStar));
+	EffectManager::Load("enemyDeath", ResourceManager::GetInstance().GetEffectPath(EffectType::enemyDeath));
 }
 
 GameScene::~GameScene()
@@ -218,16 +218,31 @@ void GameScene::NormalUpdate()
 		m_draw = &GameScene::FadeDraw;
 	}
 
-//	if(m_gameObjectManager->Find<Player>()
+	if (m_gameObjectManager->Find<Player>()->GetHp() <= 0)
+	{
+		m_isReset = true;
+		m_update = &GameScene::FadeOutUpdate;
+		m_draw = &GameScene::FadeDraw;
+	}
 }
 
 void GameScene::FadeOutUpdate()
 {
 	if (m_fadeFrame++ >= kFadeInterval)
 	{
-		//シーンの切り替え
-		m_controller.ChangeScene(std::make_shared<ClearScene>(m_controller));
-		return;
+		if (m_isReset)
+		{
+			//ゲームシーンリセット
+			m_controller.ChangeScene(std::make_shared<GameScene>(m_controller));
+			m_isReset = false;
+			return;
+		}
+		else
+		{
+			//シーンの切り替え
+			m_controller.ChangeScene(std::make_shared<ClearScene>(m_controller));
+			return;
+		}
 	}
 }
 
@@ -247,6 +262,10 @@ void GameScene::NormalDraw()
 
 	//エフェクト描画
 	EffectManager::Draw();
+
+	DrawFormatString(0, 48, 0x0000ff, L"STARS:%d", m_gameObjectManager->GetStarCount());
+
+	DrawFormatString(0, 64, 0x0000ff, L"PLAYER HP:%d", m_gameObjectManager->Find<Player>()->GetHp());
 
 #ifdef _DEBUG
 	DrawFormatString(0, 16, 0x0000ff, L"FRAME:%d", m_frameCount);
@@ -270,7 +289,14 @@ void GameScene::FadeDraw()
 	}
 	else if (m_update == &GameScene::FadeOutUpdate)
 	{
-		DrawBox(0, 0, wsize.w, wsize.h, 0xffffff, true);
+		if (m_isReset)
+		{
+			DrawBox(0, 0, wsize.w, wsize.h, 0x000000, true);
+		}
+		else
+		{
+			DrawBox(0, 0, wsize.w, wsize.h, 0xffffff, true);
+		}
 	}
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, static_cast<int>(255 * rate));
 }

@@ -23,6 +23,11 @@ public:
 	void OnCollision(ICollider& other, CollisionResult& result) override;
 
 private:
+
+	float m_yaw;
+
+	int m_frameCount;
+
 	int m_modelHandle;
 
 	//キャラクターとの当たり判定用コライダー

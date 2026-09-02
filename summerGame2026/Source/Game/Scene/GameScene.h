@@ -42,6 +42,8 @@ private:
 
 	int m_frameCount;
 
+	bool m_isReset;
+
 	//ステージ
 	std::shared_ptr<Stage>m_stage;
 	//ゲームオブジェクトを管理する

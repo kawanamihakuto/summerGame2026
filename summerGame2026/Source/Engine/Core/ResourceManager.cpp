@@ -23,6 +23,8 @@ namespace
 	constexpr const wchar_t* kWaitSpawnEffectPath = L"data/effect/spawn.efk";
     constexpr const wchar_t* kSpawnEffectPath = L"data/effect/spawn2.efk";
     constexpr const wchar_t* kJumpEffectPath = L"data/effect/jump.efk";
+    constexpr const wchar_t* kGetStarEffectPath = L"data/effect/getStar.efk";
+	constexpr const wchar_t* kEnemyDeathEffectPath = L"data/effect/enemyDeath.efk";
 }
 
 
@@ -99,6 +101,10 @@ void ResourceManager::LoadResources()
 	m_effectHandleTable[EffectType::spawn] = { kSpawnEffectPath };
     //ジャンプエフェクト
 	m_effectHandleTable[EffectType::jump] = { kJumpEffectPath };
+	//スター取得エフェクト
+	m_effectHandleTable[EffectType::getStar] = { kGetStarEffectPath };
+	//敵死亡エフェクト
+	m_effectHandleTable[EffectType::enemyDeath] = { kEnemyDeathEffectPath };
 }
 
 void ResourceManager::ReleaseResources()

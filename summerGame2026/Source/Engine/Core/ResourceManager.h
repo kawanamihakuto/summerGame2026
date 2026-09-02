@@ -33,7 +33,9 @@ enum class EffectType
 {
 	waitSpawn,
 	spawn,
-	jump
+	jump,
+	getStar,
+	enemyDeath
 };
 
 class ResourceManager

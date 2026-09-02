@@ -71,17 +71,16 @@ namespace
 	constexpr float kJumpEffectExtend = 7.0f;
 }
 
-CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos) :
+CrabEnemy::CrabEnemy(int enemyModel, int stageModel, CameraManager& camera, CaptureManager& captureManager, const Vector3& pos, ControllState state) :
 	Character(camera),
 	m_captureManager(captureManager),
-	m_towerNum(1)
+	m_towerNum(1),
+	m_state(state)
 {
 	//自分のモデル複製
 	m_modelHandle = MV1DuplicateModel(enemyModel);
 	//ステージモデル
 	m_stageModelHandle = stageModel;
-	//ステート
-	m_state = ControllState::ai;
 	//ステージ用コライダー生成
 	m_stageCollider = std::make_unique<CapsuleCollider>(m_transform.position + Vector3{ 0.0f,kHeight / 2.0f + kCapsuleHeightOffset,0.0f }, kCapsuleRadius, 0.0f);
 	//キャラクター用コライダー生成
@@ -490,6 +489,8 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 						m_upper->ChangeState(ControllState::ai);
 					}
 				}
+
+				EffectManager::Play("enemyDeath", m_transform.position, 0.0f, 6.0f);
 				Destroy();
 			}
 		}
@@ -590,7 +591,7 @@ void CrabEnemy::Jump()
 		m_velocity.y = kJumpPower;
 		m_isGround = false;
 		m_animationController->Play(CrabEnemyAnim::jump, false);
-		EffectManager::Play("jump", m_transform.position, 0.0f,kJumpEffectExtend);
+		EffectManager::Play("jump", m_transform.position, 0.0f, kJumpEffectExtend);
 	}
 }
 
@@ -605,7 +606,7 @@ void CrabEnemy::JumpEnd()
 void CrabEnemy::Controll()
 {
 	m_state = ControllState::controll;
-	
+
 	m_isInvincible = true;
 	InvincibleTower();
 }

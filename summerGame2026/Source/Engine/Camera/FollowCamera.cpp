@@ -8,17 +8,31 @@ namespace
 	constexpr Vector3 kOffset = { 0.0f,100.0f,-1000.0f };
 	constexpr Vector3 kCameraHeightOffset = { 0.0f,200.0f,0.0f };
 	constexpr float kRotateSpeed = 0.03f;
+	constexpr float kStartYaw = DX_PI_F / 2.0f;
+	constexpr float kStartPitch = DX_PI_F / 5.0f;
 }
 
 FollowCamera::FollowCamera(ICaptureTarget* target):
-	m_yaw(0.0f),
-	m_pitch(0.0f),
+	m_yaw(kStartYaw),
+	m_pitch(kStartPitch),
 	m_groundPlayerHeight(0.0f),
 	m_pos({}),
 	m_targetPos({})
 {
 	SetTarget(target);
-	Update();
+
+	//クォータニオン作成
+	Quaternion yawRot = Quaternion::AngleAxis(m_yaw, Vector3::Up());
+	Quaternion pitchRot = Quaternion::AngleAxis(m_pitch, Vector3::Right());
+	Quaternion rot = yawRot * pitchRot;
+	//回転を適用
+	m_transform.SetRotate(rot);
+	//オフセットを回転
+	Vector3 offset = rot.Rotate(kOffset);
+
+	m_transform.SetPosition(m_target->GetCameraAnchor().transform.GetPosition() + offset);
+	m_pos = m_transform.GetPosition();
+	m_targetPos = m_target->GetCameraAnchor().transform.GetPosition();
 	Apply();
 }
 
