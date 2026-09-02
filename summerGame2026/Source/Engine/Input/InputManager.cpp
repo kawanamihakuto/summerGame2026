@@ -157,7 +157,7 @@ bool InputManager::AnyPressButtonInput() const
 	{
 		if (input.first == "A" || input.first == "B" ||
 			input.first == "X" || input.first == "Y" ||
-			input.first == "START" || input.first == "SELECT")
+			input.first == "START")
 		{
 			if (input.second)
 			{

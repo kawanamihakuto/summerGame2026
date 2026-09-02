@@ -1,7 +1,7 @@
 #include "Star.h"
 #include"Engine/Collision/SphereCollider.h"
 #include"Engine/Core/EffectManager.h"
-#include"Engine/Core/ResourceManager.h"
+#include"Engine/Core/SoundManager.h"
 
 namespace
 {
@@ -79,5 +79,6 @@ CollisionLayer Star::GetCollisionMask() const
 void Star::OnCollision(ICollider& other, CollisionResult& result)
 {
 	EffectManager::Play("getStar", m_transform.position,0.0f,6.0f);
+	SoundManager::PlaySE("getStar", false);
 	Destroy();
 }

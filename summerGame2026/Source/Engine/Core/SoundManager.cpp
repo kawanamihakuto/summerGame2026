@@ -27,7 +27,31 @@ SoundManager::~SoundManager()
 
 void SoundManager::Init()
 {
-	
+	m_bgmHandles["title"] = LoadSoundMem(L"data/bgm/titleScene.mp3");
+	assert(m_bgmHandles["title"] > -1);
+	m_bgmHandles["game"] = LoadSoundMem(L"data/bgm/gameScene.mp3");
+	assert(m_bgmHandles["game"] > -1);
+	m_bgmHandles["clear"] = LoadSoundMem(L"data/bgm/clearScene.mp3");
+	assert(m_bgmHandles["clear"] > -1);
+
+	m_seHandles["pressAnyButton"] = LoadSoundMem(L"data/se/pressAnyButton.mp3");
+	assert(m_seHandles["pressAnyButton"] > -1);
+	m_seHandles["jump"] = LoadSoundMem(L"data/se/jump.mp3");
+	assert(m_seHandles["jump"] > -1);
+	m_seHandles["hatThrow"] = LoadSoundMem(L"data/se/hatThrow.mp3");
+	assert(m_seHandles["hatThrow"] > -1);
+	m_seHandles["capture"] = LoadSoundMem(L"data/se/capture.mp3");
+	assert(m_seHandles["capture"] > -1);
+	m_seHandles["captureEnd"] = LoadSoundMem(L"data/se/captureEnd.mp3");
+	assert(m_seHandles["captureEnd"] > -1);
+	m_seHandles["enemyDeath"] = LoadSoundMem(L"data/se/enemyDeath.mp3");
+	assert(m_seHandles["enemyDeath"] > -1);
+	m_seHandles["enemyTower"] = LoadSoundMem(L"data/se/enemyTower.mp3");
+	assert(m_seHandles["enemyTower"] > -1);	
+	m_seHandles["getStar"] = LoadSoundMem(L"data/se/getStar.mp3");
+	assert(m_seHandles["getStar"] > -1);
+	m_seHandles["playerHit"] = LoadSoundMem(L"data/se/playerHit.mp3");
+	assert(m_seHandles["playerHit"] > -1);
 }
 
 void SoundManager::Update()

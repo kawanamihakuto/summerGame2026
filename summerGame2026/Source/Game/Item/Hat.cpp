@@ -5,6 +5,7 @@
 #include"Engine/Math/Transform.h"
 #include"Engine/Math/Quaternion.h"
 #include"Engine/Collision/CollisionManager.h"
+#include"Engine/Core/SoundManager.h"
 namespace
 {
 	//飛んでいくスピード
@@ -94,6 +95,7 @@ void Hat::Update()
 		if (m_count++ >= kWaitFrame)
 		{
 			m_state = HatState::back;
+			SoundManager::PlaySE("hatThrow", false);
 			m_count = 0;
 		}
 		break;
@@ -184,6 +186,7 @@ void Hat::OnCollision(ICollider& other,CollisionResult& result)
 			SetTarget(cast);
 			m_state = HatState::have;
 			m_CaptureFlag = true;
+			SoundManager::PlaySE("capture", false);
 		}
 	}
 }

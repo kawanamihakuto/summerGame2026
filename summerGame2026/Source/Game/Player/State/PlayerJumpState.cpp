@@ -2,12 +2,12 @@
 #include"PlayerIdleState.h"
 #include"PlayerMoveState.h"
 #include"PlayerHipDropState.h"
-
+#include"Engine/Core/SoundManager.h"
 void PlayerJumpState::Enter()
 {
 	m_animationController.Play(PlayerAnim::jump,false);
-
 	m_player.StartJamp();
+	SoundManager::PlaySE("jump", false);
 }
 
 void PlayerJumpState::Update()

@@ -1,9 +1,8 @@
 ﻿#include "PlayerController.h"
 #include"InputManager.h"
-#include"Engine/Camera/CameraManager.h"
-#include"Engine/Camera/FollowCamera.h"
 #include"Engine/Capture/CaptureManager.h"
 #include"InputInfo.h"
+#include"Engine/Core/SoundManager.h"
 PlayerController::PlayerController(Hat* hat, Player* player, CaptureManager& captureManager):
 	m_hat(hat),
 	m_player(player),
@@ -40,6 +39,7 @@ void PlayerController::Update()
 		{
 			//投げる
 			m_hat->Throw(m_player->GetLastMoveDirection());
+			SoundManager::PlaySE("hatThrow", false);
 		}
 	}
 	//キャプチャー解除
@@ -53,6 +53,8 @@ void PlayerController::Update()
 			m_captureManager.Release();
 			//操作対象をプレイヤーに戻す
 			SetTarget(m_player);
+
+			SoundManager::PlaySE("captureEnd", false);
 		}
 	}
 

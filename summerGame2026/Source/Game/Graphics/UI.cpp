@@ -43,14 +43,14 @@ void UI::Draw(int starNum, int hp)
 			//星
 			DrawRectExtendGraph(kDrawWidth * i,0,kDrawWidth * (i + 1),
 				kDrawHeight,kStarSrcPos.x, kStarSrcPos.y,
-				kSrcWidth, kSrcHeight,m_UIGraphHandle,true);
+				kSrcWidth, kSrcHeight + 1,m_UIGraphHandle,true);
 		}
 		else
 		{
-			//星
+			//空の星
 			DrawRectExtendGraph(kDrawWidth * i, 0, kDrawWidth * (i + 1),
-				kDrawHeight, kEmptyStarSrcPos.x, kEmptyStarSrcPos.y,
-				kSrcWidth, kSrcHeight, m_UIGraphHandle, true);
+				kDrawHeight, kEmptyStarSrcPos.x + 1, kEmptyStarSrcPos.y,
+				kSrcWidth + 1, kSrcHeight + 1, m_UIGraphHandle, true);
 		}
 	}
 
@@ -62,7 +62,7 @@ void UI::Draw(int starNum, int hp)
 		{
 			//空のハート
 			DrawRectExtendGraph(wsize.w - kDrawWidth * i, 0, wsize.w - kDrawWidth * (i + 1),
-				kDrawHeight, kEmptyHeartSrcPos.x, kEmptyHeartSrcPos.y,
+				kDrawHeight, kEmptyHeartSrcPos.x, kEmptyHeartSrcPos.y - 1 ,
 				kSrcWidth, kSrcHeight, m_UIGraphHandle, true);
 		}
 		else

@@ -9,6 +9,7 @@
 #include"Engine/Collision/CapsuleCollider.h"
 #include"Engine/Collision/Ray.h"
 #include"Engine/Core/EffectManager.h"
+#include"Engine/Core/SoundManager.h"
 namespace
 {
 	//高さ
@@ -491,6 +492,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 				}
 
 				EffectManager::Play("enemyDeath", m_transform.position, 0.0f, 6.0f);
+				SoundManager::PlaySE("enemyDeath", false);
 				Destroy();
 			}
 		}
@@ -548,6 +550,7 @@ void CrabEnemy::OnCollision(ICollider& other, CollisionResult& result)
 							GetBottom()->ChangeState(ControllState::controll);
 							crab->ChangeState(ControllState::tower);
 							InvincibleTower();
+							SoundManager::PlaySE("enemyTower", false);
 						}
 					}
 				}
@@ -592,6 +595,7 @@ void CrabEnemy::Jump()
 		m_isGround = false;
 		m_animationController->Play(CrabEnemyAnim::jump, false);
 		EffectManager::Play("jump", m_transform.position, 0.0f, kJumpEffectExtend);
+		SoundManager::PlaySE("jump", false);
 	}
 }
 

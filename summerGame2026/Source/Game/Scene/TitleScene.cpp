@@ -11,6 +11,7 @@
 #include"Engine/Core/GameObjectManager.h"
 #include"Game/Player/TitlePlayer.h"
 #include"Game/Item/Hat.h"
+#include"Engine/Core/SoundManager.h"
 namespace
 {
 	//フェードにかかる時間
@@ -64,6 +65,8 @@ TitleScene::TitleScene(SceneController& controller):
 	);
 
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
+
+	SoundManager::PlayBGM("title");
 }
 
 TitleScene::~TitleScene()
@@ -108,6 +111,13 @@ void TitleScene::NormalUpdate()
 		m_update = &TitleScene::FadeOutUpdate;
 		m_draw = &TitleScene::FadeDraw;
 		m_frame = 0;
+		SoundManager::PlaySE("pressAnyButton", false);
+		SoundManager::FadeOutBGM(kFadeInterval);
+	}
+
+	if (input.IsTriggered("SELECT"))
+	{
+		
 	}
 }
 

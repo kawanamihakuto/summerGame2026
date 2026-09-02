@@ -19,7 +19,7 @@
 #include"Game/Item/Star.h"
 #include"Game/Enemy/EnemySpawner.h"
 #include"Game/Graphics/UI.h"
-
+#include"Engine/Core/SoundManager.h"
 namespace
 {
 	//フェードにかかる時間
@@ -139,6 +139,8 @@ GameScene::GameScene(SceneController& controller) :
 	EffectManager::Load("enemyDeath", ResourceManager::GetInstance().GetEffectPath(EffectType::enemyDeath));
 	//UI生成
 	m_UI = std::make_shared<UI>(resouceManager.GetGraph(GraphType::UI), kStarNum, kPlayerMaxHp);
+
+	SoundManager::PlayBGM("game");
 }
 
 GameScene::~GameScene()
@@ -149,7 +151,6 @@ GameScene::~GameScene()
 	m_collisionManager->ClearObjects();
 
 	EffectManager::StopAll();
-	EffectManager::End();
 }
 
 void GameScene::Update()
@@ -200,28 +201,25 @@ void GameScene::NormalUpdate()
 	//スカイボックスにカメラポジションセット
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
 
-	//敵生成
-	if (input.IsPressed("SELECT") && m_frameCount % 20 == 0)
-	{
-		auto& resouceManager = ResourceManager::GetInstance();
-		m_gameObjectManager->Add(std::make_unique<CrabEnemy>(resouceManager.GetModel(ModelType::crabEnemy), resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager, *m_captureManager, Vector3{ 600.0f,100.0f,0.0f }));
-	}
-
 	//エフェクト更新
 	EffectManager::Update();
 
 #ifdef _DEBUG
+	
+#endif // _DEBUG
+
 	if (input.IsTriggered("START"))
 	{
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;
+		SoundManager::FadeOutBGM(kFadeInterval);
 	}
-#endif // _DEBUG
 
 	if (!m_gameObjectManager->Find<Star>())
 	{
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;
+		SoundManager::FadeOutBGM(kFadeInterval);
 	}
 
 	if (m_gameObjectManager->Find<Player>()->GetHp() <= 0)
@@ -229,6 +227,7 @@ void GameScene::NormalUpdate()
 		m_isReset = true;
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;
+		SoundManager::FadeOutBGM(kFadeInterval);
 	}
 }
 

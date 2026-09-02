@@ -5,6 +5,8 @@
 #include"Game/Scene/SceneController.h"
 #include"Game/Scene/TitleScene.h"
 #include"ResourceManager.h"
+#include"EffectManager.h"
+#include"SoundManager.h"
 Application::Application() :
 	m_windowSize(Config::kWindowWidth, Config::kWindowHeight)
 {
@@ -69,6 +71,8 @@ void Application::Run()
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.LoadResources();
 
+	SoundManager::Init();
+
 	//シーンの作成
 	SceneController SceneController;
 	SceneController.ChangeScene(std::make_shared<TitleScene>(SceneController));
@@ -83,7 +87,7 @@ void Application::Run()
 		ClearDrawScreen();
 
 		//ここにゲームの処理を書く
-
+		SoundManager::Update();
 		SceneController.Update();
 		SceneController.Draw();
 
@@ -103,7 +107,9 @@ void Application::Run()
 		//フレームレート固定
 		while (GetNowHiPerformanceCount() - start < 16667)
 		{
-
+			// 待機中もメッセージ処理を行い、CPU を完全に占有しないようにする
+			ProcessMessage();
+			Sleep(0);
 		}
 	}
 }
@@ -113,6 +119,9 @@ void Application::Terminate()
 	//リソースの解放
 	auto& resouceManager = ResourceManager::GetInstance();
 	resouceManager.ReleaseResources();
+	// サウンドは明示的に停止してからエンジン終了
+	SoundManager::StopBGM();
+	EffectManager::End();
 	DxLib_End();
 }
 

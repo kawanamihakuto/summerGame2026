@@ -1,8 +1,10 @@
 #include "PlayerStunnedState.h"
 #include"PlayerMoveState.h"
 #include"PlayerIdleState.h"
+#include"Engine/Core/SoundManager.h"
 void PlayerStunnedState::Enter()
 {
+	SoundManager::PlaySE("playerHit", false);
 	m_animationController.Play(PlayerAnim::stunned, false);
 	m_player.StopHorizontalMove();
 }

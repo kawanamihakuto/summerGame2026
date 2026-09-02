@@ -26,8 +26,11 @@ void SceneController::PushScene(std::shared_ptr<SceneBase> newScene)
 
 void SceneController::PopScene()
 {
-	//末尾のシーンを削除
-	m_scenes.pop_back();
+	// 末尾のシーンを削除（空の場合は何もしない）
+	if (!m_scenes.empty())
+	{
+		m_scenes.pop_back();
+	}
 }
 
 void SceneController::Update()

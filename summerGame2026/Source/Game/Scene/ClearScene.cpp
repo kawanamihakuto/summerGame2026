@@ -12,7 +12,7 @@
 #include"Engine/Core/GameObjectManager.h"
 #include"Game/Player/TitlePlayer.h"
 #include"Game/Item/Hat.h"
-
+#include"Engine/Core/SoundManager.h"
 
 namespace
 {
@@ -66,6 +66,8 @@ ClearScene::ClearScene(SceneController& controller):
 	);
 
 	m_skyBox->SetCameraPos(m_cameraManager->GetTransfrom().GetPosition());
+
+	SoundManager::PlayBGM("clear");
 }
 
 ClearScene::~ClearScene()
@@ -110,6 +112,8 @@ void ClearScene::NormalUpdate()
 		m_update = &ClearScene::FadeOutUpdate;
 		m_draw = &ClearScene::FadeDraw;
 		m_frame = 0;
+		SoundManager::PlaySE("pressAnyButton", false);
+		SoundManager::FadeOutBGM(kFadeInterval);
 	}
 }
 
@@ -137,8 +141,8 @@ void ClearScene::NormalDraw()
 
 	GetGraphSize(ResourceManager::GetInstance().GetGraph(GraphType::title), &srcW, &srcH);
 	//クリア
-	DrawExtendGraph(static_cast<int>(wsize.w / 2.0f - wsize.w / 5), static_cast<int>(wsize.h / 4.0f - wsize.h / 5),
-		static_cast<int>(wsize.w / 2.0f + wsize.w / 5), static_cast<int>(wsize.h / 4.0f + wsize.h / 5), ResourceManager::GetInstance().GetGraph(GraphType::clear), true);
+	DrawExtendGraph(static_cast<int>(wsize.w / 2.0f - wsize.w / 3), static_cast<int>(wsize.h / 4.0f - wsize.h / 3),
+		static_cast<int>(wsize.w / 2.0f + wsize.w / 3), static_cast<int>(wsize.h / 4.0f + wsize.h / 3), ResourceManager::GetInstance().GetGraph(GraphType::clear), true);
 	//PressAnyButton
 	DrawExtendGraph(static_cast<int>(wsize.w / 2.0f - wsize.w / 5.0f), static_cast<int>(wsize.h / 2.0f - wsize.h / 5.0f + 300),
 		static_cast<int>(wsize.w / 2.0f + wsize.w / 5.0f), static_cast<int>(wsize.h / 2.0f + wsize.h / 5.0f + 300), ResourceManager::GetInstance().GetGraph(GraphType::pressAnyButton), true);
