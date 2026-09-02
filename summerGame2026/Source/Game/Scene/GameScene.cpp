@@ -18,6 +18,8 @@
 #include"Game/Enemy/CrabEnemy.h"
 #include"Game/Item/Star.h"
 #include"Game/Enemy/EnemySpawner.h"
+#include"Game/Graphics/UI.h"
+
 namespace
 {
 	//フェードにかかる時間
@@ -31,6 +33,8 @@ namespace
 	constexpr float kCameraFar = 10000.0f;
 
 	constexpr int kStarNum = 5;
+
+	constexpr int kPlayerMaxHp = 5;
 
 	constexpr Vector3 kStarPos[kStarNum] = {
 		{-1700, -350.0f, -200.0f } ,
@@ -80,7 +84,7 @@ GameScene::GameScene(SceneController& controller) :
 	//ゲームオブジェクトマネージャー生成
 	m_gameObjectManager = std::make_shared<GameObjectManager>(*m_collisionManager);
 	//プレイヤー生成
-	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager));
+	m_gameObjectManager->Add(std::make_unique<Player>(resouceManager.GetModel(ModelType::player), resouceManager.GetModel(ModelType::stageCollider), *m_cameraManager, kPlayerMaxHp));
 	//帽子生成
 	m_gameObjectManager->Add(std::make_unique<Hat>(resouceManager.GetModel(ModelType::hat), resouceManager.GetModel(ModelType::stageCollider), m_gameObjectManager->Find<Player>()));
 	//スター生成
@@ -133,6 +137,8 @@ GameScene::GameScene(SceneController& controller) :
 	EffectManager::Load("jump", ResourceManager::GetInstance().GetEffectPath(EffectType::jump));
 	EffectManager::Load("getStar", ResourceManager::GetInstance().GetEffectPath(EffectType::getStar));
 	EffectManager::Load("enemyDeath", ResourceManager::GetInstance().GetEffectPath(EffectType::enemyDeath));
+	//UI生成
+	m_UI = std::make_shared<UI>(resouceManager.GetGraph(GraphType::UI), kStarNum, kPlayerMaxHp);
 }
 
 GameScene::~GameScene()
@@ -262,6 +268,9 @@ void GameScene::NormalDraw()
 
 	//エフェクト描画
 	EffectManager::Draw();
+
+	//UI描画
+	m_UI->Draw(m_gameObjectManager->GetStarCount(), m_gameObjectManager->Find<Player>()->GetHp());
 
 	DrawFormatString(0, 48, 0x0000ff, L"STARS:%d", m_gameObjectManager->GetStarCount());
 

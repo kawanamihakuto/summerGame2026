@@ -20,7 +20,7 @@ namespace
 	constexpr Vector3 kStartPos = { -6000.0f,-1417.0f,-300.0f };
 
 	//HP
-	constexpr int kHp = 3;
+//	constexpr int kHp = 3;
 
 	//モデルの回転オフセット
 	const Quaternion kModelRotationOffset = Quaternion::AngleAxis(DX_PI_F, Vector3::Up());
@@ -67,7 +67,7 @@ namespace
 	constexpr float kInvincibleFrame = 60.0f * 3.0f;
 }
 
-Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
+Player::Player(int playerModel, int stageModel, CameraManager& cameraManager, int maxHp) :
 	Character(cameraManager),
 	m_modelHandle(-1),
 	m_stageModelHandle(-1),
@@ -97,7 +97,7 @@ Player::Player(int playerModel, int stageModel, CameraManager& cameraManager) :
 	m_headFrameIndex = MV1SearchFrame(m_modelHandle, kHeadFrameName);
 
 	//HP初期化
-	m_hp = kHp;
+	m_hp = maxHp;
 
 	m_isInvincible = false;
 	m_InvincibleFrameCount = 0;

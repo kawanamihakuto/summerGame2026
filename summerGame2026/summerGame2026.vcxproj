@@ -190,6 +190,7 @@
     <ClCompile Include="Source\Game\Scene\TitleScene.cpp" />
     <ClCompile Include="Source\Game\Item\Star.cpp" />
     <ClCompile Include="Source\Game\Player\TitlePlayer.cpp" />
+    <ClCompile Include="Source\Game\Graphics\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Engine\Core\SoundManager.h" />
@@ -246,6 +247,7 @@
     <ClInclude Include="Source\Game\Scene\TitleScene.h" />
     <ClInclude Include="Source\Game\Item\Star.h" />
     <ClInclude Include="Source\Game\Player\TitlePlayer.h" />
+    <ClInclude Include="Source\Game\Graphics\UI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

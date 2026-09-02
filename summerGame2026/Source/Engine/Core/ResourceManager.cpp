@@ -19,6 +19,7 @@ namespace
 	constexpr const wchar_t* kTitleGraphPath = L"data/graph/title/title.png";
 	constexpr const wchar_t* kPressAnyButtonGraphPath = L"data/graph/title/pressAnyButton.png";
 	constexpr const wchar_t* kClearGraphPath = L"data/graph/clear/clear.png";
+	constexpr const wchar_t* kUIGraphPath = L"data/graph/UI/UI.png";
     
 	constexpr const wchar_t* kWaitSpawnEffectPath = L"data/effect/spawn.efk";
     constexpr const wchar_t* kSpawnEffectPath = L"data/effect/spawn2.efk";
@@ -95,7 +96,8 @@ void ResourceManager::LoadResources()
 	m_graphHandleTable[GraphType::pressAnyButton] = { LoadGraph(kPressAnyButtonGraphPath) };
     //クリアグラフィック
     m_graphHandleTable[GraphType::clear] = { LoadGraph(kClearGraphPath) };
-
+	//UIグラフィック
+	m_graphHandleTable[GraphType::UI] = { LoadGraph(kUIGraphPath) };
 	//スポーンエフェクト
 	m_effectHandleTable[EffectType::waitSpawn] = { kWaitSpawnEffectPath };
 	m_effectHandleTable[EffectType::spawn] = { kSpawnEffectPath };

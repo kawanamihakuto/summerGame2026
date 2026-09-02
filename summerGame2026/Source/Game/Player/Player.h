@@ -23,7 +23,7 @@ class AnimationController;
 class Player : public Character, public ICollider,public ICaptureTarget
 {
 public:
-	Player(int playerModel, int stageModel,CameraManager& cameraManager);
+	Player(int playerModel, int stageModel,CameraManager& cameraManager, int maxHp);
 	~Player();
 
 	void Init()override;

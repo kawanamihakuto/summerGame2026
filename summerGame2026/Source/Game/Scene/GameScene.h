@@ -10,6 +10,7 @@ class PlayerController;
 class CaptureManager;
 class SkyBox;
 class EnemySpawner;
+class UI;
 class GameScene : public SceneBase
 {
 public:
@@ -60,5 +61,7 @@ private:
 	std::vector<std::shared_ptr<EnemySpawner>> m_enemySpawners;
 	//スカイボックス
 	std::shared_ptr<SkyBox>m_skyBox;
+	//UI
+	std::shared_ptr<UI>m_UI;
 };
 

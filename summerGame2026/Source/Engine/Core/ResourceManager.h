@@ -26,7 +26,8 @@ enum class GraphType
 	skyBottom,
 	title,
 	pressAnyButton,
-	clear
+	clear,
+	UI
 };
 
 enum class EffectType
