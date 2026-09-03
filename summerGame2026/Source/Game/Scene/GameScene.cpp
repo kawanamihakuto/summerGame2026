@@ -205,15 +205,15 @@ void GameScene::NormalUpdate()
 	EffectManager::Update();
 
 #ifdef _DEBUG
-	
-#endif // _DEBUG
-
 	if (input.IsTriggered("START"))
 	{
 		m_update = &GameScene::FadeOutUpdate;
 		m_draw = &GameScene::FadeDraw;
 		SoundManager::FadeOutBGM(kFadeInterval);
 	}
+#endif // _DEBUG
+
+	
 
 	if (!m_gameObjectManager->Find<Star>())
 	{
@@ -271,15 +271,15 @@ void GameScene::NormalDraw()
 	//UI描画
 	m_UI->Draw(m_gameObjectManager->GetStarCount(), m_gameObjectManager->Find<Player>()->GetHp());
 
-	DrawFormatString(0, 48, 0x0000ff, L"STARS:%d", m_gameObjectManager->GetStarCount());
-
-	DrawFormatString(0, 64, 0x0000ff, L"PLAYER HP:%d", m_gameObjectManager->Find<Player>()->GetHp());
+	
 
 #ifdef _DEBUG
 	DrawFormatString(0, 16, 0x0000ff, L"FRAME:%d", m_frameCount);
 	float fps = GetFPS();
 	DrawFormatString(0, 32, 0x0000ff, L"FPS:%f", fps);
+	DrawFormatString(0, 48, 0x0000ff, L"STARS:%d", m_gameObjectManager->GetStarCount());
 
+	DrawFormatString(0, 64, 0x0000ff, L"PLAYER HP:%d", m_gameObjectManager->Find<Player>()->GetHp());
 #endif // _DEBUG
 }
 
