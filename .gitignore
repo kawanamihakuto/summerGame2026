@@ -1,6 +1,5 @@
 # ビルド系
 Debug/
-Release/
 x64/
 *.obj
 *.pdb
